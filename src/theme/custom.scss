@@ -1,0 +1,23 @@
+@import '/node_modules/bootstrap/scss/functions';
+@import '/node_modules/bootstrap/scss/variables';
+@import '/node_modules/bootstrap/scss/variables-dark';
+
+
+$main-color: #390688;
+$secondary-color: #73ccfd;
+$button-color: #90ff69;
+
+$proyect-colors: (
+  'main-color': $main-color,
+  'secondary-color': $secondary-color,
+  'button-color': $button-color,
+);
+
+$line-height-base: 1.5;
+$line-height-sm: 1.25;
+$line-height-lg: 2;
+
+$theme-colors: map-merge($theme-colors, $proyect-colors);
+
+
+@import '/node_modules/bootstrap/scss/bootstrap'
