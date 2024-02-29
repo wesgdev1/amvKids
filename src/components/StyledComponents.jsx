@@ -4,6 +4,9 @@ import { NavLink } from "react-router-dom";
 
 export const ConteinerNavStyled = styled(Container)(({ theme }) => ({
   background: theme.colors.mainColor,
+  paddingTop: "20px",
+  paddingBottom: "10px",
+  borderBottom: "0.5px solid #ccc",
 }));
 
 export const NavLinkStyled = styled(NavLink)(({ theme }) => ({

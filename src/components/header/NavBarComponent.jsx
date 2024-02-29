@@ -18,7 +18,7 @@ import { NavLogo } from "./NavLogo";
 export const NavBarComponent = () => {
   return (
     <>
-      <ConteinerNavStyled fluid className="pt-3 pb-4">
+      <ConteinerNavStyled fluid>
         <Row>
           <div className="d-flex justify-around items-center gap-2">
             <NavLogo />
