@@ -1,6 +1,7 @@
-body{
+*{
   font-family: 'Montblanc', sans-serif;
-  overflow-x: hidden;
+  /* overflow-x: hidden; */
+  font-size: 12px
  
 
 }

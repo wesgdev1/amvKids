@@ -2,7 +2,7 @@ import { Carousel } from "react-bootstrap";
 
 export const Carrousel = () => {
   return (
-    <Carousel className=" mt-5 pb-2">
+    <Carousel className="pb-2">
       <Carousel.Item>
         <img
           style={{ width: "100%" }}
