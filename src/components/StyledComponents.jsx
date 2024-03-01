@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Container } from "react-bootstrap";
+import { Button, Card, Container } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 
 export const ConteinerNavStyled = styled(Container)(({ theme }) => ({
@@ -30,4 +30,34 @@ export const ButtonStyled = styled.button(({ theme }) => ({
   "&:hover": {
     background: theme.colors.secondaryColor,
   },
+}));
+
+export const ShoesCardStyled = styled(Card)(({ theme }) => ({
+  width: "18rem",
+  color: "white",
+  background: `${theme.colors.mainColor}`,
+  padding: "10px",
+  borderRadius: "5px",
+  boxShadow: `0px 0px 10px 0px ${theme.colors.mainColor}`,
+  transition: "all 0.5s",
+  "&:hover": {
+    boxShadow: `0px 0px 50px 0px ${theme.colors.buttonColor}`,
+  },
+}));
+
+export const ButtonCardStyled = styled(Button)(({ theme }) => ({
+  background: theme.colors.buttonColor,
+  color: "black",
+  padding: "10px",
+  border: "none",
+  borderRadius: "5px",
+  cursor: "pointer",
+  "&:hover": {
+    background: theme.colors.secondaryColor,
+  },
+}));
+
+export const ContaynerFooterStyled = styled(Container)(({ theme }) => ({
+  background: theme.colors.mainColor,
+  color: "white",
 }));
