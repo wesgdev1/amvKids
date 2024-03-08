@@ -1,4 +1,3 @@
-import { Footer } from "../components/footer/Footer";
 import { Carrousel } from "../components/home/Carrousel";
 import { ShoesPrincipal } from "../components/home/ShoesPrincipal";
 
@@ -7,7 +6,6 @@ export const Home = () => {
     <>
       <Carrousel />
       <ShoesPrincipal />
-      <Footer></Footer>
     </>
   );
 };

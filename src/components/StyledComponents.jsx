@@ -5,8 +5,8 @@ import { NavLink } from "react-router-dom";
 export const ConteinerNavStyled = styled(Container)(({ theme }) => ({
   background: theme.colors.mainColor,
   paddingTop: "20px",
-  paddingBottom: "10px",
-  borderBottom: "0.5px solid #ccc",
+  paddingBottom: "15px",
+  boxShadow: `0px 0px 10px 0px ${theme.colors.secondaryColor}`,
 }));
 
 export const NavLinkStyled = styled(NavLink)(({ theme }) => ({
@@ -16,20 +16,20 @@ export const NavLinkStyled = styled(NavLink)(({ theme }) => ({
   textDecoration: "none",
   "&:hover": {
     color: theme.colors.secondaryColor,
-    fontSize: "1.2rem",
   },
 }));
 
 export const ButtonStyled = styled.button(({ theme }) => ({
   background: theme.colors.buttonColor,
   color: "black",
-  padding: "10px",
+  padding: "8px",
   border: "none",
   borderRadius: "5px",
   cursor: "pointer",
   "&:hover": {
     background: theme.colors.secondaryColor,
   },
+  height: "30px",
 }));
 
 export const ShoesCardStyled = styled(Card)(({ theme }) => ({
@@ -60,4 +60,18 @@ export const ButtonCardStyled = styled(Button)(({ theme }) => ({
 export const ContaynerFooterStyled = styled(Container)(({ theme }) => ({
   background: theme.colors.mainColor,
   color: "white",
+}));
+
+export const FormStyled = styled.form(({ theme }) => ({
+  padding: "3rem",
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: "40%",
+  boxShadow: "0 0 10px 0 #000",
+  borderRadius: "10px",
+  "@media (max-width: 576px)": {
+    width: "80%",
+  },
 }));

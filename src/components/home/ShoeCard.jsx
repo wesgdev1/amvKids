@@ -13,10 +13,12 @@ export const ShoeCard = () => {
           <Card.Title>🔥Jordan Dub Zero🔥</Card.Title>
           <Card.Text>
             Las nuevas Air Jordan Dub Zero son uno de los nuevos hot drop de
-            Foot Locker para este comienzo de 2024. La ocasión es perfecta para
-            conocer la historia de esta zapatilla híbrida.
+            Foot Locker para este comienzo de 2024.
           </Card.Text>
-          <ButtonCardStyled>Comprar!</ButtonCardStyled>
+          <Card.Text className="fs-4">$65.000</Card.Text>
+          <div className="d-flex justify-center ">
+            <ButtonCardStyled>Ver Detalle</ButtonCardStyled>
+          </div>
         </Card.Body>
       </ShoesCardStyled>
     </>

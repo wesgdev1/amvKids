@@ -13,7 +13,7 @@ export const Carrousel = () => {
       </Carousel.Item>
       <Carousel.Item>
         <img
-          style={{ width: "10%" }}
+          style={{ width: "100%" }}
           className="d-block w-100"
           src="https://res.cloudinary.com/dppqkypts/image/upload/v1709174327/Copia_de_Dise%C3%B1o_sin_t%C3%ADtulo_dhhfpo.png"
           alt="First slide"

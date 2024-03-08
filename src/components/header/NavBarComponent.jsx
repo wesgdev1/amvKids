@@ -12,10 +12,14 @@ import {
   ConteinerNavStyled,
   NavLinkStyled,
 } from "../StyledComponents";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { NavLogo } from "./NavLogo";
 
 export const NavBarComponent = () => {
+  const navigate = useNavigate();
+  const onHandleClick = () => {
+    navigate("/productos");
+  };
   return (
     <>
       <ConteinerNavStyled fluid>
@@ -30,7 +34,10 @@ export const NavBarComponent = () => {
             </div>
 
             <Nav className="d-flex  gap-3 items-center ">
-              <ButtonStyled>Iniciar Sesion</ButtonStyled>
+              <ButtonStyled onClick={onHandleClick}>
+                <i className="bi bi-person" /> /{" "}
+                <i className="bi bi-person-fill-add" />
+              </ButtonStyled>
             </Nav>
           </div>
         </Row>
