@@ -12,13 +12,13 @@ import {
   ConteinerNavStyled,
   NavLinkStyled,
 } from "../StyledComponents";
-import { NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { NavLogo } from "./NavLogo";
 
 export const NavBarComponent = () => {
   const navigate = useNavigate();
   const onHandleClick = () => {
-    navigate("/productos");
+    navigate("/login");
   };
   return (
     <>
@@ -46,9 +46,9 @@ export const NavBarComponent = () => {
             className="d-flex justify-center items-center gap-4 d-none d-md-flex
           "
           >
-            <NavLinkStyled to="/login">Inicio</NavLinkStyled>
-            <NavLinkStyled to="/blogs">Calzado</NavLinkStyled>
-            <NavLinkStyled to="/contacto">Contacto</NavLinkStyled>
+            <NavLinkStyled to="/">Inicio</NavLinkStyled>
+            <NavLinkStyled to="/productos">Calzado</NavLinkStyled>
+            <NavLinkStyled to="/">Contacto</NavLinkStyled>
           </div>
         </Row>
       </ConteinerNavStyled>

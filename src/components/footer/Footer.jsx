@@ -4,7 +4,7 @@ import { ContaynerFooterStyled } from "../StyledComponents";
 export const Footer = () => {
   return (
     <>
-      <div className="pt-10">
+      <div className="">
         <div
           style={{
             height: "70px",
