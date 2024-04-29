@@ -63,6 +63,7 @@ export const ContaynerFooterStyled = styled(Container)(({ theme }) => ({
 }));
 
 export const FormStyled = styled.form(({ theme }) => ({
+  marginTop: "2rem",
   padding: "3rem",
   position: "absolute",
   top: "50%",

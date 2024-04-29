@@ -5,7 +5,6 @@ import {
   FormStyled,
   NavLinkStyled,
 } from "../components/StyledComponents";
-import { NavLink } from "react-router-dom";
 
 export const Login = () => {
   return (
@@ -42,7 +41,7 @@ export const Login = () => {
         <div>
           <p className="text-center pt-4">¿No tienes cuenta?</p>
           <div className="d-flex justify-center">
-            <NavLinkStyled>
+            <NavLinkStyled to={"/signup"}>
               <p className="text-center">Registrate Aqui</p>
             </NavLinkStyled>
           </div>

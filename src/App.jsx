@@ -3,6 +3,7 @@ import { AmvRoutes } from "./routes/AmvRoutes";
 import { NavBarComponent } from "./components/header/NavBarComponent";
 import { Login } from "./pages/Login";
 import { Footer } from "./components/footer/Footer";
+import { SignUp } from "./pages/SignUp";
 
 function App() {
   return (
@@ -11,10 +12,9 @@ function App() {
       <Routes>
         <Route path="/*" element={<AmvRoutes />} />
         <Route path="/login" element={<Login />} />
-        {/* <Route path="/login" element={<Login />} />
-      <Route path="/signUp" element={<SignUp />} /> */}
+        <Route path="/signup" element={<SignUp />} />
       </Routes>
-      <Footer></Footer>
+      <Footer />
     </>
   );
 }
