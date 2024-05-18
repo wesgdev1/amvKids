@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Accordion, Form } from "react-bootstrap";
 
 export const Filter = ({ products }) => {
@@ -7,6 +8,14 @@ export const Filter = ({ products }) => {
   // elimino repetidos en marcas
 
   const sizes = products.map((product) => product.size);
+
+  const [filters, setFilters] = useState([]);
+
+  const handleFilter = (e) => {
+    // aqui agregar o quitar filtros
+  };
+
+  // por aqui hacer un useEffect para filtrar los productos cada vez que se cambie el estado de filters
 
   return (
     <div className="bg-gray-100 p-8 rounded-lg shadow-lg ">
