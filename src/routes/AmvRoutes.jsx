@@ -13,7 +13,6 @@ export const AmvRoutes = () => {
         <Route path="/profile/shoppinghistory" element={<ShoppingHistory />} />
         <Route path="/login" element={<Login />} />
       </Routes>
-      <footer></footer>
     </>
   );
 };
