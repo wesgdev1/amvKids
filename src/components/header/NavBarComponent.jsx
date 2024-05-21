@@ -12,10 +12,14 @@ import {
   ConteinerNavStyled,
   NavLinkStyled,
 } from "../StyledComponents";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { NavLogo } from "./NavLogo";
+import { useContext } from "react";
+import { AuthContext } from "../../auth/context/AuthContext";
 
 export const NavBarComponent = () => {
+  const { user } = useContext(AuthContext);
+
   const navigate = useNavigate();
   const onHandleClick = () => {
     navigate("/login");
@@ -34,10 +38,34 @@ export const NavBarComponent = () => {
             </div>
 
             <Nav className="d-flex  gap-3 items-center ">
-              <ButtonStyled onClick={onHandleClick}>
-                <i className="bi bi-person" /> /{" "}
-                <i className="bi bi-person-fill-add" />
-              </ButtonStyled>
+              {user ? (
+                <NavDropdown
+                  title={
+                    <img
+                      src={user.image}
+                      alt="Nombre de usuario"
+                      className=" w-14 h-14 rounded-full border-2 border-gray-300 hover:border-gray-500 cursor-pointer"
+                    />
+                  }
+                  id="basic-nav-dropdown"
+                  menuVariant="dark"
+                >
+                  <NavDropdown.Item href="#action/3.1">Perfil</NavDropdown.Item>
+                  <NavDropdown.Item as={NavLink} to="/profile/shoppinghistory">
+                    Mis compras
+                  </NavDropdown.Item>
+
+                  <NavDropdown.Divider />
+                  <NavDropdown.Item href="#action/3.4">
+                    Cerrar sesion
+                  </NavDropdown.Item>
+                </NavDropdown>
+              ) : (
+                <ButtonStyled onClick={onHandleClick}>
+                  <i className="bi bi-person" /> /{" "}
+                  <i className="bi bi-person-fill-add" />
+                </ButtonStyled>
+              )}
             </Nav>
           </div>
         </Row>
