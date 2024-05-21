@@ -19,7 +19,7 @@ export const NavLinkStyled = styled(NavLink)(({ theme }) => ({
   },
 }));
 
-export const ButtonStyled = styled.button(({ theme }) => ({
+export const ButtonStyled = styled(Button)(({ theme }) => ({
   background: theme.colors.buttonColor,
   color: "black",
   padding: "8px",
