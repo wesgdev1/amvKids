@@ -14,11 +14,14 @@ import {
 } from "../StyledComponents";
 import { NavLink, useNavigate } from "react-router-dom";
 import { NavLogo } from "./NavLogo";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../../auth/context/AuthContext";
+import { SideMeny } from "./SideMeny";
 
 export const NavBarComponent = () => {
   const { user } = useContext(AuthContext);
+
+  const [modalProfile, setModalProfile] = useState(false);
 
   const navigate = useNavigate();
   const onHandleClick = () => {
@@ -39,27 +42,14 @@ export const NavBarComponent = () => {
 
             <Nav className="d-flex  gap-3 items-center ">
               {user ? (
-                <NavDropdown
-                  title={
-                    <img
-                      src={user.image}
-                      alt="Nombre de usuario"
-                      className=" w-14 h-14 rounded-full border-2 border-gray-300 hover:border-gray-500 cursor-pointer"
-                    />
-                  }
-                  id="basic-nav-dropdown"
-                  menuVariant="dark"
-                >
-                  <NavDropdown.Item href="#action/3.1">Perfil</NavDropdown.Item>
-                  <NavDropdown.Item as={NavLink} to="/profile/shoppinghistory">
-                    Mis compras
-                  </NavDropdown.Item>
-
-                  <NavDropdown.Divider />
-                  <NavDropdown.Item href="#action/3.4">
-                    Cerrar sesion
-                  </NavDropdown.Item>
-                </NavDropdown>
+                <div className="flex items-center justify-center flex-col gap-2">
+                  <img
+                    src={user.image}
+                    alt="Nombre de usuario"
+                    className=" w-16 h-16 rounded-full border-2 border-gray-300 hover:border-gray-500 cursor-pointer"
+                    onClick={() => setModalProfile(!modalProfile)}
+                  />
+                </div>
               ) : (
                 <ButtonStyled onClick={onHandleClick}>
                   <i className="bi bi-person" /> /{" "}
@@ -67,6 +57,8 @@ export const NavBarComponent = () => {
                 </ButtonStyled>
               )}
             </Nav>
+
+            {modalProfile && <SideMeny />}
           </div>
         </Row>
         <Row>
