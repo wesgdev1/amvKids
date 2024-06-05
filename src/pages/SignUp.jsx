@@ -4,6 +4,14 @@ import { Zenitho } from "uvcanvas";
 import { Formik, ErrorMessage } from "formik";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { z } from "zod";
+import {
+  ButtonStyled,
+  FormStyled,
+  NavLinkStyled,
+} from "../components/StyledComponents";
+import { signUp } from "../api/auth/auth";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 {
   /*Defino el esquema */
@@ -35,11 +43,6 @@ const signUpSchema = z
     message: "Las contraseñas no coinciden",
     path: ["confirmPassword"],
   });
-import {
-  ButtonStyled,
-  FormStyled,
-  NavLinkStyled,
-} from "../components/StyledComponents";
 
 export const SignUp = () => {
   const initialValues = {
@@ -48,19 +51,42 @@ export const SignUp = () => {
     password: "",
     confirmPassword: "",
   };
+  const navigate = useNavigate();
 
-  const onRegister = async (data) => {
-    // simular una promesa
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        console.log(data);
-        resolve();
-      }, 3000);
-    });
+  const onRegister = async (payload) => {
+    try {
+      const response = await signUp(payload);
+
+      const { data } = response;
+
+      console.log(data);
+
+      if (data) {
+        Swal.fire({
+          title: "Registro exitoso",
+          text: "Usuario registrado correctamente",
+          icon: "success",
+          confirmButtonText: "Iniciar Sesion",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate("/login");
+          }
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Tu Usuario no ha sido Creado",
+        text: "Porfavor intenta de nuevo",
+      });
+    }
   };
 
   const onSubmit = async (values, { setSubmitting }) => {
     setSubmitting(true);
+
+    delete values.confirmPassword;
+
     await onRegister(values);
     setSubmitting(false);
   };
