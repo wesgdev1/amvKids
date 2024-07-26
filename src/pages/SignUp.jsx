@@ -55,11 +55,10 @@ export const SignUp = () => {
 
   const onRegister = async (payload) => {
     try {
+      delete payload.confirmPassword;
       const response = await signUp(payload);
 
       const { data } = response;
-
-      console.log(data);
 
       if (data) {
         Swal.fire({
@@ -69,7 +68,7 @@ export const SignUp = () => {
           confirmButtonText: "Iniciar Sesion",
         }).then((result) => {
           if (result.isConfirmed) {
-            navigate("/login");
+            navigate("/login", { replace: true });
           }
         });
       }
@@ -82,13 +81,11 @@ export const SignUp = () => {
     }
   };
 
-  const onSubmit = async (values, { setSubmitting }) => {
+  const onSubmit = async (values, { setSubmitting, resetForm }) => {
     setSubmitting(true);
-
-    delete values.confirmPassword;
-
     await onRegister(values);
     setSubmitting(false);
+    resetForm();
   };
 
   return (

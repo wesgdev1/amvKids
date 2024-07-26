@@ -8,3 +8,12 @@ export const signUp = async (payload) => {
     return Promise.reject(error);
   }
 };
+
+export const signIn = async (payload) => {
+  try {
+    const { data: response } = await http.post("/users/signin", payload);
+    return { data: response.data, meta: response.meta };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};

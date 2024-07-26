@@ -21,13 +21,13 @@ export const NavLinkStyled = styled(NavLink)(({ theme }) => ({
 
 export const ButtonStyled = styled(Button)(({ theme }) => ({
   background: theme.colors.buttonColor,
-  color: "black",
-  padding: "8px",
+  color: "white",
+  fontWeight: "bold",
   border: "none",
   borderRadius: "5px",
   cursor: "pointer",
   "&:hover": {
-    background: theme.colors.secondaryColor,
+    background: theme.colors.mainColor,
   },
   height: "30px",
 }));

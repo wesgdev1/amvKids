@@ -1,7 +1,7 @@
 import { Form, Image, Spinner } from "react-bootstrap";
 import { Zenitho } from "uvcanvas";
 
-import { Formik, ErrorMessage } from "formik";
+import { Formik, ErrorMessage, replace } from "formik";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { z } from "zod";
 
@@ -27,21 +27,48 @@ import {
   FormStyled,
   NavLinkStyled,
 } from "../components/StyledComponents";
+import { signIn } from "../api/auth/auth";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import { useContext } from "react";
+import { AuthContext } from "../auth/context/AuthContext";
+import { setSession } from "../api/sessions";
 
 export const Login = () => {
+  const { login } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
+
+  const naviqate = useNavigate();
+  if (user) {
+    naviqate("/productos");
+  }
   const initialValues = {
     email: "",
     password: "",
   };
 
-  const onLogin = async (data) => {
-    // simular una promesa
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        console.log(data);
-        resolve();
-      }, 3000);
-    });
+  const onLogin = async (payload) => {
+    try {
+      const response = await signIn(payload);
+
+      if (response) {
+        const { data, meta } = response;
+        login(data.user);
+        setSession(meta.token);
+        naviqate("/productos");
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Usuario o contraseña incorrectos, por favor intente de nuevo",
+        confirmButtonText: "Iniciar Sesion",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          naviqate("/login");
+        }
+      });
+    }
   };
 
   const onSubmit = async (values, { setSubmitting }) => {

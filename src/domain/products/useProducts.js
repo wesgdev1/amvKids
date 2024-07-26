@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
-import { signIn } from "../../api/auth/auth";
+import { getAllProducts } from "../../api/products/products";
 
-export const useAuth = () => {
+export const useProducts = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const iniciarSesion = async () => {
+  const cargarProductos = async () => {
     setLoading(true);
     setError("");
 
     try {
-      const response = await signIn();
+      const response = await getAllProducts();
 
       setData(response.data);
     } catch (error) {
@@ -22,8 +22,8 @@ export const useAuth = () => {
   };
 
   useEffect(() => {
-    iniciarSesion();
+    cargarProductos();
   }, []);
 
-  return { data, loading, error };
+  return { data, loading, error, cargarProductos };
 };

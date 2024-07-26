@@ -12,7 +12,7 @@ import {
   ConteinerNavStyled,
   NavLinkStyled,
 } from "../StyledComponents";
-import { NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { NavLogo } from "./NavLogo";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../auth/context/AuthContext";
@@ -44,7 +44,10 @@ export const NavBarComponent = () => {
               {user ? (
                 <div className="flex items-center justify-center flex-col gap-2">
                   <img
-                    src={user.image}
+                    src={
+                      user.urlFoto ||
+                      "https://res.cloudinary.com/dppqkypts/image/upload/v1700685111/david_sanchez_oigkwg.png"
+                    }
                     alt="Nombre de usuario"
                     className=" w-16 h-16 rounded-full border-2 border-gray-300 hover:border-gray-500 cursor-pointer"
                     onClick={() => setModalProfile(!modalProfile)}
