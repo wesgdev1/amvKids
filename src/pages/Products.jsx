@@ -1,6 +1,8 @@
-import { Col, Container, Row } from "react-bootstrap";
+import { Alert, Col, Container, Row, Spinner } from "react-bootstrap";
 import { ShoeCard } from "../components/home/ShoeCard";
 import { Filter } from "../components/product/Filter";
+import { useModels } from "../domain/models/useModels";
+import { ProductListHome } from "../components/products/ProductListHome";
 
 export const Products = () => {
   const products = [
@@ -41,6 +43,8 @@ export const Products = () => {
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet.",
     },
   ];
+
+  const { data, loading, error } = useModels();
   return (
     <Container>
       <Row className="my-5 ">
@@ -54,16 +58,11 @@ export const Products = () => {
           <Filter products={products} />
         </Col>
         <Col md={8}>
-          <div
-            style={{}}
-            className="d-flex gap-3 flex-wrap justify-content-center aligns-items-center p-8"
-          >
-            <ShoeCard />
-            <ShoeCard />
-            <ShoeCard />
-            <ShoeCard />
-            <ShoeCard />
-            <ShoeCard />
+          <div>
+            {loading && <Spinner animation="border" variant="info" />}
+            {error && <Alert variant="danger">{error}</Alert>}
+
+            {data?.length > 0 && <ProductListHome models={data} />}
           </div>
         </Col>
       </Row>

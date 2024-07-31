@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Table } from "react-bootstrap";
+import { Image, Table } from "react-bootstrap";
 
 import { useNavigate } from "react-router-dom";
 import { ControlButton } from "../products/StyledComponents";
@@ -13,13 +13,17 @@ export const ModelsTable = ({ modelos }) => {
   const firstIndex = lastIndex - modelosBypage;
   const navigate = useNavigate();
 
-  const viewProduct = (producto) => {
-    navigate(`/profile/products/${producto.id}/models`);
+  const viewProduct = (modelo) => {
+    navigate(`/profile/models/${modelo.id}`);
   };
   const editProduct = (producto) => {
     navigate(`/profile/products/new`, {
       state: { producto },
     });
+  };
+
+  const calculateStock = (stocks) => {
+    return stocks.reduce((acc, stock) => acc + stock.quantity, 0);
   };
   return (
     <div className="pt-4">
@@ -40,10 +44,18 @@ export const ModelsTable = ({ modelos }) => {
             .map((modelo) => (
               <tr key={modelo.id}>
                 <td>{modelo.reference}</td>
-                <td>{modelo.image}</td>
+                <td>
+                  <Image
+                    src={modelo.images[0]?.url}
+                    alt={"amv_kid_shoe"}
+                    width={30}
+                    height={30}
+                    roundedCircle
+                  />
+                </td>
                 <td>{modelo.name}</td>
                 <td>{modelo.price}</td>
-                <td>{50}</td>
+                <td>{calculateStock(modelo.stocks)}</td>
                 <td>
                   <div className="flex justify-center gap-2">
                     <ControlButton onClick={() => viewProduct(modelo)}>

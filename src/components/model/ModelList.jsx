@@ -12,7 +12,7 @@ export const ModelList = () => {
   const navigate = useNavigate();
   const { data, loading, error } = useProduct(idProduct);
   const handleClick = () => {
-    navigate("/profile/models/new");
+    navigate(`/profile/products/${idProduct}/models/new`);
   };
   const [searchValue, setSearchValue] = useState("");
   const [filteredData, setFilteredData] = useState([]);
