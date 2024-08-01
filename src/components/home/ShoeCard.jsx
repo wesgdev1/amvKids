@@ -1,8 +1,15 @@
 import { Button, Card } from "react-bootstrap";
 import { ButtonCardStyled, ShoesCardStyled } from "../StyledComponents";
 import { CardDescroptionStyle } from "./StyledComponents";
+import { useNavigate } from "react-router-dom";
 
 export const ShoeCard = ({ model }) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/productos/${model.id}`);
+  };
+
   return (
     <>
       <ShoesCardStyled>
@@ -15,7 +22,9 @@ export const ShoeCard = ({ model }) => {
           <CardDescroptionStyle>{model.description}</CardDescroptionStyle>
           <Card.Text>{model.price} COP</Card.Text>
           <div className="d-flex justify-center ">
-            <ButtonCardStyled>Ver Detalle</ButtonCardStyled>
+            <ButtonCardStyled onClick={handleClick}>
+              Ver Detalle
+            </ButtonCardStyled>
           </div>
         </Card.Body>
       </ShoesCardStyled>

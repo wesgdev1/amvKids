@@ -1,3 +1,46 @@
+import { useParams } from "react-router-dom";
+import { useModel } from "../domain/models/useModel";
+import { Alert, Card, Col, Image, Spinner } from "react-bootstrap";
+import {
+  ButtonProfile,
+  CardStoreStyle,
+} from "../components/products/StyledComponents";
+import { ControlProduct } from "../components/products/ControlProduct";
+
 export const ProductDetail = () => {
-  return <div>ProductDetail</div>;
+  const params = useParams();
+  const { id } = params;
+
+  const { data, loading, error } = useModel(id);
+
+  return (
+    <>
+      {loading && <Spinner animation="border" variant="info" />}
+      {error && <Alert variant="danger">{error}</Alert>}
+      {data && (
+        <div className="pt-5 px-5 pb-3">
+          <h4 className="pb-3">
+            <i className="bi bi-box"></i> {data?.name}
+          </h4>
+          <hr />
+          <div className="flex gap-5 flex-row flex-wrap justify-center ">
+            <div>
+              <Image
+                src={data?.images[0]?.url}
+                alt={data?.name}
+                style={{
+                  objectFit: "cover",
+                  borderRadius: "10px",
+                  boxShadow: "0 0 10px rgba(0,0,0,0.5)",
+                }}
+              />
+            </div>
+            <ControlProduct data={data} />
+            <div>{data?.description}</div>
+          </div>
+        </div>
+      )}
+      ;
+    </>
+  );
 };
