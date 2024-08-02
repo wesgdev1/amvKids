@@ -49,23 +49,22 @@ const reducer = (state, action) => {
       });
       updateStorage(newState);
       return newState;
+    }
 
-      // const { item, quantity, size } = action.payload;
-      // const index = state.findIndex((i) => i.id === item.id);
-      // if (index === -1) {
-      //   const newItem = { ...item, quantity };
-      //   const newState = [...state, newItem];
-      //   updateStorage(newState);
-      //   return newState;
-      // }
-      // const newState = state.map((i) => {
-      //   if (i.id === item.id) {
-      //     return { ...i, quantity: i.quantity + quantity };
-      //   }
-      //   return i;
-      // });
-      // updateStorage(newState);
-      // return newState;
+    case "DELETE": {
+      const { aux: model } = action.payload;
+
+      const newState = state.filter(
+        (element) => !(element.id === model.id && element.size === model.size)
+      );
+      updateStorage(newState);
+      return newState;
+    }
+
+    case "DELETE_ALL": {
+      const newState = [];
+      updateStorage(newState);
+      return newState;
     }
   }
 };

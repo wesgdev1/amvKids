@@ -1,7 +1,14 @@
-import { Button, Card, Col, Image, Row } from "react-bootstrap";
+import { Card, Col, Image, Row } from "react-bootstrap";
 import { ButtonCrash, CardElementStyle } from "./StyledComponent";
 
-export const CardElements = ({ model }) => {
+export const CardElements = ({ model, dispatch }) => {
+  const deleteElement = (aux) => {
+    console.log(aux);
+    dispatch({
+      type: "DELETE",
+      payload: { aux },
+    });
+  };
   return (
     <CardElementStyle className="mb-3 element-list">
       <Card.Body>
@@ -20,16 +27,14 @@ export const CardElements = ({ model }) => {
             />
           </Col>
           <Col>{model.name}</Col>
-          <Col>cantidad: {model.quantity}</Col>
+          <Col>Cantidad: {model.quantity}</Col>
           <Col>Talla: {model.size}</Col>
-          <Col>
-            <strong>${model.price.toLocaleString("es-CO")}</strong>
-          </Col>
+          <Col>${model.price.toLocaleString("es-CO")} </Col>
           <Col>
             <ButtonCrash
-            // onClick={() => {
-            //   deleteElement(carElement);
-            // }}
+              onClick={() => {
+                deleteElement(model);
+              }}
             >
               <i className="bi bi-trash-fill" />
             </ButtonCrash>
