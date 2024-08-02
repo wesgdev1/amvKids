@@ -1,10 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const useCounter = (initialValue = 1, maxValue) => {
   const [counter, setCounter] = useState(initialValue);
+  const [max, setMax] = useState(maxValue);
+
+  useEffect(() => {
+    setMax(maxValue);
+  }, [maxValue]);
 
   const increment = (value = 1) => {
-    if (maxValue && counter === maxValue) return;
+    if (counter === max) return;
     setCounter(counter + value);
   };
   const decrement = (value = 1) => {
@@ -12,7 +17,7 @@ export const useCounter = (initialValue = 1, maxValue) => {
     setCounter(counter - value);
   };
   const reset = () => {
-    setCounter(10);
+    setCounter(1);
   };
 
   return {
@@ -20,5 +25,6 @@ export const useCounter = (initialValue = 1, maxValue) => {
     increment,
     decrement,
     reset,
+    setMax,
   };
 };

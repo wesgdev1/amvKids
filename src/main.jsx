@@ -10,15 +10,18 @@ import theme from "./theme/index.js";
 
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { AuthProvider } from "./auth/context/AuthProvider.jsx";
+import { CartProvider } from "./store/index.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <AuthProvider>
-      <BrowserRouter>
-        <ThemeProvider theme={theme}>
-          <App />
-        </ThemeProvider>
-      </BrowserRouter>
+      <CartProvider>
+        <BrowserRouter>
+          <ThemeProvider theme={theme}>
+            <App />
+          </ThemeProvider>
+        </BrowserRouter>
+      </CartProvider>
     </AuthProvider>
   </React.StrictMode>
 );

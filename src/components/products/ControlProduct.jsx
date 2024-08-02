@@ -1,4 +1,4 @@
-import { Card, Col } from "react-bootstrap";
+import { Card, Col, Form } from "react-bootstrap";
 import {
   BtnDangerSubmitStyled,
   BtnSubmitStyled,
@@ -7,33 +7,86 @@ import {
 } from "./StyledComponents";
 import { useCounter } from "../../hooks/useCounter";
 import { useNavigate } from "react-router-dom";
+import { useCart } from "../../store";
+import Swal from "sweetalert2";
+import { useEffect, useState } from "react";
 
 export const ControlProduct = ({ data }) => {
+  const { dispatch } = useCart();
   const navigate = useNavigate();
   const handleReturn = () => {
     navigate("/productos");
   };
-  const { counter, increment, decrement } = useCounter(1, data.totalStocks);
+  const [size, setSize] = useState(null);
+  const [maxValue, setMaxValue] = useState(data.totalStocks);
+
+  const { counter, increment, decrement, reset } = useCounter(1, maxValue);
+
+  const hanldeClickSuccess = () => {
+    dispatch({
+      type: "ADD_TO_CART",
+      payload: { item: data, quantity: counter, size: size },
+    });
+
+    Swal.fire({
+      icon: "success",
+      title: "Producto agregado al carrito",
+      showConfirmButton: true,
+      confirmButtonText: "Aceptar",
+    });
+    reset();
+  };
+
+  const handleChange = (e) => {
+    setSize(e.target.value);
+    console.log(e.target.value);
+    console.log(data.stocks);
+    const stock = data.stocks.find((stock) => stock.size == e.target.value);
+    console.log(stock);
+    setMaxValue(stock.quantity);
+    console.log(maxValue);
+    reset();
+  };
+
   return (
     <CardStoreStyle className="d-flex mb-3 px-5 ">
-      <Card.Body className="d-flex justify-content-between flex-wrap ">
-        <Card.Title>{data.name}</Card.Title>
+      <Card.Body className="d-flex justify-content-between flex-wrap flex-col ">
+        <Card.Title className="text-center">{data.name}</Card.Title>
+        <hr />
 
-        <Col className="col-7 col-md-12 col-xl-6">
+        <Col>
           <Card.Text>
-            <div className="d-flex align-items-center gap-2">
+            <div className="flex items-center justify-center gap-4">
               <div>
-                <div>Precio por Unidad.</div>
+                <div>Precio</div>
                 <div className="fs-4">
                   ${data.price.toLocaleString("es-CO")}
                 </div>
               </div>
+              <Form.Select
+                size="md"
+                onChange={handleChange}
+                value={size}
+                style={{
+                  width: "50%",
+                }}
+              >
+                <option>Talla</option>
+                {data.stocks.map((option, index) => (
+                  <option key={index} value={option.size}>
+                    {option.size}
+                  </option>
+                ))}
+              </Form.Select>
+            </div>
 
-              <div className="  d-flex justify-content-center">
+            <div>
+              <div className="pt-4  d-flex justify-content-center">
                 <ButtonCountStyled
                   onClick={() => {
                     decrement(1);
                   }}
+                  disabled={size === null}
                   className="border px-3"
                   variant="light"
                 >
@@ -44,6 +97,7 @@ export const ControlProduct = ({ data }) => {
                   onClick={() => {
                     increment(1);
                   }}
+                  disabled={size === null}
                   className=" border px-3"
                   variant="light"
                 >
@@ -54,8 +108,9 @@ export const ControlProduct = ({ data }) => {
           </Card.Text>
         </Col>
       </Card.Body>
+
       <div className="d-flex gap-3 ">
-        <BtnSubmitStyled onClick={console.log("")} width="100%">
+        <BtnSubmitStyled onClick={hanldeClickSuccess} width="100%">
           Agregar al carrito
         </BtnSubmitStyled>
 

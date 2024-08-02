@@ -26,7 +26,8 @@ export const ControlButton = styled(Button)(({ theme }) => ({
 export const CardStoreStyle = styled(Card)(({ theme }) => ({
   backgroundColor: theme.colors.gray100,
   color: theme.colors.mainColor,
-  height: "12rem",
+  width: "35rem",
+  height: "18rem",
   paddingBottom: "1rem",
 }));
 

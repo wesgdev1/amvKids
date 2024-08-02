@@ -7,11 +7,11 @@ export const ShoesPrincipal = () => {
     <>
       <h1 className="text-center pt-8 ">Nuestras recomendaciones</h1>
       <div className="m-8 d-flex gap-4 flex-wrap justify-content-center aligns-items-center pt-8">
+        {/* <ShoeCard />
         <ShoeCard />
         <ShoeCard />
         <ShoeCard />
-        <ShoeCard />
-        <ShoeCard />
+        <ShoeCard /> */}
       </div>
       <div className="mx-4 d-flex gap-5 justify-center ">
         <BackgroundGradient className="rounded-[22px]  max-w-sm p-4 sm:p-10 bg-white dark:bg-zinc-900">

@@ -1,7 +1,9 @@
 import {
+  Badge,
   Button,
   Container,
   Form,
+  Image,
   Nav,
   NavDropdown,
   Navbar,
@@ -17,11 +19,16 @@ import { NavLogo } from "./NavLogo";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../auth/context/AuthContext";
 import { SideMeny } from "./SideMeny";
+import { ContainerIcon } from "./StyledComponents";
+import { useCart } from "../../store";
 
 export const NavBarComponent = () => {
   const { user } = useContext(AuthContext);
+  const { state } = useCart();
 
   const [modalProfile, setModalProfile] = useState(false);
+
+  const total = state.reduce((acc, item) => acc + item.quantity, 0);
 
   const navigate = useNavigate();
   const onHandleClick = () => {
@@ -42,16 +49,32 @@ export const NavBarComponent = () => {
 
             <Nav className="d-flex  gap-3 items-center ">
               {user ? (
-                <div className="flex items-center justify-center flex-col gap-2">
-                  <img
-                    src={
-                      user.urlFoto ||
-                      "https://res.cloudinary.com/dppqkypts/image/upload/v1700685111/david_sanchez_oigkwg.png"
-                    }
-                    alt="Nombre de usuario"
-                    className=" w-16 h-16 rounded-full border-2 border-gray-300 hover:border-gray-500 cursor-pointer"
-                    onClick={() => setModalProfile(!modalProfile)}
-                  />
+                <div className="flex justify-center items-center gap-3">
+                  <ContainerIcon
+                    onClick={() => navigate("/verCarritoDeCompras")}
+                  >
+                    <i className="bi bi-cart4"></i>
+                    <Badge
+                      bg="danger"
+                      className="position-absolute"
+                      style={{ marginLeft: "26px", marginTop: "-30px" }}
+                      hidden={total === 0}
+                    >
+                      {total}
+                    </Badge>
+                  </ContainerIcon>
+
+                  <div className="flex items-center justify-center flex-col gap-2">
+                    <Image
+                      src={
+                        user.urlFoto ||
+                        "https://res.cloudinary.com/dppqkypts/image/upload/v1700685111/david_sanchez_oigkwg.png"
+                      }
+                      alt="Nombre de usuario"
+                      className=" w-10 h-10 md:w-16 md:h-16 rounded-full border-2 border-gray-300 hover:border-gray-500 cursor-pointer"
+                      onClick={() => setModalProfile(!modalProfile)}
+                    />
+                  </div>
                 </div>
               ) : (
                 <ButtonStyled onClick={onHandleClick}>

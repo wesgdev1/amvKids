@@ -2,7 +2,7 @@
 
 import { createContext, useReducer, useContext } from "react";
 
-const CartContext = createContext();
+export const CartContext = createContext();
 
 const initialState = () => {
   const cart = JSON.parse(localStorage.getItem("cart"));
@@ -31,25 +31,44 @@ const reducer = (state, action) => {
 
   switch (action.type) {
     case "ADD_TO_CART": {
-      const { item, quantity } = action.payload;
-      const index = state.findIndex((i) => i.id === item.id);
+      // si es el mismo elemento pero tiene tallas diferentes crea un nuevo objeto si no suma la cantidad, y si es totalmente diferente lo agrega al carrito
+      // crea un nuevo objeto con la talla y la cantidad
+      const { item, quantity, size } = action.payload;
+      const index = state.findIndex((i) => i.id === item.id && i.size === size);
       if (index === -1) {
-        const newItem = { ...item, quantity };
+        const newItem = { ...item, quantity, size };
         const newState = [...state, newItem];
         updateStorage(newState);
         return newState;
       }
       const newState = state.map((i) => {
-        if (i.id === item.id) {
+        if (i.id === item.id && i.size === size) {
           return { ...i, quantity: i.quantity + quantity };
         }
         return i;
       });
       updateStorage(newState);
+      return newState;
+
+      // const { item, quantity, size } = action.payload;
+      // const index = state.findIndex((i) => i.id === item.id);
+      // if (index === -1) {
+      //   const newItem = { ...item, quantity };
+      //   const newState = [...state, newItem];
+      //   updateStorage(newState);
+      //   return newState;
+      // }
+      // const newState = state.map((i) => {
+      //   if (i.id === item.id) {
+      //     return { ...i, quantity: i.quantity + quantity };
+      //   }
+      //   return i;
+      // });
+      // updateStorage(newState);
+      // return newState;
     }
   }
 };
-
 export const useCart = () => {
   const store = useContext(CartContext);
   if (!store) {

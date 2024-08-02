@@ -5,6 +5,7 @@ import { Login } from "../pages/Login";
 
 import { Profile } from "../pages/Profile";
 import { ProductDetail } from "../pages/ProductDetail";
+import { CarList } from "../pages/CarList";
 
 export const AmvRoutes = () => {
   return (
@@ -14,6 +15,7 @@ export const AmvRoutes = () => {
         <Route path="/productos" element={<Products />} />
         <Route path="/productos/:id" element={<ProductDetail />} />
         <Route path="/profile/*" element={<Profile />} />
+        <Route path="/verCarritoDeCompras" element={<CarList />} />
 
         <Route path="/login" element={<Login />} />
       </Routes>
