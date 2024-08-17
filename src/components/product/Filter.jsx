@@ -1,18 +1,19 @@
 import { useState } from "react";
 import { Accordion, Form } from "react-bootstrap";
 
-export const Filter = ({ products }) => {
+export const Filter = ({ data }) => {
   // aqui creo cada filtro por marca y talla
 
-  const marcas = products.map((product) => product.brand);
-  // elimino repetidos en marcas
+  const marcas = data.map((product) => product.product.name);
+  // busco marcas unicas
 
-  const sizes = products.map((product) => product.size);
+  const sizes = data.map((product) => product.name);
 
   const [filters, setFilters] = useState([]);
 
-  const handleFilter = (e) => {
-    // aqui agregar o quitar filtros
+  const handleFilter = (marca) => {
+    setFilters([...filters, marca]);
+    console.log(filters);
   };
 
   // por aqui hacer un useEffect para filtrar los productos cada vez que se cambie el estado de filters
@@ -30,13 +31,14 @@ export const Filter = ({ products }) => {
                 id={`default-${marca}`}
                 label={marca}
                 checked={false}
+                onChange={() => handleFilter(marca)}
               />
             ))}
           </Accordion.Body>
         </Accordion.Item>
       </Accordion>
 
-      <Accordion>
+      {/* <Accordion>
         <Accordion.Item eventKey="1">
           <Accordion.Header>Talla</Accordion.Header>
           <Accordion.Body>
@@ -51,7 +53,7 @@ export const Filter = ({ products }) => {
             ))}
           </Accordion.Body>
         </Accordion.Item>
-      </Accordion>
+      </Accordion> */}
     </div>
   );
 };
