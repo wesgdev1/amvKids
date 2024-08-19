@@ -1,9 +1,12 @@
 import { useContext } from "react";
 import { AuthContext } from "../../auth/context/AuthContext";
-import { ButtonStyled } from "../StyledComponents";
+import { ButtonCardStyled, ButtonStyled } from "../StyledComponents";
+import { ButtonProfile } from "../products/StyledComponents";
+import { useNavigate } from "react-router-dom";
 
 export const SideMeny = () => {
   const { user, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const cerrarsesion = () => {
     logout();
@@ -13,7 +16,6 @@ export const SideMeny = () => {
     user && (
       <div className="text-white bg-slate-500 p-10 rounded-lg absolute top-32 right-10 z-10 w-[300px] shadow-2xl ">
         <div className="flex flex-col justify-center items-center gap-3 mb-10">
-          <span>{user?.name}</span>
           <img
             src={
               user?.urlFoto ||
@@ -24,14 +26,21 @@ export const SideMeny = () => {
           />
           <span className="text-2xl">{user.name}</span>
 
-          <ButtonStyled>Gestionar Perfil </ButtonStyled>
+          {/* <ButtonCardStyled>Gestionar Perfil </ButtonCardStyled> */}
         </div>
         <hr />
-        <span>Mi perfil</span>
-        <hr />
-        <span>Mis pedidos</span>
-        <hr />
         <span
+          onClick={() => {
+            navigate("/profile");
+          }}
+          className="cursor-pointer hover:text-blue-800 hover:text-xl"
+        >
+          Mi perfil
+        </span>
+        <hr />
+
+        <span
+          className="cursor-pointer hover:text-blue-800 hover:text-xl"
           onClick={() => {
             cerrarsesion();
           }}
