@@ -1,23 +1,52 @@
 import Swal from "sweetalert2";
 import { ButtonPayment, CardChekoutStyle } from "./StyledComponent";
-import { Card } from "react-bootstrap";
+import { Card, Spinner } from "react-bootstrap";
+import { useContext, useState } from "react";
+import { AuthContext } from "../../auth/context/AuthContext";
+import { createOrder } from "../../api/orders/orders";
+import { set } from "zod";
 
-export const CarCheckout = ({ calcularTotal, dispatch }) => {
-  const handleCheckout = () => {
-    // aqui envio la informacion al backend
-    // luego alerta de compra exitosa o algo asi
-    // y luego limpio el carrito
+export const CarCheckout = ({ calcularTotal, dispatch, state }) => {
+  const { user } = useContext(AuthContext);
+  const [comments, setComments] = useState("l");
+  const [loading, setLoading] = useState(false);
 
-    Swal.fire({
-      icon: "success",
-      title: "Compra exitosa",
-      showConfirmButton: true,
-      confirmButtonText: "Aceptar",
-    });
+  const handleCheckout = async () => {
+    try {
+      setLoading(true);
+      const payload = {
+        total: calcularTotal(),
+        comments,
+        items: state.map((element) => {
+          return {
+            modelId: element.id,
+            // pasar a number el size
+            size: Number(element.size),
 
-    dispatch({
-      type: "DELETE_ALL",
-    });
+            quantity: element.quantity,
+          };
+        }),
+      };
+
+      let response = await createOrder(payload);
+
+      if (response) {
+        Swal.fire({
+          icon: "success",
+          title: "Compra exitosa",
+          showConfirmButton: true,
+          confirmButtonText: "Aceptar",
+        });
+      }
+      setLoading(false);
+
+      dispatch({
+        type: "DELETE_ALL",
+      });
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
   };
   return (
     <CardChekoutStyle>
@@ -37,7 +66,20 @@ export const CarCheckout = ({ calcularTotal, dispatch }) => {
 
           <p className="mb-2">${calcularTotal().toLocaleString("es-CO")}</p>
         </div>
-        <ButtonPayment onClick={handleCheckout}>Realizar pedido</ButtonPayment>
+        <Card.Text>Comentarios</Card.Text>
+        <textarea
+          className="w-100 text-black px-2"
+          rows="3"
+          value={comments}
+          onChange={(e) => setComments(e.target.value)}
+        ></textarea>
+        <ButtonPayment onClick={handleCheckout}>
+          {loading ? (
+            <Spinner animation="border" size="sm" />
+          ) : (
+            "Realizar pedido"
+          )}
+        </ButtonPayment>
       </Card.Body>
     </CardChekoutStyle>
   );

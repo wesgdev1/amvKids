@@ -33,13 +33,37 @@ export const ButtonStyled = styled(Button)(({ theme }) => ({
 }));
 
 export const ShoesCardStyled = styled(Card)(({ theme }) => ({
-  width: "18rem",
+  width: "20rem",
   color: "white",
   background: `${theme.colors.mainColor}`,
+
+  // backgroundSize: "cover",
+  // backgroundImage:
+  //   "url(https://res.cloudinary.com/du6lyyqjh/image/upload/c_thumb,w_200,g_face/v1724337163/found_mgp2uc.png)",
+
   padding: "10px",
   borderRadius: "5px",
   boxShadow: `0px 0px 10px 0px ${theme.colors.mainColor}`,
   transition: "all 0.5s",
+  "&::before": {
+    content: '""',
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    backgroundImage:
+      "url(https://res.cloudinary.com/du6lyyqjh/image/upload/e_improve,w_300,h_600,c_thumb,g_auto/v1724337163/found_mgp2uc.png)",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    opacity: 0.2, // Ajusta la opacidad según sea necesario
+    zIndex: 1,
+  },
+
+  "& > *": {
+    position: "relative",
+    zIndex: 2,
+  },
   "&:hover": {
     boxShadow: `0px 0px 50px 0px ${theme.colors.buttonColor}`,
   },

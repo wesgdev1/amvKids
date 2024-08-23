@@ -36,7 +36,7 @@ instance.interceptors.response.use(
     // Do something with response error
     // 403 no autorizado
     // 401 no autenticado
-    if (error.response?.status === 403) {
+    if (error.response?.status === 401) {
       clearSession();
       window.location = "/login";
     }

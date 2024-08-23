@@ -37,8 +37,8 @@ export const CarList = () => {
                     Tienes {calcularTotalCarrito()} productos en tu carrito de
                     compras
                   </p>
-                  {state.map((model) => (
-                    <div key={model.id}>
+                  {state.map((model, index) => (
+                    <div key={index}>
                       <Row className="align-items-center">
                         <Col>
                           <CardElements model={model} dispatch={dispatch} />
@@ -49,6 +49,7 @@ export const CarList = () => {
                 </div>
                 <Col className="col-12 col-lg-4">
                   <CarCheckout
+                    state={state}
                     calcularTotal={calcularTotal}
                     dispatch={dispatch}
                   />

@@ -5,12 +5,14 @@ import { ModelList } from "../model/ModelList";
 import { ModelForm } from "../model/ModelForm";
 import { ModelDetail } from "../model/ModelDetail";
 import { MyProfile } from "./MyProfile";
+import { OrderList } from "../orders/OrderList";
 
 export const ProfileRoutes = () => {
   return (
     <>
       <Routes>
         <Route path="/" element={<MyProfile />} />
+        <Route path="/myOrders" element={<OrderList />} />
         <Route path="/products" element={<ProductList />} />
         <Route path="/products/new" element={<ProductForm />} />
         <Route path="/products/:idProduct/models" element={<ModelList />} />

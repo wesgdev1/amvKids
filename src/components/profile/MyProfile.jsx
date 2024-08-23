@@ -1,11 +1,9 @@
 export const MyProfile = () => {
   return (
-    <div>
-      <h2>Mi perfil</h2>
-      <div>
-        <label htmlFor="name">Nombre</label>
-        <input type="text" name="name" id="name" />
-      </div>
+    <div className="pt-5 px-4">
+      <h4 className="pb-3">
+        <i className="bi bi-person-square"></i> Mi perfil
+      </h4>
     </div>
   );
 };

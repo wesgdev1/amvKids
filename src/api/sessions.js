@@ -22,4 +22,5 @@ export function getSession() {
 
 export function clearSession() {
   localStorage.removeItem(KEY);
+  localStorage.clear();
 }

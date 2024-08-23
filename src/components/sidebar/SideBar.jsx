@@ -37,7 +37,7 @@ export const SideBar = () => {
           </li>
 
           <li>
-            <NavLinkStyled to={"/profile/claims"}>
+            <NavLinkStyled to={"/profile/myOrders"}>
               <i className="bi bi-search"></i>
               <span> Mis pedidos</span>
             </NavLinkStyled>
