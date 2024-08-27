@@ -13,15 +13,12 @@ export const OrdersTable = ({ orders }) => {
   const firstIndex = lastIndex - ordersBypage;
   const navigate = useNavigate();
 
-  const viewProduct = (producto) => {
-    navigate(`/profile/products/${producto.id}/models`);
+  const viewOrder = (order) => {
+    navigate(`/profile/myorders/${order.id}/`);
   };
-  const editProduct = (producto) => {
-    navigate(`/profile/products/new`, {
-      state: { producto },
-    });
-  };
+
   const [show, setShow] = useState(false);
+  const [paymentUrl, setPaymentUrl] = useState("");
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
@@ -52,20 +49,23 @@ export const OrdersTable = ({ orders }) => {
                 <td>{order.state}</td>
                 <td>
                   {order.paymentUrl ? (
-                    <span> Ver </span>
-                  ) : (
                     <span
-                      onClick={() => handleShow()}
+                      onClick={() => {
+                        handleShow();
+                        setPaymentUrl(order.paymentUrl);
+                      }}
                       className="underline text-blue-700 hover:cursor-pointer "
                     >
                       {" "}
                       Ver{" "}
                     </span>
+                  ) : (
+                    <span>-</span>
                   )}
                 </td>
                 <td>
                   <div className="flex justify-center gap-2">
-                    <ControlButton onClick={() => viewProduct(order)}>
+                    <ControlButton onClick={() => viewOrder(order)}>
                       <i className="bi bi-eye-fill"></i>
                     </ControlButton>
                   </div>
@@ -97,7 +97,8 @@ export const OrdersTable = ({ orders }) => {
         <Modal.Body className="flex justify-center">
           <Image
             src={
-              "https://res.cloudinary.com/du6lyyqjh/image/upload/v1724277813/0a435a93-6573-4bd6-a996-2fb5a4d55eea_wyxfsu.jpg"
+              paymentUrl ||
+              "https://res.cloudinary.com/djlmqpd2n/image/upload/v1631862391/amv_kid_payment.png"
             }
             alt={"amv_kid_payment"}
             width={200}
