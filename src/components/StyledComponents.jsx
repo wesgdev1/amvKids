@@ -69,6 +69,32 @@ export const ShoesCardStyled = styled(Card)(({ theme }) => ({
   },
 }));
 
+export const ShoesCardStyledPayment = styled(Card)(({ theme }) => ({
+  padding: "10px",
+  borderRadius: "5px",
+  boxShadow: `0px 0px 10px 0px ${theme.colors.mainColor}`,
+  transition: "all 0.5s",
+  "&::before": {
+    content: '""',
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    backgroundImage:
+      "url(https://res.cloudinary.com/du6lyyqjh/image/upload/v1724786444/adidas-nike-wallpaper-thumb_dimkvn.jpg)",
+
+    backgroundPosition: "center",
+    opacity: 0.1, // Ajusta la opacidad según sea necesario
+    zIndex: 1,
+  },
+
+  "& > *": {
+    position: "relative",
+    zIndex: 2,
+  },
+}));
+
 export const ButtonCardStyled = styled(Button)(({ theme }) => ({
   background: theme.colors.buttonColor,
   color: "black",

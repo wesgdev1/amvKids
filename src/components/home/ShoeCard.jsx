@@ -20,7 +20,14 @@ export const ShoeCard = ({ model }) => {
         <Card.Body>
           <Card.Title>{model.name}</Card.Title>
           <CardDescroptionStyle>{model.description}</CardDescroptionStyle>
-          <Card.Text>{model.price} COP</Card.Text>
+          <Card.Text
+            style={{
+              backgroundColor: "rgba(0, 0, 0, 0.7)",
+            }}
+            className="text-center"
+          >
+            {model.price.toLocaleString("es-CO")} COP
+          </Card.Text>
           <div className="d-flex justify-center ">
             <ButtonCardStyled onClick={handleClick}>
               Ver Detalle

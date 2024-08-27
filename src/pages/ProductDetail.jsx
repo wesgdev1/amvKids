@@ -23,7 +23,8 @@ export const ProductDetail = () => {
             <i className="bi bi-box"></i> {data?.name}
           </h4>
           <hr />
-          <div className="flex gap-5 flex-row flex-wrap justify-center ">
+
+          <div className="flex gap-5 flex-row flex-wrap justify-center pt-3 ">
             <div>
               <Image
                 src={data?.images[0]?.url}
@@ -31,7 +32,7 @@ export const ProductDetail = () => {
                 style={{
                   objectFit: "cover",
                   borderRadius: "10px",
-                  boxShadow: "0 0 10px rgba(0,0,0,0.5)",
+                  boxShadow: "0 0 10px rgba(0,0,0,1)",
                 }}
               />
             </div>

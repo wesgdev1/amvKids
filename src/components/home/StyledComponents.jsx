@@ -5,6 +5,8 @@ export const CardDescroptionStyle = styled(Card.Text)(() => ({
   height: "70px",
   overflow: "hidden",
   whiteSpace: "normal",
+  backgroundColor: "rgba(0, 0, 0, 0.4)",
+  borderRadius: "5px",
 }));
 
 export const IconStyled = styled("a")(() => ({

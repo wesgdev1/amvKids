@@ -10,6 +10,7 @@ import Swal from "sweetalert2";
 import { ButtonProfile, ControlButton } from "../products/StyledComponents";
 import { updateOrder } from "../../api/orders/orders";
 import { da } from "date-fns/locale";
+import { ShoesCardStyledPayment } from "../StyledComponents";
 
 const imageRqd = z.any().optional();
 
@@ -113,7 +114,7 @@ export const OrdeDetail = () => {
         {loading && <Spinner animation="border" variant="info" />}
         {error && <Alert variant="danger">{error}</Alert>}
         {data && (
-          <Card>
+          <ShoesCardStyledPayment>
             <Card.Header>
               Total: {data.total.toLocaleString("es-CO")} COP
             </Card.Header>
@@ -131,20 +132,16 @@ export const OrdeDetail = () => {
             </Card.Body>
             <hr />
             <Card.Body>
-              <div className="pb-5">
+              <div>
                 <strong>
                   <p>Comentarios:</p>
                 </strong>
                 <p>{data.comments}</p>
               </div>
+
               <p>
                 <strong>Estado del pedido: </strong>
                 {data.state}
-              </p>
-
-              <p>
-                <strong>Estado del pago: </strong>
-                {data.paymentUrl ? "Pagado" : "Pendiente"}
               </p>
             </Card.Body>
             <hr />
@@ -174,6 +171,7 @@ export const OrdeDetail = () => {
             {data.paymentUrl ? (
               <Card.Body>
                 <span>Genial, ya realizaste el pago </span>
+                <i className="bi bi-check-square-fill"></i>
               </Card.Body>
             ) : (
               <Card.Body>
@@ -271,7 +269,7 @@ export const OrdeDetail = () => {
                 </Formik>
               </Card.Body>
             )}
-          </Card>
+          </ShoesCardStyledPayment>
         )}
       </div>
     </div>

@@ -8,7 +8,7 @@ import { set } from "zod";
 
 export const CarCheckout = ({ calcularTotal, dispatch, state }) => {
   const { user } = useContext(AuthContext);
-  const [comments, setComments] = useState("l");
+  const [comments, setComments] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleCheckout = async () => {
