@@ -6,16 +6,16 @@ export const SideBar = () => {
   const { user } = useContext(AuthContext);
   return (
     <ul className="w-80 p-0 items-center flex flex-column   gap-4 md:border-r md:items-start">
-      {user?.tipoUsuario === "admin" ? (
+      {user?.tipoUsuario === "Admin" ? (
         <>
           <li className="">
-            <NavLinkStyled to={"/profile"}>
+            <NavLinkStyled to={"/profile/orders"}>
               <i className="bi bi-person-circle"></i>
               <span> Ordenes</span>
             </NavLinkStyled>
           </li>
           <li>
-            <NavLinkStyled to={"/profile"}>
+            <NavLinkStyled to={"/profile/products"}>
               <i className="bi bi-person-circle"></i>
               <span> Calzados</span>
             </NavLinkStyled>
@@ -23,7 +23,7 @@ export const SideBar = () => {
           <li>
             <NavLinkStyled to={"/login"}>
               <i className="bi bi-person-circle"></i>
-              <span>Cerrar sesion</span>
+              <span> Cerrar sesion</span>
             </NavLinkStyled>
           </li>
         </>

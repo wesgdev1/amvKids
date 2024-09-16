@@ -7,6 +7,8 @@ import { ModelDetail } from "../model/ModelDetail";
 import { MyProfile } from "./MyProfile";
 import { OrderList } from "../orders/OrderList";
 import { OrdeDetail } from "../orders/OrdeDetail";
+import { OrdersAdmin } from "../orders/OrdersAdmin";
+import { OrdeDetailAdmin } from "../orders/OrderDetailAdmin";
 
 export const ProfileRoutes = () => {
   return (
@@ -14,7 +16,9 @@ export const ProfileRoutes = () => {
       <Routes>
         <Route path="/" element={<MyProfile />} />
         <Route path="/myOrders" element={<OrderList />} />
+        <Route path="/orders" element={<OrdersAdmin />} />
         <Route path="/myOrders/:id" element={<OrdeDetail />} />
+        <Route path="/order/:id" element={<OrdeDetailAdmin />} />
         <Route path="/products" element={<ProductList />} />
         <Route path="/products/new" element={<ProductForm />} />
         <Route path="/products/:idProduct/models" element={<ModelList />} />

@@ -11,7 +11,7 @@ export const createOrder = async (payload) => {
 
 export const getMyOrders = async () => {
   try {
-    const { data: response } = await http.get("/orders");
+    const { data: response } = await http.get("/myOrders");
     return { data: response.data };
   } catch (error) {
     return Promise.reject(error);
@@ -28,9 +28,17 @@ export const getAllOrders = async () => {
 };
 
 export const updateOrder = async (id, payload) => {
-  console.log("pase por aqui", payload);
   try {
     const { data: response } = await http.put(`/orders/${id}`, payload);
+    return { data: response.data };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+export const updateOrderState = async (id, payload) => {
+  try {
+    const { data: response } = await http.patch(`/orders/${id}`, payload);
     return { data: response.data };
   } catch (error) {
     return Promise.reject(error);
@@ -40,6 +48,15 @@ export const updateOrder = async (id, payload) => {
 export const getOrderById = async (id) => {
   try {
     const { data: response } = await http.get(`/orders/${id}`);
+    return { data: response.data };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+export const deleteOrder = async (id) => {
+  try {
+    const { data: response } = await http.delete(`/orders/${id}`);
     return { data: response.data };
   } catch (error) {
     return Promise.reject(error);
