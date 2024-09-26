@@ -11,7 +11,7 @@ export const createOrder = async (payload) => {
 
 export const getMyOrders = async () => {
   try {
-    const { data: response } = await http.get("/myOrders");
+    const { data: response } = await http.get("/orders/myOrders");
     return { data: response.data };
   } catch (error) {
     return Promise.reject(error);
