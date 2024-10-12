@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useOrder } from "../../domain/orders/useOrder";
-import { Alert, Card, Spinner } from "react-bootstrap";
+import { Alert, Card, CloseButton, Spinner } from "react-bootstrap";
 import { z } from "zod";
 
 import { useState } from "react";
@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
 import {
   deleteOrder,
   updateOrder,
+  updateOrderItems,
   updateOrderState,
 } from "../../api/orders/orders";
 
@@ -180,6 +181,55 @@ export const OrdeDetailAdmin = () => {
     }
   };
 
+  const handleClickDeleteItem = async (orderId, ItemId) => {
+    try {
+      // Mostrar alerta de confirmación
+      const result = await Swal.fire({
+        title: "Eliminar Item",
+        text: "¿Estás seguro que deseas eliminar este item de la orden?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Sí",
+        cancelButtonText: "No",
+      });
+
+      // Si el usuario confirma
+      if (result.isConfirmed) {
+        // Llamada a la API para eliminar la orden
+        const response = await updateOrderItems({
+          orderId: orderId,
+          itemId: ItemId,
+        });
+
+        // Verificar que la respuesta sea 200 OK
+        if (response) {
+          // Mostrar mensaje de éxito
+          await Swal.fire({
+            icon: "success",
+            title: "Item Eliminado",
+            text: "La orden se actualizó correctamente",
+          });
+
+          // Redirigir a la página de órdenes después de un pequeño retraso
+          setTimeout(() => {
+            // navigate("/profile/orders", {
+            //   replace: true,
+            // });
+            refresh(id);
+          }, 1000); // Espera 1 segundo antes de redirigir
+        }
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Ocurrió un error inesperado al cancelar la orden",
+      });
+    }
+  };
+
   return (
     <div className="pt-5 px-4">
       <h4 className="pb-3">
@@ -209,11 +259,18 @@ export const OrdeDetailAdmin = () => {
               <Card.Title className="fw-bold">Productos</Card.Title>
               <Card.Text>
                 {data.orderItems.map((item) => (
-                  <p key={item.id}>
-                    {item.quantity} x {item.model.name} -{" "}
-                    {item.model.price.toLocaleString("es-CO")} COP - talla:{" "}
-                    {item.size}
-                  </p>
+                  <>
+                    <div className="d-flex  gap-4">
+                      <p key={item.id}>
+                        {item.quantity} x {item.model.name} -{" "}
+                        {item.model.price.toLocaleString("es-CO")} COP - talla:{" "}
+                        {item.size}
+                      </p>
+                      <CloseButton
+                        onClick={() => handleClickDeleteItem(data.id, item.id)}
+                      />
+                    </div>
+                  </>
                 ))}
               </Card.Text>
             </Card.Body>

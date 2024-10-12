@@ -9,6 +9,8 @@ import { OrderList } from "../orders/OrderList";
 import { OrdeDetail } from "../orders/OrdeDetail";
 import { OrdersAdmin } from "../orders/OrdersAdmin";
 import { OrdeDetailAdmin } from "../orders/OrderDetailAdmin";
+import { UserList } from "../users/UserList";
+import { UserForm } from "../users/UserForm";
 
 export const ProfileRoutes = () => {
   return (
@@ -24,6 +26,8 @@ export const ProfileRoutes = () => {
         <Route path="/products/:idProduct/models" element={<ModelList />} />
         <Route path="/products/:idProduct/models/new" element={<ModelForm />} />
         <Route path="/models/:idModel" element={<ModelDetail />} />
+        <Route path="/users" element={<UserList />} />
+        <Route path="/users/new" element={<UserForm />} />
       </Routes>
     </>
   );

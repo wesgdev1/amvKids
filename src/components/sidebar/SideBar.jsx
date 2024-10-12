@@ -10,19 +10,25 @@ export const SideBar = () => {
         <>
           <li className="">
             <NavLinkStyled to={"/profile/orders"}>
-              <i className="bi bi-person-circle"></i>
+              <i className="bi bi-border-width"></i>
               <span> Ordenes</span>
             </NavLinkStyled>
           </li>
           <li>
             <NavLinkStyled to={"/profile/products"}>
-              <i className="bi bi-person-circle"></i>
+              <i className="bi bi-box"></i>
               <span> Calzados</span>
             </NavLinkStyled>
           </li>
           <li>
-            <NavLinkStyled to={"/login"}>
+            <NavLinkStyled to={"/profile/users"}>
               <i className="bi bi-person-circle"></i>
+              <span> Usuarios</span>
+            </NavLinkStyled>
+          </li>
+          <li>
+            <NavLinkStyled to={"/login"}>
+              <i className="bi bi-box-arrow-left"></i>
               <span> Cerrar sesion</span>
             </NavLinkStyled>
           </li>
