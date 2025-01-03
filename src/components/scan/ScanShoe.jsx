@@ -12,8 +12,8 @@ export const ScanShoe = () => {
     const scannerInstance = new Html5Qrcode("scanner"); // ID del contenedor donde se mostrará el video
     setScanner(scannerInstance);
     const config = {
-      fps: 60, // Velocidad de cuadros por segundo
-      qrbox: { width: 250, height: 250 }, // Tamaño del área de escaneo
+      fps: 10, // Velocidad de cuadros por segundo
+      qrbox: { width: 350, height: 350 }, // Tamaño del área de escaneo
     };
 
     // Inicia el escáner
@@ -50,11 +50,7 @@ export const ScanShoe = () => {
       {error && <p>{error}</p>}
 
       <div className="flex justify-center">
-        <div
-          id="scanner"
-          ref={scannerRef}
-          style={{ width: "30%", height: "30%" }}
-        ></div>
+        <div className="w-50" id="scanner" ref={scannerRef}></div>
       </div>
     </div>
   );
