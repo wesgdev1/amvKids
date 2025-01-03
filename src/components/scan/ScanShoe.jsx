@@ -13,7 +13,15 @@ export const ScanShoe = () => {
     setScanner(scannerInstance);
     const config = {
       fps: 10, // Velocidad de cuadros por segundo
-      qrbox: { width: 350, height: 350 }, // Tamaño del área de escaneo
+      qrbox: { width: 450, height: 450 }, // Tamaño del área de escaneo
+      aspectRatio: 1.0, // Relación de aspecto del video
+      experimentalFeatures: {
+        useBarCodeDetectorIfSupported: true, // Usa un detector más eficiente si está disponible
+      },
+      videoConstraints: {
+        facingMode: "environment", // Usa la cámara trasera
+        zoom: 10, // Nivel de zoom
+      },
     };
 
     // Inicia el escáner
@@ -44,7 +52,7 @@ export const ScanShoe = () => {
   return (
     <div className="pt-5 px-4">
       <h4 className="pb-3">
-        <i className="bi bi-receipt-cutoff"></i> Escanear Calzado
+        <i className="bi bi-receipt-cutoff"></i> Escanear Calzadoo
       </h4>
       <p>Escane el codigo del calzado</p>
       {error && <p>{error}</p>}
