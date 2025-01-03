@@ -6,6 +6,7 @@ import { Login } from "../pages/Login";
 import { Profile } from "../pages/Profile";
 import { ProductDetail } from "../pages/ProductDetail";
 import { CarList } from "../pages/CarList";
+import { Chatboot } from "../pages/Chatboot";
 
 export const AmvRoutes = () => {
   return (
@@ -18,6 +19,7 @@ export const AmvRoutes = () => {
         <Route path="/verCarritoDeCompras" element={<CarList />} />
 
         <Route path="/login" element={<Login />} />
+        <Route path="/chatTest" element={<Chatboot />} />
       </Routes>
     </>
   );

@@ -11,12 +11,14 @@ import { OrdersAdmin } from "../orders/OrdersAdmin";
 import { OrdeDetailAdmin } from "../orders/OrderDetailAdmin";
 import { UserList } from "../users/UserList";
 import { UserForm } from "../users/UserForm";
+import { ScanShoe } from "../scan/ScanShoe";
 
 export const ProfileRoutes = () => {
   return (
     <>
       <Routes>
         <Route path="/" element={<MyProfile />} />
+        <Route path="/scan" element={<ScanShoe />} />
         <Route path="/myOrders" element={<OrderList />} />
         <Route path="/orders" element={<OrdersAdmin />} />
         <Route path="/myOrders/:id" element={<OrdeDetail />} />

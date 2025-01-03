@@ -27,6 +27,13 @@ export const SideBar = () => {
             </NavLinkStyled>
           </li>
           <li>
+            <NavLinkStyled to={"/profile/scan"}>
+              <i className="bi bi-upc-scan"></i>
+              <span> Escanear Codigo</span>
+            </NavLinkStyled>
+          </li>
+
+          <li>
             <NavLinkStyled to={"/login"}>
               <i className="bi bi-box-arrow-left"></i>
               <span> Cerrar sesion</span>
@@ -46,6 +53,12 @@ export const SideBar = () => {
             <NavLinkStyled to={"/profile/myOrders"}>
               <i className="bi bi-search"></i>
               <span> Mis pedidos</span>
+            </NavLinkStyled>
+          </li>
+          <li>
+            <NavLinkStyled to={"/profile/scan"}>
+              <i className="bi bi-upc-scan"></i>
+              <span> Escanear Codigo</span>
             </NavLinkStyled>
           </li>
 
