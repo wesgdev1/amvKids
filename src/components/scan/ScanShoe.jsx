@@ -13,14 +13,14 @@ export const ScanShoe = () => {
     setScanner(scannerInstance);
     const config = {
       fps: 10, // Velocidad de cuadros por segundo
-      qrbox: { width: 450, height: 450 }, // Tamaño del área de escaneo
+      qrbox: { width: 300, height: 300 }, // Tamaño del área de escaneo
       aspectRatio: 1.0, // Relación de aspecto del video
       experimentalFeatures: {
         useBarCodeDetectorIfSupported: true, // Usa un detector más eficiente si está disponible
       },
       videoConstraints: {
         facingMode: "environment", // Usa la cámara trasera
-        zoom: 10, // Nivel de zoom
+        advanced: [{ zoom: 3 }],
       },
     };
 
