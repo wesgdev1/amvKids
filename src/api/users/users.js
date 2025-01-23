@@ -8,3 +8,16 @@ export const getUsers = async () => {
     return Promise.reject(error);
   }
 };
+
+export const editUser = async (user, payload) => {
+  try {
+    const { data: response, status } = await http.put(
+      `/users/${user}`,
+      payload
+    );
+
+    return { data: response.data, status };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};

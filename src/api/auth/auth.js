@@ -17,3 +17,12 @@ export const signIn = async (payload) => {
     return Promise.reject(error);
   }
 };
+
+export const createUsers = async (payload) => {
+  try {
+    const { data: response } = await http.post("/users/create", payload);
+    return { data: response.data };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};

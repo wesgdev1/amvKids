@@ -10,6 +10,7 @@ import { z } from "zod";
 import Swal from "sweetalert2";
 import { createProduct, updateProduct } from "../../api/products/products";
 import { ButtonCardStyled } from "../StyledComponents";
+import { createUsers } from "../../api/auth/auth";
 
 const nombreCompletoRqd = z.string({
   required_error: "El nombre es requerido",
@@ -19,9 +20,18 @@ const emailRqd = z.string({
   required_error: "El email es requerido",
 });
 
+const tipoUsuarioRqd = z.string({
+  required_error: "El tipo de usuario es requerido",
+});
+
+const telefonoRqd = z.string({
+  required_error: "El telefono es requerido",
+});
 const productoSchema = z.object({
   name: nombreCompletoRqd,
   email: emailRqd,
+  tipoUsuario: tipoUsuarioRqd,
+  celular: telefonoRqd,
 });
 
 export const UserForm = () => {
@@ -29,28 +39,40 @@ export const UserForm = () => {
 
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+
+  const tiposdeUsuario = [
+    "Admin",
+    "Reventa",
+    "Cliente",
+    "Whatsapp",
+    "Tienda Aliada",
+    "Preparador",
+  ];
   const location = useLocation();
   const actionEdit = location.state?.producto;
 
-  const onCreateProduct = async (formData) => {
-    const response = await createProduct(formData);
+  const onCreateUser = async (formData) => {
+    const response = await createUsers(formData);
     if (response) {
       Swal.fire({
         icon: "success",
-        title: "Producto Creado",
-        text: "El producto se creo correctamente",
+        title: "Usuario creado",
+        text: "El usuario se creo correctamente",
       });
     } else {
       Swal.fire({
         icon: "error",
-        title: "Producto no creado",
-        text: "El Producto no se creo correctamente, intenta nuevamente",
+        title: "Usuario no creado",
+        text: "El usuario no se creo correctamente, intenta nuevamente",
       });
     }
-    navigate("/profile/products", { replace: true });
+    navigate("/profile/users", { replace: true });
   };
   const initialValues = {
     name: "" || actionEdit?.name,
+    email: "" || actionEdit?.email,
+    tipoUsuario: "" || actionEdit?.tipoUsuario,
+    celular: "" || actionEdit?.celular,
   };
 
   const onUpdateProduct = async (formData) => {
@@ -93,7 +115,9 @@ export const UserForm = () => {
       if (actionEdit) {
         await onUpdateProduct(values);
       } else {
-        await onCreateProduct(values);
+        console.log(values);
+        await onCreateUser(values);
+
         setSubmitting(false);
       }
     } catch (error) {
@@ -101,8 +125,8 @@ export const UserForm = () => {
       setError(message);
       Swal.fire({
         icon: "error",
-        title: "Producto no creado",
-        text: "El Producto no se creo correctamente, intenta nuevamente",
+        title: "Usuario no creado",
+        text: "El usuario no se creo correctamente, intenta nuevamente",
       });
     }
   };
@@ -110,7 +134,7 @@ export const UserForm = () => {
   return (
     <div className="pt-5 px-4">
       <h4 className="pb-3">
-        <i className="bi bi-box"></i> Usuarios de reventa
+        <i className="bi bi-box"></i> Usuarios
       </h4>
       <Formik
         initialValues={initialValues}
@@ -144,7 +168,7 @@ export const UserForm = () => {
                 <h3 className="pt-2 pb-3">
                   {actionEdit ? "Actualizar datos" : "Nuevo usuario"}
                 </h3>
-                <Form.Label>Nombre del usuario</Form.Label>
+                <Form.Label>Nombre</Form.Label>
                 <Form.Control
                   type="text"
                   placeholder="Escibe aqui el nombre del producto"
@@ -156,6 +180,25 @@ export const UserForm = () => {
                 />
                 <ErrorMessage
                   name="name"
+                  component="div"
+                  className="invalid-feedback"
+                />
+              </Form.Group>
+              <Form.Group className="" controlId="formBasicNombreCompleto">
+                <Form.Label>Telefono</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Escibe el telefono del usuario"
+                  name="celular"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.celular}
+                  className={
+                    touched.celular && errors.celular ? "is-invalid" : ""
+                  }
+                />
+                <ErrorMessage
+                  name="celular"
                   component="div"
                   className="invalid-feedback"
                 />
@@ -163,39 +206,51 @@ export const UserForm = () => {
               <Form.Group className="" controlId="formBasicNombreCompleto">
                 <Form.Label>Correo</Form.Label>
                 <Form.Control
-                  type="text"
+                  type="email"
                   placeholder="Escibe aqui el nombre del producto"
-                  name="name"
+                  name="email"
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  value={values.name}
-                  className={touched.name && errors.name ? "is-invalid" : ""}
+                  value={values.email}
+                  className={touched.email && errors.email ? "is-invalid" : ""}
                 />
                 <ErrorMessage
-                  name="name"
-                  component="div"
-                  className="invalid-feedback"
-                />
-              </Form.Group>
-              <Form.Group className="" controlId="formBasicNombreCompleto">
-                <Form.Label>Contraseña</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Escibe aqui el nombre del producto"
-                  name="name"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.name}
-                  className={touched.name && errors.name ? "is-invalid" : ""}
-                />
-                <ErrorMessage
-                  name="name"
+                  name="email"
                   component="div"
                   className="invalid-feedback"
                 />
               </Form.Group>
 
-              <div className="d-flex justify-content-center">
+              <Form.Group className="" controlId="formBasicNombreCompleto">
+                <Form.Label>Tipo de Usuario</Form.Label>
+                <Form.Control
+                  as="select"
+                  name="tipoUsuario"
+                  onBlur={handleBlur}
+                  value={values.tipoUsuario}
+                  onChange={handleChange}
+                  className={
+                    touched.tipoUsuario && errors.tipoUsuario
+                      ? "is-invalid"
+                      : ""
+                  }
+                >
+                  <option value="">Selecciona un tipo de usuario</option>
+                  {tiposdeUsuario.map((tipo) => (
+                    <option key={tipo} value={tipo}>
+                      {tipo}
+                    </option>
+                  ))}
+                </Form.Control>
+
+                <ErrorMessage
+                  name="tipoUsuario"
+                  component="div"
+                  className="invalid-feedback"
+                />
+              </Form.Group>
+
+              <div className="d-flex justify-content-center pt-5">
                 <ButtonCardStyled
                   variant="primary"
                   type="submit"

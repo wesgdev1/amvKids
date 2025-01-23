@@ -10,7 +10,7 @@ import { useUsers } from "../../domain/auth/useUsers";
 
 export const UserList = () => {
   const navigate = useNavigate();
-  const { data, loading, error } = useUsers();
+  const { data, loading, error, cargarUsuarios } = useUsers();
   const handleClick = () => {
     navigate("/profile/users/new");
   };
@@ -70,10 +70,12 @@ export const UserList = () => {
           <ButtonProfile onClick={() => setFilteredData([])}>
             Mostrar todo
           </ButtonProfile>
-          <UsersTable users={filteredData} />
+          <UsersTable users={filteredData} cargarUsuarios={cargarUsuarios} />
         </>
       ) : (
-        data?.length > 0 && <UsersTable users={data} />
+        data?.length > 0 && (
+          <UsersTable users={data} cargarUsuarios={cargarUsuarios} />
+        )
       )}
     </div>
   );

@@ -26,5 +26,5 @@ export const useUsers = () => {
     cargarUsuarios();
   }, []);
 
-  return { data, loading, error };
+  return { data, loading, error, cargarUsuarios };
 };
