@@ -7,30 +7,45 @@ import { toFormikValidationSchema } from "zod-formik-adapter";
 import Swal from "sweetalert2";
 import { useNavigate, useParams } from "react-router-dom";
 import { createModel } from "../../api/model/model";
+import { all } from "axios";
 
 const nameRqd = z.string({
   required_error: "El nombre del modelo es requerido",
+});
+
+const normalPrice = z.number({
+  required_error: "El precio del modelo es requerido",
 });
 
 const priceRqd = z.number({
   required_error: "El precio del modelo es requerido",
 });
 
+const alliancePrice = z.number({
+  required_error: "El precio del modelo es requerido",
+});
 const imageRqd = z.any().optional();
 const descriptionRqd = z.string({
   required_error: "La descripcion del modelo es requerida",
 });
 
-const referenceRqd = z.string({
-  required_error: "La referencia del modelo es requerida",
+// const referenceRqd = z.string({
+//   required_error: "La referencia del modelo es requerida",
+// });
+
+const colorRqd = z.string({
+  required_error: "El color del modelo es requerido",
 });
 
 const modelSchema = z.object({
   name: nameRqd,
+  normalPrice: normalPrice,
   price: priceRqd,
+  alliancePrice: alliancePrice,
   image: imageRqd,
   description: descriptionRqd,
-  reference: referenceRqd,
+  // reference: referenceRqd,
+  color: colorRqd,
 });
 
 export const ModelForm = () => {
@@ -40,10 +55,12 @@ export const ModelForm = () => {
   const navigate = useNavigate();
   const initialValues = {
     name: "",
+    normalPrice: "",
     price: "",
+    alliancePrice: "",
     image: "",
     description: "",
-    reference: "",
+    color: "",
   };
 
   const [error, setError] = useState(false);
@@ -84,9 +101,12 @@ export const ModelForm = () => {
       const formData = new FormData();
       formData.append("productId", idProduct);
       formData.append("name", values.name);
+      formData.append("normalPrice", values.normalPrice);
       formData.append("price", values.price);
+      formData.append("alliancePrice", values.alliancePrice);
       formData.append("description", values.description);
-      formData.append("reference", values.reference);
+      formData.append("color", values.color);
+      // formData.append("reference", values.reference);
 
       if (values.images && values.images.length > 0) {
         values.images.forEach((file) => {
@@ -161,7 +181,7 @@ export const ModelForm = () => {
                 />
               </Form.Group>
 
-              <Form.Group className="" controlId="formBasicNombreCompleto">
+              {/* <Form.Group className="" controlId="formBasicNombreCompleto">
                 <Form.Label>Referencia</Form.Label>
                 <Form.Control
                   type="text"
@@ -177,6 +197,25 @@ export const ModelForm = () => {
                 />
                 <ErrorMessage
                   name="reference"
+                  component="div"
+                  className="invalid-feedback"
+                />
+              </Form.Group> */}
+
+              <Form.Group className="" controlId="formBasicNombreCompleto">
+                <Form.Label>Color</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Escibe aqui el color"
+                  name="color"
+                  style={{ width: "50%" }}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.color}
+                  className={touched.color && errors.color ? "is-invalid" : ""}
+                />
+                <ErrorMessage
+                  name="color"
                   component="div"
                   className="invalid-feedback"
                 />
@@ -205,9 +244,31 @@ export const ModelForm = () => {
                   className="invalid-feedback"
                 />
               </Form.Group>
-
               <Form.Group className="" controlId="formBasicNombreCompleto">
                 <Form.Label>Precio del modelo</Form.Label>
+                <Form.Control
+                  type="number"
+                  style={{ width: "50%" }}
+                  placeholder="Escibe aqui el precio del modelo"
+                  name="normalPrice"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.normalPrice}
+                  className={
+                    touched.normalPrice && errors.normalPrice
+                      ? "is-invalid"
+                      : ""
+                  }
+                />
+                <ErrorMessage
+                  name="normalPrice"
+                  component="div"
+                  className="invalid-feedback"
+                />
+              </Form.Group>
+
+              <Form.Group className="" controlId="formBasicNombreCompleto">
+                <Form.Label>Precio de reventa</Form.Label>
                 <Form.Control
                   type="number"
                   style={{ width: "50%" }}
@@ -220,6 +281,28 @@ export const ModelForm = () => {
                 />
                 <ErrorMessage
                   name="price"
+                  component="div"
+                  className="invalid-feedback"
+                />
+              </Form.Group>
+              <Form.Group className="" controlId="formBasicNombreCompleto">
+                <Form.Label>Precio para aliado</Form.Label>
+                <Form.Control
+                  type="number"
+                  style={{ width: "50%" }}
+                  placeholder="Escibe aqui el precio del modelo"
+                  name="alliancePrice"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.alliancePrice}
+                  className={
+                    touched.alliancePrice && errors.alliancePrice
+                      ? "is-invalid"
+                      : ""
+                  }
+                />
+                <ErrorMessage
+                  name="alliancePrice"
                   component="div"
                   className="invalid-feedback"
                 />

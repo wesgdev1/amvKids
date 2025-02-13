@@ -27,7 +27,19 @@ export const CardElements = ({ model, dispatch }) => {
             />
           </Col>
           <Col>{model.name}</Col>
-          <Col>Cantidad: {model.quantity}</Col>
+          <Col>({model.quantity})</Col>
+          <Col>
+            <ButtonCrash
+              onClick={() => {
+                dispatch({
+                  type: "DELETE_ONE",
+                  payload: { aux: model },
+                });
+              }}
+            >
+              <i className="bi bi-dash-circle-fill" />
+            </ButtonCrash>
+          </Col>
           <Col>Talla: {model.size}</Col>
           <Col>${model.price.toLocaleString("es-CO")} </Col>
           <Col>

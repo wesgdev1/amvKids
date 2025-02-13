@@ -31,10 +31,12 @@ export const ModelsTable = ({ modelos }) => {
       <Table striped bordered hover style={{ fontSize: "0.8rem" }}>
         <thead>
           <tr>
-            <th>Referencia</th>
+            <th>Color</th>
             <th>Imagen</th>
             <th>Nombre del modelo</th>
-            <th>Precio del modelo</th>
+            <th>Precio </th>
+            <th>Precio reventa </th>
+            <th>Precio aliado </th>
             <th>Total unidades</th>
             <th>Opciones</th>
           </tr>
@@ -43,7 +45,7 @@ export const ModelsTable = ({ modelos }) => {
           {modelos
             .map((modelo) => (
               <tr key={modelo.id}>
-                <td>{modelo.reference}</td>
+                <td>{modelo.color}</td>
                 <td>
                   <Image
                     src={modelo.images[0]?.url}
@@ -54,7 +56,25 @@ export const ModelsTable = ({ modelos }) => {
                   />
                 </td>
                 <td>{modelo.name}</td>
-                <td>{modelo.price}</td>
+                <td>
+                  {modelo.normalPrice?.toLocaleString("es-CO", {
+                    style: "currency",
+                    currency: "COP",
+                  })}
+                </td>
+                <td>
+                  {modelo.price?.toLocaleString("es-CO", {
+                    style: "currency",
+                    currency: "COP",
+                  })}
+                </td>
+                <td>
+                  {modelo.alliancePrice?.toLocaleString("es-CO", {
+                    style: "currency",
+                    currency: "COP",
+                  })}
+                </td>
+
                 <td>{calculateStock(modelo.stocks)}</td>
                 <td>
                   <div className="flex justify-center gap-2">

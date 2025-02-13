@@ -61,6 +61,23 @@ const reducer = (state, action) => {
       return newState;
     }
 
+    case "DELETE_ONE": {
+      const { aux: model } = action.payload;
+      const newState = state
+        .map((element) => {
+          if (element.id === model.id && element.size === model.size) {
+            if (element.quantity === 1) {
+              return null;
+            }
+            return { ...element, quantity: element.quantity - 1 };
+          }
+          return element;
+        })
+        .filter((element) => element !== null);
+      updateStorage(newState);
+      return newState;
+    }
+
     case "DELETE_ALL": {
       const newState = [];
       updateStorage(newState);

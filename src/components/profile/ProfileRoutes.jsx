@@ -24,6 +24,7 @@ export const ProfileRoutes = () => {
         <Route path="/myOrders/:id" element={<OrdeDetail />} />
         <Route path="/order/:id" element={<OrdeDetailAdmin />} />
         <Route path="/products" element={<ProductList />} />
+
         <Route path="/products/new" element={<ProductForm />} />
         <Route path="/products/:idProduct/models" element={<ModelList />} />
         <Route path="/products/:idProduct/models/new" element={<ModelForm />} />

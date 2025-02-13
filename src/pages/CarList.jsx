@@ -34,7 +34,7 @@ export const CarList = () => {
               <div className="flex justify-center flex-wrap gap-5">
                 <div className="">
                   <p>
-                    Tienes {calcularTotalCarrito()} productos en tu carrito de
+                    Tienes ({calcularTotalCarrito()}) productos en tu carrito de
                     compras
                   </p>
                   {state.map((model, index) => (

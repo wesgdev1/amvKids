@@ -1,13 +1,22 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react";
 import { Accordion, Form } from "react-bootstrap";
 
 export const Filter = ({ data }) => {
-  // aqui creo cada filtro por marca y talla
-
   const marcas = data.map((product) => product.product.name);
-  // busco marcas unicas
+  const marcasUnicas = [...new Set(marcas)];
 
-  const sizes = data.map((product) => product.name);
+  const colors = data.map((product) => product.color);
+  const uniqueCol = [...new Set(colors)];
+
+  const sizes = data.map((product) => {
+    return product.stocks.map((stock) => stock.size);
+  });
+
+  const sizesUnidimensional = sizes.flat();
+  const uniqueSizes = [...new Set(sizesUnidimensional)].sort();
+
+  const genres = ["Hombre", "Mujer", "Niño", "Niña"];
 
   const [filters, setFilters] = useState([]);
 
@@ -20,11 +29,11 @@ export const Filter = ({ data }) => {
 
   return (
     <div className="bg-gray-100 p-8 rounded-lg shadow-lg ">
-      <Accordion defaultActiveKey="1">
+      <Accordion defaultActiveKey="1" className="mb-4">
         <Accordion.Item eventKey="0">
           <Accordion.Header>Marca</Accordion.Header>
           <Accordion.Body>
-            {marcas.map((marca) => (
+            {marcasUnicas.map((marca) => (
               <Form.Check
                 key={marca}
                 type={`checkbox`}
@@ -38,22 +47,56 @@ export const Filter = ({ data }) => {
         </Accordion.Item>
       </Accordion>
 
-      {/* <Accordion>
-        <Accordion.Item eventKey="1">
-          <Accordion.Header>Talla</Accordion.Header>
+      <Accordion>
+        <Accordion.Item eventKey="1" className="mb-4">
+          <Accordion.Header>Tallas</Accordion.Header>
           <Accordion.Body>
-            {sizes.map((size) => (
+            {uniqueSizes.map((color) => (
               <Form.Check
-                key={size}
+                key={color}
                 type={`checkbox`}
-                id={`default-${size}`}
-                label={size}
+                id={`default-${color}`}
+                label={color}
                 checked={false}
               />
             ))}
           </Accordion.Body>
         </Accordion.Item>
-      </Accordion> */}
+      </Accordion>
+
+      <Accordion>
+        <Accordion.Item eventKey="1" className="mb-4">
+          <Accordion.Header>Color</Accordion.Header>
+          <Accordion.Body>
+            {uniqueCol.map((color) => (
+              <Form.Check
+                key={color}
+                type={`checkbox`}
+                id={`default-${color}`}
+                label={color}
+                checked={false}
+              />
+            ))}
+          </Accordion.Body>
+        </Accordion.Item>
+      </Accordion>
+
+      <Accordion>
+        <Accordion.Item eventKey="1" className="mb-4">
+          <Accordion.Header>Genero</Accordion.Header>
+          <Accordion.Body>
+            {genres.map((gender) => (
+              <Form.Check
+                key={gender}
+                type={`checkbox`}
+                id={`default-${gender}`}
+                label={gender}
+                checked={false}
+              />
+            ))}
+          </Accordion.Body>
+        </Accordion.Item>
+      </Accordion>
     </div>
   );
 };
