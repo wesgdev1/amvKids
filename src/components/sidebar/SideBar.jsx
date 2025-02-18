@@ -9,6 +9,12 @@ export const SideBar = () => {
       {user?.tipoUsuario === "Admin" ? (
         <>
           <li className="">
+            <NavLinkStyled to={"/profile/reports"}>
+              <i className="bi bi-info-circle"></i>
+              <span> Informes</span>
+            </NavLinkStyled>
+          </li>
+          <li className="">
             <NavLinkStyled to={"/profile/orders"}>
               <i className="bi bi-border-width"></i>
               <span> Ordenes</span>

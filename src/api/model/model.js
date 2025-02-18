@@ -9,6 +9,15 @@ export const getAllModels = async () => {
   }
 };
 
+export const getAllModelWithFilters = async (query) => {
+  try {
+    const { data: response } = await http.get(`/models/filter?${query}`);
+    return { data: response.data };
+  } catch (error) {
+    return Promise.reject(error.message);
+  }
+};
+
 export const createModel = async (payload) => {
   try {
     const { data: response } = await http.post("/models", payload);

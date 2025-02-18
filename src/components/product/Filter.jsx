@@ -2,7 +2,14 @@
 import { useState } from "react";
 import { Accordion, Form } from "react-bootstrap";
 
-export const Filter = ({ data }) => {
+export const Filter = ({
+  data,
+  addFilter,
+  clena,
+  deleteFilter,
+  checkFilter,
+  setCheckFilter,
+}) => {
   const marcas = data.map((product) => product.product.name);
   const marcasUnicas = [...new Set(marcas)];
 
@@ -20,9 +27,17 @@ export const Filter = ({ data }) => {
 
   const [filters, setFilters] = useState([]);
 
-  const handleFilter = (marca) => {
-    setFilters([...filters, marca]);
-    console.log(filters);
+  const handleFilter = (event, marca, type) => {
+    // Esto para que se actualice el estado de los filtros en el check
+    if (event.target.checked) {
+      addFilter(marca, type);
+    } else {
+      console.log("borrando check");
+      console.log("marca", marca);
+      console.log("type", type);
+      deleteFilter(marca, type);
+    }
+    setCheckFilter({ ...checkFilter, [marca]: !checkFilter[marca] });
   };
 
   // por aqui hacer un useEffect para filtrar los productos cada vez que se cambie el estado de filters
@@ -39,8 +54,8 @@ export const Filter = ({ data }) => {
                 type={`checkbox`}
                 id={`default-${marca}`}
                 label={marca}
-                checked={false}
-                onChange={() => handleFilter(marca)}
+                checked={checkFilter[marca] || false}
+                onChange={() => handleFilter(event, marca, "marca")}
               />
             ))}
           </Accordion.Body>
@@ -51,13 +66,14 @@ export const Filter = ({ data }) => {
         <Accordion.Item eventKey="1" className="mb-4">
           <Accordion.Header>Tallas</Accordion.Header>
           <Accordion.Body>
-            {uniqueSizes.map((color) => (
+            {uniqueSizes.map((talla) => (
               <Form.Check
-                key={color}
+                key={talla}
                 type={`checkbox`}
-                id={`default-${color}`}
-                label={color}
-                checked={false}
+                id={`default-${talla}`}
+                label={talla}
+                checked={checkFilter[talla] || false}
+                onChange={() => handleFilter(event, talla.toString(), "talla")}
               />
             ))}
           </Accordion.Body>
@@ -74,7 +90,12 @@ export const Filter = ({ data }) => {
                 type={`checkbox`}
                 id={`default-${color}`}
                 label={color}
-                checked={false}
+                checked={
+                  checkFilter[color] ||
+                  checkFilter[color.toLowerCase()] ||
+                  false
+                }
+                onChange={() => handleFilter(event, color, "color")}
               />
             ))}
           </Accordion.Body>
@@ -91,7 +112,8 @@ export const Filter = ({ data }) => {
                 type={`checkbox`}
                 id={`default-${gender}`}
                 label={gender}
-                checked={false}
+                checked={checkFilter[gender] || false}
+                onChange={() => handleFilter(event, gender, "genero")}
               />
             ))}
           </Accordion.Body>

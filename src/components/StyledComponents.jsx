@@ -33,7 +33,7 @@ export const ButtonStyled = styled(Button)(({ theme }) => ({
 }));
 
 export const ShoesCardStyled = styled(Card)(({ theme }) => ({
-  width: "20rem",
+  width: "15rem",
   color: "white",
   background: `${theme.colors.mainColor}`,
 
