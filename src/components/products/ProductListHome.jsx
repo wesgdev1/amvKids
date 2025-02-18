@@ -24,7 +24,7 @@ export const ProductListHome = ({ models }) => {
   };
   return (
     <div>
-      <div className="d-flex gap-3 flex-wrap justify-content-center aligns-items-center p-8">
+      <div className="d-flex gap-3 flex-wrap justify-content-center aligns-items-center ">
         {models.map((model) => (
           <ShoeCard key={model.id} model={model} />
         ))}
