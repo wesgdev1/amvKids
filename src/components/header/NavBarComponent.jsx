@@ -19,14 +19,29 @@ import { NavLogo } from "./NavLogo";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../auth/context/AuthContext";
 import { SideMeny } from "./SideMeny";
-import { ContainerIcon } from "./StyledComponents";
+import {
+  ContainerIcon,
+  OffcanvasBS,
+  OffcanvasHbs,
+  OffcanvasS,
+  OffcanvasTitleS,
+} from "./StyledComponents";
 import { useCart } from "../../store";
+import Offcanvas from "react-bootstrap/Offcanvas";
 
 export const NavBarComponent = () => {
-  const { user } = useContext(AuthContext);
   const { state } = useCart();
+  const { user, logout } = useContext(AuthContext);
+
+  const cerrarsesion = () => {
+    logout();
+  };
 
   const [modalProfile, setModalProfile] = useState(false);
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   const total = state.reduce((acc, item) => acc + item.quantity, 0);
 
@@ -72,7 +87,8 @@ export const NavBarComponent = () => {
                       }
                       alt="Nombre de usuario"
                       className=" w-10 h-10 md:w-16 md:h-16 rounded-full border-2 border-gray-300 hover:border-gray-500 cursor-pointer"
-                      onClick={() => setModalProfile(!modalProfile)}
+                      // onClick={() => setModalProfile(!modalProfile)}
+                      onClick={handleShow}
                     />
                   </div>
                 </div>
@@ -84,7 +100,60 @@ export const NavBarComponent = () => {
               )}
             </Nav>
 
-            {modalProfile && <SideMeny />}
+            {/* {modalProfile && <SideMeny />} */}
+            <OffcanvasS
+              show={show}
+              onHide={handleClose}
+              placement="end"
+              style={{ width: "300px" }}
+            >
+              <OffcanvasHbs
+                closeButton
+                style={{
+                  backgroundColor: "white",
+                }}
+              >
+                <OffcanvasTitleS>Menu</OffcanvasTitleS>
+              </OffcanvasHbs>
+              <OffcanvasBS>
+                {user && (
+                  <div className="text-white bg-slate-500 p-10 rounded-lg  w-[300px] shadow-2xl ">
+                    <div className="flex flex-col justify-center items-center gap-3 mb-10">
+                      <img
+                        src={
+                          user?.urlFoto ||
+                          "https://res.cloudinary.com/dppqkypts/image/upload/v1700685111/david_sanchez_oigkwg.png"
+                        }
+                        alt="Nombre de usuario"
+                        className=" w-16 h-16 rounded-full border-2 border-gray-300 hover:border-gray-500 cursor-pointer"
+                      />
+                      <span className="text-2xl">{user.name}</span>
+
+                      {/* <ButtonCardStyled>Gestionar Perfil </ButtonCardStyled> */}
+                    </div>
+                    <hr />
+                    <span
+                      onClick={() => {
+                        navigate("/profile");
+                      }}
+                      className="cursor-pointer hover:text-blue-800 hover:text-xl"
+                    >
+                      Mi perfil
+                    </span>
+                    <hr />
+
+                    <span
+                      className="cursor-pointer hover:text-blue-800 hover:text-xl"
+                      onClick={() => {
+                        cerrarsesion();
+                      }}
+                    >
+                      Cerrar sesion
+                    </span>
+                  </div>
+                )}
+              </OffcanvasBS>
+            </OffcanvasS>
           </div>
         </Row>
         <Row>

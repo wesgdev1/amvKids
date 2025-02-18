@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { Offcanvas } from "react-bootstrap";
 
 export const ContainerIcon = styled("div")(({ theme }) => ({
   display: "flex", // Cambiar a flex para permitir centrado flexible
@@ -16,4 +17,25 @@ export const ContainerIcon = styled("div")(({ theme }) => ({
   "&:hover": {
     backgroundColor: theme.colors.secondaryColor,
   },
+}));
+
+export const OffcanvasTitleS = styled(Offcanvas.Title)(({ theme }) => ({
+  backgroundColor: theme.colors.mainColor,
+  color: "white",
+}));
+
+export const OffcanvasS = styled(Offcanvas)(({ theme }) => ({
+  backgroundColor: "white",
+  opacity: "85%",
+  color: "white",
+}));
+
+export const OffcanvasBS = styled(Offcanvas.Body)(({ theme }) => ({
+  backgroundColor: theme.colors.mainColor,
+  color: "white",
+}));
+
+export const OffcanvasHbs = styled(Offcanvas.Header)(({ theme }) => ({
+  backgroundColor: theme.colors.mainColor,
+  color: "white",
 }));
