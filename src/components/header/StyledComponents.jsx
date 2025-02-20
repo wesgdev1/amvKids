@@ -20,22 +20,26 @@ export const ContainerIcon = styled("div")(({ theme }) => ({
 }));
 
 export const OffcanvasTitleS = styled(Offcanvas.Title)(({ theme }) => ({
-  backgroundColor: theme.colors.mainColor,
-  color: "white",
+  color: theme.colors.mainColor,
 }));
 
 export const OffcanvasS = styled(Offcanvas)(({ theme }) => ({
-  backgroundColor: "white",
-  opacity: "85%",
+  backgroundColor: theme.colors.mainColor,
+  opacity: "94%",
   color: "white",
 }));
 
 export const OffcanvasBS = styled(Offcanvas.Body)(({ theme }) => ({
-  backgroundColor: theme.colors.mainColor,
+  // backgroundColor: theme.colors.mainColor,
+  backgroundImage:
+    "url('https://res.cloudinary.com/du6lyyqjh/image/upload/v1739983845/bb_vorvy4.jpg')",
+  backgroundSize: "cover",
   color: "white",
 }));
 
 export const OffcanvasHbs = styled(Offcanvas.Header)(({ theme }) => ({
   backgroundColor: theme.colors.mainColor,
+  // imagen de fondo
+
   color: "white",
 }));

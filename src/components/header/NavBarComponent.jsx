@@ -105,7 +105,7 @@ export const NavBarComponent = () => {
               show={show}
               onHide={handleClose}
               placement="end"
-              style={{ width: "300px" }}
+              style={{ width: "300px " }}
             >
               <OffcanvasHbs
                 closeButton
@@ -117,7 +117,7 @@ export const NavBarComponent = () => {
               </OffcanvasHbs>
               <OffcanvasBS>
                 {user && (
-                  <div className="text-white bg-slate-500 p-10 rounded-lg  w-[300px] shadow-2xl ">
+                  <div className="text-white bg-slate-500 p-10 rounded-lg  w-[275px] shadow-2xl ">
                     <div className="flex flex-col justify-center items-center gap-3 mb-10">
                       <img
                         src={
@@ -132,7 +132,7 @@ export const NavBarComponent = () => {
                       {/* <ButtonCardStyled>Gestionar Perfil </ButtonCardStyled> */}
                     </div>
                     <hr />
-                    <span
+                    {/* <span
                       onClick={() => {
                         navigate("/profile");
                       }}
@@ -140,10 +140,90 @@ export const NavBarComponent = () => {
                     >
                       Mi perfil
                     </span>
+                    <hr /> */}
+
+                    <ul className="w-80 p-0 items-start flex flex-column   gap-4 ">
+                      {user?.tipoUsuario === "Admin" ? (
+                        <>
+                          <li className="">
+                            <NavLinkStyled to={"/profile/"}>
+                              <i className="bi bi-person-circle"></i>
+                              <span> Mi perfil</span>
+                            </NavLinkStyled>
+                          </li>
+                          <li className="">
+                            <NavLinkStyled to={"/profile/reports"}>
+                              <i className="bi bi-info-circle"></i>
+                              <span> Informes</span>
+                            </NavLinkStyled>
+                          </li>
+                          <li className="">
+                            <NavLinkStyled to={"/profile/orders"}>
+                              <i className="bi bi-border-width"></i>
+                              <span> Ordenes</span>
+                            </NavLinkStyled>
+                          </li>
+                          <li>
+                            <NavLinkStyled to={"/profile/products"}>
+                              <i className="bi bi-box"></i>
+                              <span> Calzados</span>
+                            </NavLinkStyled>
+                          </li>
+                          <li>
+                            <NavLinkStyled to={"/profile/users"}>
+                              <i className="bi bi-person-circle"></i>
+                              <span> Usuarios</span>
+                            </NavLinkStyled>
+                          </li>
+                          <li>
+                            <NavLinkStyled to={"/profile/scan"}>
+                              <i className="bi bi-upc-scan"></i>
+                              <span> Escanear Codigo</span>
+                            </NavLinkStyled>
+                          </li>
+
+                          <li>
+                            <NavLinkStyled to={"/login"}>
+                              <i className="bi bi-box-arrow-left"></i>
+                              <span> Cerrar sesion</span>
+                            </NavLinkStyled>
+                          </li>
+                        </>
+                      ) : (
+                        <>
+                          <li>
+                            <NavLinkStyled to={"/profile"}>
+                              <i className="bi bi-person-circle"></i>
+                              <span> Mis perfil</span>
+                            </NavLinkStyled>
+                          </li>
+
+                          <li>
+                            <NavLinkStyled to={"/profile/myOrders"}>
+                              <i className="bi bi-search"></i>
+                              <span> Mis pedidos</span>
+                            </NavLinkStyled>
+                          </li>
+                          <li>
+                            <NavLinkStyled to={"/profile/scan"}>
+                              <i className="bi bi-upc-scan"></i>
+                              <span> Escanear Codigo</span>
+                            </NavLinkStyled>
+                          </li>
+
+                          <li>
+                            <NavLinkStyled>
+                              <i className="bi bi-binoculars"></i>
+                              <span> Cerrar sesion</span>
+                            </NavLinkStyled>
+                          </li>
+                        </>
+                      )}
+                    </ul>
                     <hr />
 
                     <span
-                      className="cursor-pointer hover:text-blue-800 hover:text-xl"
+                      className="cursor-pointer hover:text-blue-800 hover:text-xl bg-red-500 p-2 rounded-lg"
                       onClick={() => {
                         cerrarsesion();
                       }}
