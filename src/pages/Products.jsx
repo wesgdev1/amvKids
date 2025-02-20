@@ -5,8 +5,11 @@ import { useModels, useModelsFilter } from "../domain/models/useModels";
 import { ProductListHome } from "../components/products/ProductListHome";
 import { use } from "react";
 import { useFilter } from "../hooks/useFilter";
+import { useLocation, useParams } from "react-router-dom";
 
 export const Products = () => {
+  const { searchValue } = useParams();
+
   const {
     addFilter,
     deleteFilter,
@@ -16,9 +19,14 @@ export const Products = () => {
     selectedFilters,
     filtrosSeleccionadosAgrupados,
   } = useFilter();
-  const { data, loading, error } = useModels(filtrosSeleccionadosAgrupados);
+  const { data, loading, error } = useModels(
+    filtrosSeleccionadosAgrupados,
+    searchValue
+  );
   // const { data: dataforFilter } = useModels();
   const { data: dataforFilter } = useModelsFilter();
+
+  const location = useLocation();
 
   return (
     <Container>
@@ -27,6 +35,22 @@ export const Products = () => {
           Aqui encontrararas todos los productos de nuestra tienda
         </div>
         <hr />
+        {/* si la location contiene /productos/search/ tengo boton de borrar busqueda que me redirige a products  */}
+        {location.pathname.includes("/productos/search/") && (
+          <Col className="flex justify-end">
+            <button
+              className="btn btn-danger
+              ali
+              
+              "
+              onClick={() => {
+                window.location.href = "/productos";
+              }}
+            >
+              Borrar busqueda
+            </button>
+          </Col>
+        )}
         <div className="flex justify-end mt-5">
           {selectedFilters.length > 0 && (
             <div>

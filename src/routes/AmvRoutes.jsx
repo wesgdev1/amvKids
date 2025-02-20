@@ -14,7 +14,8 @@ export const AmvRoutes = () => {
       <Routes>
         <Route path="/*" element={<Home />} />
         <Route path="/productos" element={<Products />} />
-        <Route path="/productos" element={<Products />} />
+        {/* <Route path="/productos" element={<Products />} /> */}
+        <Route path="/productos/search/:searchValue" element={<Products />} />
         <Route path="/productos/:id" element={<ProductDetail />} />
         <Route path="/profile/*" element={<Profile />} />
         <Route path="/verCarritoDeCompras" element={<CarList />} />

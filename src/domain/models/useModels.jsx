@@ -1,18 +1,30 @@
 import { useEffect, useState } from "react";
-import { getAllModels, getAllModelWithFilters } from "../../api/model/model";
+import {
+  getAllModelBySearch,
+  getAllModels,
+  getAllModelWithFilters,
+} from "../../api/model/model";
 import { generateFilterFormat } from "./utils";
+import { useLocation } from "react-router-dom";
 
-export const useModels = (filtrosSeleccionadosAgrupados) => {
+export const useModels = (filtrosSeleccionadosAgrupados, searchValue = "") => {
   const [data, setData] = useState();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const location = useLocation();
 
   const cargarModel = async () => {
     setLoading(true);
     setError("");
+    const isSearchRoute = location.pathname.startsWith("/productos/search/");
 
     try {
-      if (Object.keys(filtrosSeleccionadosAgrupados).length > 0) {
+      if (searchValue.length > 0 && isSearchRoute) {
+        console.log("por el search-", searchValue);
+        const response = await getAllModelBySearch(searchValue);
+
+        setData(response.data);
+      } else if (Object.keys(filtrosSeleccionadosAgrupados).length > 0) {
         console.log("por el if", filtrosSeleccionadosAgrupados);
 
         const query = generateFilterFormat(filtrosSeleccionadosAgrupados);

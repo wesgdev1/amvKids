@@ -38,6 +38,7 @@ export const NavBarComponent = () => {
   };
 
   const [modalProfile, setModalProfile] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -49,6 +50,19 @@ export const NavBarComponent = () => {
   const onHandleClick = () => {
     navigate("/login");
   };
+
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      navigate(`/productos/search/${searchValue}`);
+      setSearchValue("");
+      window.location.reload();
+    }
+  };
+
+  const handleInputChange = (event) => {
+    setSearchValue(event.target.value);
+  };
   return (
     <>
       <ConteinerNavStyled fluid>
@@ -59,6 +73,9 @@ export const NavBarComponent = () => {
               <Form.Control
                 type="text"
                 placeholder="Que calzado estas buscando?"
+                value={searchValue}
+                onChange={handleInputChange}
+                onKeyDown={handleKeyPress}
               />
             </div>
 
