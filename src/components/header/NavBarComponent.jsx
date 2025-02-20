@@ -214,6 +214,12 @@ export const NavBarComponent = () => {
                               <span> Mis perfil</span>
                             </NavLinkStyled>
                           </li>
+                          <li>
+                            <NavLinkStyled to={"/profile"}>
+                              <i className="bi bi-person-circle"></i>
+                              <span> Productos</span>
+                            </NavLinkStyled>
+                          </li>
 
                           <li>
                             <NavLinkStyled to={"/profile/myOrders"}>

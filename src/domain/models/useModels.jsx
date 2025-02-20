@@ -19,7 +19,11 @@ export const useModels = (filtrosSeleccionadosAgrupados, searchValue = "") => {
     const isSearchRoute = location.pathname.startsWith("/productos/search/");
 
     try {
-      if (searchValue.length > 0 && isSearchRoute) {
+      if (
+        searchValue.length > 0 &&
+        isSearchRoute &&
+        Object.keys(filtrosSeleccionadosAgrupados).length === 0
+      ) {
         console.log("por el search-", searchValue);
         const response = await getAllModelBySearch(searchValue);
 
