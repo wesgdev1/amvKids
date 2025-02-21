@@ -75,7 +75,7 @@ export const NavBarComponent = () => {
                 placeholder="Que calzado estas buscando?"
                 value={searchValue}
                 onChange={handleInputChange}
-                onKeyDown={handleKeyPress}
+                onKeyUp={handleKeyPress}
               />
             </div>
 
