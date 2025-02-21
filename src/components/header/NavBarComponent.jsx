@@ -71,7 +71,7 @@ export const NavBarComponent = () => {
             <NavLogo />
             <div className="d-flex flex-col  " style={{ width: "65%" }}>
               <Form.Control
-                type="text"
+                type="search"
                 placeholder="Que calzado estas buscando?"
                 value={searchValue}
                 onChange={handleInputChange}
