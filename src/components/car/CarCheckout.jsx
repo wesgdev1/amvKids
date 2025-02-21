@@ -29,6 +29,7 @@ export const CarCheckout = ({ calcularTotal, dispatch, state }) => {
       };
 
       let response = await createOrder(payload);
+      console.log("envie la orden", response);
 
       if (response) {
         Swal.fire({
@@ -44,7 +45,12 @@ export const CarCheckout = ({ calcularTotal, dispatch, state }) => {
         type: "DELETE_ALL",
       });
     } catch (error) {
-      console.log(error);
+      Swal.fire({
+        icon: "error",
+        title: `Error al realizar la compra, ${error.message}`,
+        showConfirmButton: true,
+        confirmButtonText: "Aceptar",
+      });
       setLoading(false);
     }
   };

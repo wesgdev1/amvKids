@@ -51,6 +51,7 @@ export const useFilter = (initialFilter = []) => {
   const clean = () => {
     setSelectedFilters([]);
     setCheckFilter({});
+    setFiltrosSeleccionadosAgrupados({});
   };
 
   return {

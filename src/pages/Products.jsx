@@ -30,14 +30,21 @@ export const Products = () => {
 
   return (
     <Container>
-      <Row className="my-5 ">
-        <div className="pt-8 mb-8">
+      <Row className="">
+        {/* <div className="pt-8 mb-8">
           Aqui encontrararas todos los productos de nuestra tienda
+        </div> */}
+        {/* <hr /> */}
+        <div className="relative w-full h-[20px] mb-1 bg-gray-800 overflow-hidden">
+          <div className="absolute whitespace-nowrap animate-marquee text-white text-sm">
+            <span className="mx-4">🔥 ¡Todo al 20%! 🔥</span>
+            <span className="mx-4">🔥 ¡Todo al 20%! 🔥</span>
+            <span className="mx-4">🔥 ¡Todo al 20%! 🔥</span>
+          </div>
         </div>
-        <hr />
         {/* si la location contiene /productos/search/ tengo boton de borrar busqueda que me redirige a products  */}
         {location.pathname.includes("/productos/search/") && (
-          <Col className="flex justify-end">
+          <Col className="flex justify-end ">
             <button
               className="btn btn-danger
               ali
@@ -51,7 +58,7 @@ export const Products = () => {
             </button>
           </Col>
         )}
-        <div className="flex justify-end mt-5">
+        <div className="flex justify-end mt-5 flex-wrap">
           {selectedFilters.length > 0 && (
             <div>
               <h4>Filtros aplicados:</h4>
@@ -61,13 +68,35 @@ export const Products = () => {
                     {filter}
                   </span>
                 ))}
+                <span
+                  className="badge bg-danger me-2 hover:cursor-pointer "
+                  onClick={clean}
+                >
+                  Eliminar filtros
+                </span>
               </div>
             </div>
           )}
         </div>
       </Row>
       <Row>
-        <Col md={3}>
+        <div className="flex justify-end mb-5">
+          <div>
+            {dataforFilter && (
+              <Filter
+                data={dataforFilter}
+                addFilter={addFilter}
+                deleteFilter={deleteFilter}
+                clean={clean}
+                checkFilter={checkFilter}
+                setCheckFilter={setCheckFilter}
+              />
+            )}
+          </div>
+        </div>
+      </Row>
+      <Row>
+        {/* <Col md={3}>
           {dataforFilter && (
             <Filter
               data={dataforFilter}
@@ -78,8 +107,8 @@ export const Products = () => {
               setCheckFilter={setCheckFilter}
             />
           )}
-        </Col>
-        <Col md={8}>
+        </Col> */}
+        <Col md={12}>
           <div>
             {loading && <Spinner animation="border" variant="info" />}
             {error && <Alert variant="danger">{error}</Alert>}

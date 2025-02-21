@@ -3,6 +3,7 @@ import { Pagination } from "react-bootstrap";
 
 export const PaginationStyle = styled(Pagination)(({ theme }) => ({
   justifyContent: "center",
+  paddingTop: "20px",
 }));
 
 export const PagPrevStyle = styled(Pagination.Prev)(({ theme }) => ({
