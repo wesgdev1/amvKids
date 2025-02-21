@@ -215,7 +215,7 @@ export const NavBarComponent = () => {
                             </NavLinkStyled>
                           </li>
                           <li>
-                            <NavLinkStyled to={"/profile"}>
+                            <NavLinkStyled to={"/productos"}>
                               <i className="bi bi-person-circle"></i>
                               <span> Productos</span>
                             </NavLinkStyled>

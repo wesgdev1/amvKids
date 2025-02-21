@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useModel } from "../domain/models/useModel";
-import { Alert, Card, Col, Image, Spinner } from "react-bootstrap";
+import { Alert, Card, Carousel, Col, Image, Spinner } from "react-bootstrap";
 import {
   ButtonProfile,
   CardStoreStyle,
@@ -25,7 +25,40 @@ export const ProductDetail = () => {
           <hr />
 
           <div className="flex gap-5 flex-row flex-wrap justify-center pt-3 ">
-            <div>
+            <Carousel
+              style={{
+                width: "29%",
+                height: "auto",
+                borderRadius: "60px",
+                boxShadow: "0 0 5px rgba(0,0,0,1)",
+              }}
+            >
+              {data?.images.map((image, index) => (
+                <Carousel.Item key={index}>
+                  <Image
+                    src={image.url}
+                    alt={data?.name}
+                    style={{
+                      // objectFit: "cover",
+                      borderRadius: "60px",
+                      boxShadow: "0 0 5px rgba(0,0,0,1)",
+                    }}
+                  />
+                </Carousel.Item>
+              ))}
+              {/* <Carousel.Item>
+                <Image
+                  src={data?.images[0]?.url}
+                  alt={data?.name}
+                  style={{
+                    objectFit: "cover",
+                    borderRadius: "60px",
+                    boxShadow: "0 0 5px rgba(0,0,0,1)",
+                  }}
+                />
+              </Carousel.Item> */}
+            </Carousel>
+            {/* <div>
               <Image
                 src={data?.images[0]?.url}
                 alt={data?.name}
@@ -35,13 +68,12 @@ export const ProductDetail = () => {
                   boxShadow: "0 0 10px rgba(0,0,0,1)",
                 }}
               />
-            </div>
+            </div> */}
             <ControlProduct data={data} />
             <div>{data?.description}</div>
           </div>
         </div>
       )}
-      ;
     </>
   );
 };
