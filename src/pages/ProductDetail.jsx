@@ -27,7 +27,7 @@ export const ProductDetail = () => {
           <div className="flex gap-5 flex-row flex-wrap justify-center pt-3 ">
             <Carousel
               style={{
-                width: "29%",
+                width: "320px",
                 height: "auto",
                 borderRadius: "60px",
                 boxShadow: "0 0 5px rgba(0,0,0,1)",
