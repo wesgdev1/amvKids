@@ -13,6 +13,7 @@ import { UserList } from "../users/UserList";
 import { UserForm } from "../users/UserForm";
 import { ScanShoe } from "../scan/ScanShoe";
 import { ReportList } from "../reports/ReportList";
+import { OrderListByUser } from "../users/OrderListbyUser";
 
 export const ProfileRoutes = () => {
   return (
@@ -33,6 +34,7 @@ export const ProfileRoutes = () => {
         <Route path="/models/:idModel" element={<ModelDetail />} />
         <Route path="/users" element={<UserList />} />
         <Route path="/users/new" element={<UserForm />} />
+        <Route path="/users/:idUser/orders" element={<OrderListByUser />} />
       </Routes>
     </>
   );

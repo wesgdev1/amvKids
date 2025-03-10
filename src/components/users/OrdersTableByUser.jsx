@@ -5,7 +5,7 @@ import { ControlButton } from "../products/StyledComponents";
 import { Paginator } from "../paginator/Paginator";
 import { format } from "date-fns";
 
-export const OrdersTableAdmin = ({ orders }) => {
+export const OrdersTable = ({ orders }) => {
   const [ordersBypage, setOrdersByPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const totalOrders = orders.length;
@@ -14,21 +14,13 @@ export const OrdersTableAdmin = ({ orders }) => {
   const navigate = useNavigate();
 
   const viewOrder = (order) => {
-    navigate(`/profile/order/${order.id}/`);
+    navigate(`/profile/myorders/${order.id}/`);
   };
 
   const [show, setShow] = useState(false);
   const [paymentUrl, setPaymentUrl] = useState("");
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-
-  const iconMap = {
-    Creada: "bi bi-exclamation-octagon bg-yellow-300 rounded-full ",
-    "Pago Enviado": "bi bi-hourglass-split rounded-full bg-orange-500",
-    "Pago Confirmado": "bi bi-check-circle rounded-full bg-green-500",
-    "Pedido Entregado": "bi bi-box-seam rounded-full bg-green-500",
-    CanceladaAdmin: "bi bi-x-circle",
-  };
 
   return (
     <div className="pt-4 ">
@@ -37,15 +29,13 @@ export const OrdersTableAdmin = ({ orders }) => {
         <thead>
           <tr>
             <th># Orden</th>
-            <th>codigo</th>
-            <th>Nombre</th>
             <th>Fecha</th>
             <th>Total</th>
             <th>Estado</th>
             <th>
               <i className="bi bi-receipt-cutoff"></i>
             </th>
-            <th>Detalle</th>
+            <th>Opciones</th>
           </tr>
         </thead>
         <tbody>
@@ -53,14 +43,10 @@ export const OrdersTableAdmin = ({ orders }) => {
             .map((order) => (
               <tr key={order.id}>
                 <td>{order.codigoOrder}</td>
-                <td>{order.user.codigo}</td>
-                <td>{order.user.name}</td>
 
                 <td>{format(new Date(order.createdAt), "MM/dd/yyyy")}</td>
                 <td>$ {order.total.toLocaleString("es-CO")}</td>
-                <td>
-                  {order.state} <i className={`${iconMap[order.state]}`}></i>
-                </td>
+                <td>{order.state}</td>
                 <td>
                   {order.paymentUrl ? (
                     <span
@@ -91,7 +77,7 @@ export const OrdersTableAdmin = ({ orders }) => {
         <tfoot>
           <tr>
             <td colSpan="3">
-              <strong>Total de Ordenes: {orders.length}</strong>
+              <strong>Total Producto: {orders.length}</strong>
             </td>
           </tr>
         </tfoot>

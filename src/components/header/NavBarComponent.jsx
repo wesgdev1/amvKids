@@ -187,6 +187,12 @@ export const NavBarComponent = () => {
                             </NavLinkStyled>
                           </li>
                           <li>
+                            <NavLinkStyled to={"/profile/products"}>
+                              <i className="bi bi-box"></i>
+                              <span> Curvas</span>
+                            </NavLinkStyled>
+                          </li>
+                          <li>
                             <NavLinkStyled to={"/profile/users"}>
                               <i className="bi bi-person-circle"></i>
                               <span> Usuarios</span>
@@ -218,6 +224,12 @@ export const NavBarComponent = () => {
                             <NavLinkStyled to={"/productos"}>
                               <i className="bi bi-person-circle"></i>
                               <span> Productos</span>
+                            </NavLinkStyled>
+                          </li>
+                          <li>
+                            <NavLinkStyled to={"/curvas"}>
+                              <i className="bi bi-box"></i>
+                              <span> Calzados</span>
                             </NavLinkStyled>
                           </li>
 

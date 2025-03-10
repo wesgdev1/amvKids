@@ -21,3 +21,12 @@ export const editUser = async (user, payload) => {
     return Promise.reject(error);
   }
 };
+
+export const getOrdersByUser = async ({ userId }) => {
+  try {
+    const { data: response } = await http.get(`/orders/ordersByUser/${userId}`);
+    return { data: response.data };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};

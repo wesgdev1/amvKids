@@ -14,6 +14,11 @@ export const UsersTable = ({ users, cargarUsuarios }) => {
   const totalProductos = users.length;
   const lastIndex = currentPage * productosBypage;
   const firstIndex = lastIndex - productosBypage;
+  const navigate = useNavigate();
+
+  const viewOrdersByUser = (user) => {
+    navigate(`/profile/users/${user.id}/orders`);
+  };
 
   const updateUser = (user) => {
     Swal.fire({
@@ -108,7 +113,7 @@ export const UsersTable = ({ users, cargarUsuarios }) => {
                 <td>{user.state ? "Activo" : "Bloqueado"}</td>
                 <td>
                   <div className="flex justify-center gap-2">
-                    <ControlButton>
+                    <ControlButton onClick={() => viewOrdersByUser(user)}>
                       <i className="bi bi-eye-fill"></i>
                     </ControlButton>
                     {user.state ? (
