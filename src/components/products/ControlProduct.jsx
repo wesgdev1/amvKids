@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { Card, Col, Form } from "react-bootstrap";
 import {
   BtnDangerSubmitStyled,
@@ -9,9 +10,11 @@ import { useCounter } from "../../hooks/useCounter";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../../store";
 import Swal from "sweetalert2";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../../auth/context/AuthContext";
 
 export const ControlProduct = ({ data }) => {
+  const { user } = useContext(AuthContext);
   const { dispatch } = useCart();
   const navigate = useNavigate();
   const handleReturn = () => {
@@ -83,11 +86,21 @@ export const ControlProduct = ({ data }) => {
                 }}
               >
                 <option>Talla</option>
-                {data.stocks.map((option, index) => (
+                {/* {data.stocks.map((option, index) => (
                   <option key={index} value={option.size}>
                     {option.size}
                   </option>
-                ))}
+                ))} */}
+
+                {data.stocks.map((option, index) => {
+                  if (option.quantity > 0) {
+                    return (
+                      <option key={index} value={option.size}>
+                        {option.size}
+                      </option>
+                    );
+                  }
+                })}
               </Form.Select>
             </div>
 

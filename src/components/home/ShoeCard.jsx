@@ -36,23 +36,23 @@ export const ShoeCard = ({ model }) => {
             className="text-center"
           >
             {user?.tipoUsuario === "Reventa" &&
-              model.normalPrice.toLocaleString("es-CO") + " COP"}
+              model.price.toLocaleString("es-CO") + " COP"}
 
             {user?.tipoUsuario === "Tienda Aliada" &&
               model.alliancePrice.toLocaleString("es-CO") + " COP"}
 
             {user?.tipoUsuario === "Cliente" &&
-              model.price.toLocaleString("es-CO") + " COP"}
+              model.normalPrice.toLocaleString("es-CO") + " COP"}
             {user?.tipoUsuario === "Preparador" &&
-              model.price.toLocaleString("es-CO") + " COP"}
+              model.normalPrice.toLocaleString("es-CO") + " COP"}
 
             {user?.tipoUsuario === "Admin" &&
-              model.price.toLocaleString("es-CO") + " COP"}
+              model.normalPrice.toLocaleString("es-CO") + " COP"}
             {user?.tipoUsuario === "Whatsapp" &&
-              model.price.toLocaleString("es-CO") + " COP"}
+              model.normalPrice.toLocaleString("es-CO") + " COP"}
 
             {/* si no hay user */}
-            {!user && model.price.toLocaleString("es-CO") + " COP"}
+            {!user && model.normalPrice.toLocaleString("es-CO") + " COP"}
             {/* {model.price.toLocaleString("es-CO")} COP */}
           </Card.Text>
           <div className="d-flex justify-center ">
