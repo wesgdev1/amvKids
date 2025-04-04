@@ -50,3 +50,19 @@ export const IconStyled2 = styled("a")(() => ({
     boxShadow: "0px 0px 10px 0px rgba(1,1,1,0.75)",
   },
 }));
+
+export const ContainerMov = styled("div")(() => ({
+  opacity: 0,
+  transform: "rotateY(90deg)",
+  animation: "flipIn 1s ease-out forwards",
+  "@keyframes flipIn": {
+    "0%": {
+      opacity: 0,
+      transform: "rotateY(90deg)",
+    },
+    "100%": {
+      opacity: 1,
+      transform: "rotateY(0deg)",
+    },
+  },
+}));

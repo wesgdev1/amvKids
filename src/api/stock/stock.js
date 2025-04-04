@@ -8,3 +8,13 @@ export const createStock = async (payload) => {
     return Promise.reject(error);
   }
 };
+
+export const updateStock = async (payload) => {
+  const { id } = payload;
+  try {
+    const { data: response } = await http.put(`/stocks/${id}`, payload);
+    return { data: response.data };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};

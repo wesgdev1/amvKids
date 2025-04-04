@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useModel } from "../../domain/models/useModel";
-import { Alert, Form, Image, Modal, Spinner } from "react-bootstrap";
+import { Alert, Button, Form, Image, Modal, Spinner } from "react-bootstrap";
 import { StockTable } from "./StockTable";
 import { ContainerImages } from "./StyledComponents";
 import { ButtonProfile } from "../products/StyledComponents";
@@ -8,7 +8,7 @@ import { useState } from "react";
 import { ErrorMessage, Formik } from "formik";
 import { set, z } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
-import { ButtonStyled } from "../StyledComponents";
+import { ButtonCardStyled, ButtonStyled } from "../StyledComponents";
 import Swal from "sweetalert2";
 import { createStock } from "../../api/stock/stock";
 
@@ -73,6 +73,15 @@ export const ModelDetail = () => {
   };
   return (
     <div className="pt-5 px-4">
+      <Button
+        className="mb-4"
+        variant="light"
+        onClick={() => {
+          window.history.back();
+        }}
+      >
+        Volver
+      </Button>
       <h4 className="pb-3">
         <i className="bi bi-box"></i> Informacion del Modelo {data?.name}
       </h4>
@@ -86,12 +95,20 @@ export const ModelDetail = () => {
               <span>{data.name}</span>
             </p>
             <p>
-              <strong>Referencia: </strong>
-              <span>{data.reference}</span>
+              <strong>Color: </strong>
+              <span>{data.color}</span>
             </p>
             <p>
-              <strong>Precio: </strong>
-              <span>{data.price}</span>
+              <strong>Precio Reventa: </strong>
+              <span>${data.price}</span>
+            </p>
+            <p>
+              <strong>Precio Normal: </strong>
+              <span>${data.normalPrice}</span>
+            </p>
+            <p>
+              <strong>Precio Aliado: </strong>
+              <span>${data.alliancePrice}</span>
             </p>
             <p>
               <strong>Descripcion: </strong>
@@ -115,16 +132,21 @@ export const ModelDetail = () => {
           </ContainerImages>
 
           <div>
-            {data.stocks.length > 0 ? (
-              <StockTable stocks={data.stocks} />
-            ) : (
-              <p>No hay stock disponible</p>
-            )}
-          </div>
-          <div>
             <div className="d-flex justify-content-start pb-3">
               <ButtonProfile onClick={handleShow}>Agregar Stock</ButtonProfile>
             </div>
+          </div>
+
+          <div>
+            {data.stocks.length > 0 ? (
+              <StockTable
+                stocks={data.stocks}
+                refresh={refresh}
+                idModel={idModel}
+              />
+            ) : (
+              <p>No hay stock disponible</p>
+            )}
           </div>
 
           <Modal

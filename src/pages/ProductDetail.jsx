@@ -6,6 +6,7 @@ import {
   CardStoreStyle,
 } from "../components/products/StyledComponents";
 import { ControlProduct } from "../components/products/ControlProduct";
+import { ContainerMov } from "../components/home/StyledComponents";
 
 export const ProductDetail = () => {
   const params = useParams();
@@ -18,7 +19,7 @@ export const ProductDetail = () => {
       {loading && <Spinner animation="border" variant="info" />}
       {error && <Alert variant="danger">{error}</Alert>}
       {data && (
-        <div className="pt-5 px-5 pb-3">
+        <ContainerMov className="pt-5 px-5 pb-3">
           <h4 className="pb-3">
             <i className="bi bi-box"></i> {data?.name}
           </h4>
@@ -72,7 +73,7 @@ export const ProductDetail = () => {
             <ControlProduct data={data} />
             <div>{data?.description}</div>
           </div>
-        </div>
+        </ContainerMov>
       )}
     </>
   );

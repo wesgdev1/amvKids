@@ -1,3 +1,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* body {
+  font-family: Inter;
+  width: 100%;
+  background-color: black;
+  overflow-x: hidden;
+  color: var(--white-smoke);
+  margin: 0;
+} */
+
+:root {
+  --container-width: 1140px;
+  --gray-1: #b3b3b5;
+  --gray-2: #555;
+  --white-1: #f9f9f9;
+  --white-smoke: #dddde0;
+  --padding-section: 100px 0;
+}

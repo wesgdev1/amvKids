@@ -7,6 +7,7 @@ import { Profile } from "../pages/Profile";
 import { ProductDetail } from "../pages/ProductDetail";
 import { CarList } from "../pages/CarList";
 import { Chatboot } from "../pages/Chatboot";
+import { Curvas } from "../pages/Curvas";
 
 export const AmvRoutes = () => {
   return (
@@ -14,6 +15,7 @@ export const AmvRoutes = () => {
       <Routes>
         <Route path="/*" element={<Home />} />
         <Route path="/productos" element={<Products />} />
+        <Route path="/curvas" element={<Curvas />} />
         {/* <Route path="/productos" element={<Products />} /> */}
         <Route path="/productos/search/:searchValue" element={<Products />} />
         <Route path="/productos/:id" element={<ProductDetail />} />

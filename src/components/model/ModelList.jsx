@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { Alert, Form, Spinner } from "react-bootstrap";
+import { Alert, Button, Form, Spinner } from "react-bootstrap";
 import { useState } from "react";
 import { useProduct } from "../../domain/products/useProduct";
 import { ButtonProfile } from "../products/StyledComponents";
@@ -34,8 +34,17 @@ export const ModelList = () => {
   };
   return (
     <div className="pt-5 px-4">
+      <Button
+        className="mb-4"
+        variant="light"
+        onClick={() => {
+          navigate(`/profile/products`);
+        }}
+      >
+        Volver
+      </Button>
       <h4 className="pb-3">
-        <i className="bi bi-box"></i> Modelos del producto {data?.name}
+        <i className="bi bi-box"></i> Modelos de la marca - {data?.name}
       </h4>
       <div className="d-flex justify-content-start pb-3">
         <ButtonProfile onClick={handleClick}>Agregar Modelo</ButtonProfile>

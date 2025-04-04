@@ -17,7 +17,7 @@ import { ButtonCardStyled, ShoesCardStyledPayment } from "../StyledComponents";
 
 const imageRqd = z.any().optional();
 
-export const OrdeDetailAdmin = () => {
+export const OrdeDetailPreparer = () => {
   const params = useParams();
   const { id } = params;
   const { data, loading, error, cargarOrder: refresh } = useOrder(id);

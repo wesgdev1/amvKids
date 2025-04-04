@@ -1,0 +1,41 @@
+.general-styles {
+  cursor: pointer;
+  color: var(--white-smoke);
+  text-transform: uppercase;
+}
+
+.disabled-button {
+  color: var(--gray-2);
+}
+
+.icon-left, .icon-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-left {
+  margin-right: 8px;
+}
+
+.icon-right {
+  margin-left: 8px;
+}
+
+.loading-icon {
+  font-size: 0.75rem; 
+  color: black;
+  animation: animate 1.5s infinite;
+}
+
+@keyframes animate {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}

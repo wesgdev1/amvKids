@@ -1,13 +1,12 @@
 import { ErrorMessage, Formik } from "formik";
-import { Alert, Col, Form, Row, Spinner } from "react-bootstrap";
+import { Alert, Button, Col, Form, Row, Spinner } from "react-bootstrap";
 import { ButtonStyled } from "../StyledComponents";
 import { useState } from "react";
 import { z } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import Swal from "sweetalert2";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { createModel } from "../../api/model/model";
-import { all } from "axios";
 
 const nameRqd = z.string({
   required_error: "El nombre del modelo es requerido",
@@ -29,10 +28,6 @@ const descriptionRqd = z.string({
   required_error: "La descripcion del modelo es requerida",
 });
 
-// const referenceRqd = z.string({
-//   required_error: "La referencia del modelo es requerida",
-// });
-
 const colorRqd = z.string({
   required_error: "El color del modelo es requerido",
 });
@@ -44,23 +39,25 @@ const modelSchema = z.object({
   alliancePrice: alliancePrice,
   image: imageRqd,
   description: descriptionRqd,
-  // reference: referenceRqd,
+
   color: colorRqd,
 });
 
 export const ModelForm = () => {
   const params = useParams();
   const { idProduct } = params;
+  const location = useLocation();
+  const actionEdit = location.state?.modelo;
 
   const navigate = useNavigate();
   const initialValues = {
-    name: "",
-    normalPrice: "",
-    price: "",
-    alliancePrice: "",
-    image: "",
-    description: "",
-    color: "",
+    name: "" || actionEdit?.name,
+    normalPrice: "" || actionEdit?.normalPrice,
+    price: "" || actionEdit?.price,
+    alliancePrice: "" || actionEdit?.alliancePrice,
+    image: "" || actionEdit?.image,
+    description: "" || actionEdit?.description,
+    color: "" || actionEdit?.color,
   };
 
   const [error, setError] = useState(false);
@@ -92,6 +89,34 @@ export const ModelForm = () => {
     }
   };
 
+  const editModel = async (values) => {
+    try {
+      const response = await createModel(values);
+      if (response) {
+        Swal.fire({
+          icon: "success",
+          title: "Modelo Editado",
+          text: "El modelo se edito correctamente",
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Modelo no editado",
+          text: "El Modelo no se edito correctamente, intenta nuevamente",
+        });
+      }
+      navigate("/profile/products", { replace: true });
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Modelo no editado",
+        text: "El Modelo no se edito correctamente, intenta nuevamente",
+      });
+
+      console.log("error", error);
+    }
+  };
+
   const onSubmit = async (values, { setSubmitting }) => {
     try {
       setSubmitting(true);
@@ -114,7 +139,13 @@ export const ModelForm = () => {
         });
       }
 
-      await addModel(formData);
+      // await addModel(formData);
+      if (actionEdit) {
+        // await editModel(formData);
+        console.log("formData", formData);
+      } else {
+        await addModel(formData);
+      }
       console.log("formData", formData);
     } catch (error) {
       const message = "Error";
@@ -129,8 +160,18 @@ export const ModelForm = () => {
 
   return (
     <div className="pt-5 px-4">
+      <Button
+        className="mb-4"
+        variant="light"
+        onClick={() => {
+          navigate(`/profile/products/${idProduct}/models`);
+        }}
+      >
+        Volver
+      </Button>
       <h4 className="pb-3">
-        <i className="bi bi-box2-fill"> </i>Agregar un nuevo modelo
+        <i className="bi bi-box2-fill"> </i>
+        {actionEdit ? "Editar Modelo" : "Agregar Modelo"}
       </h4>
 
       <Formik
@@ -180,27 +221,6 @@ export const ModelForm = () => {
                   className="invalid-feedback"
                 />
               </Form.Group>
-
-              {/* <Form.Group className="" controlId="formBasicNombreCompleto">
-                <Form.Label>Referencia</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Escibe aqui la referencia"
-                  name="reference"
-                  style={{ width: "50%" }}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.reference}
-                  className={
-                    touched.reference && errors.reference ? "is-invalid" : ""
-                  }
-                />
-                <ErrorMessage
-                  name="reference"
-                  component="div"
-                  className="invalid-feedback"
-                />
-              </Form.Group> */}
 
               <Form.Group className="" controlId="formBasicNombreCompleto">
                 <Form.Label>Color</Form.Label>
@@ -313,6 +333,22 @@ export const ModelForm = () => {
                 controlId="formProdFileIMG"
               >
                 <Form.Label>Imagenes del modelo</Form.Label>
+                {actionEdit?.images.length > 0 && (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-4">
+                    {actionEdit.images.map((image) => (
+                      <div
+                        key={image.id}
+                        className="relative overflow-hidden rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+                      >
+                        <img
+                          src={image.url}
+                          alt={image.name}
+                          className="w-full h-full object-cover rounded-lg"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
                 <p className="font-semibold text-purple-500">
                   Adjunta (3) o mas imagenes del modelo{" "}
                 </p>
@@ -349,7 +385,11 @@ export const ModelForm = () => {
                   disabled={isSubmitting}
                 >
                   {!isSubmitting ? (
-                    "Agregar modelo"
+                    actionEdit ? (
+                      "Actualizar"
+                    ) : (
+                      "Crear Modelo"
+                    )
                   ) : (
                     <Spinner
                       as="span"

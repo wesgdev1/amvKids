@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Alert, Form, Spinner } from "react-bootstrap";
+import { Alert, Button, Form, Spinner } from "react-bootstrap";
 import { useState } from "react";
 import { ProductsTable } from "./ProductsTable";
 import { useProducts } from "../../domain/products/useProducts";
@@ -31,6 +31,15 @@ export const ProductList = () => {
   };
   return (
     <div className="pt-5 px-4">
+      <Button
+        className="mb-4"
+        variant="light"
+        onClick={() => {
+          navigate(`/`);
+        }}
+      >
+        Volver
+      </Button>
       <h4 className="pb-3">
         <i className="bi bi-box"></i> Productos
       </h4>

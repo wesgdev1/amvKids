@@ -63,6 +63,69 @@ export const NavBarComponent = () => {
   const handleInputChange = (event) => {
     setSearchValue(event.target.value);
   };
+
+  const routesConfig = {
+    Admin: [
+      { path: "/profile/", icon: "bi bi-person-circle", label: "Mi perfil" },
+      {
+        path: "/profile/reports",
+        icon: "bi bi-info-circle",
+        label: "Informes",
+      },
+      { path: "/profile/orders", icon: "bi bi-border-width", label: "Órdenes" },
+      { path: "/profile/products", icon: "bi bi-box", label: "Calzados" },
+      { path: "/profile/products", icon: "bi bi-box", label: "Curvas" },
+      {
+        path: "/profile/users",
+        icon: "bi bi-person-circle",
+        label: "Usuarios",
+      },
+      {
+        path: "/profile/scan",
+        icon: "bi bi-upc-scan",
+        label: "Escanear Código",
+      },
+      // { path: "/login", icon: "bi bi-box-arrow-left", label: "Cerrar sesión" },
+    ],
+    Reventa: [
+      { path: "/profile", icon: "bi bi-person-circle", label: "Mi perfil" },
+      { path: "/productos", icon: "bi bi-person-circle", label: "Productos" },
+      { path: "/curvas", icon: "bi bi-diagram-2", label: "Curvas" },
+      { path: "/profile/myOrders", icon: "bi bi-search", label: "Mis pedidos" },
+      {
+        path: "/profile/scan",
+        icon: "bi bi-upc-scan",
+        label: "Escanear Código",
+      },
+      // { path: "/login", icon: "bi bi-box-arrow-left", label: "Cerrar sesión" },
+    ],
+    "Tienda aliada": [
+      { path: "/profile", icon: "bi bi-person-circle", label: "Mi perfil" },
+      { path: "/productos", icon: "bi bi-person-circle", label: "Productos" },
+      { path: "/curvas", icon: "bi bi-diagram-2", label: "Curvas" },
+      { path: "/profile/myOrders", icon: "bi bi-search", label: "Mis pedidos" },
+      {
+        path: "/profile/scan",
+        icon: "bi bi-upc-scan",
+        label: "Escanear Código",
+      },
+      // { path: "/login", icon: "bi bi-box-arrow-left", label: "Cerrar sesión" },
+    ],
+
+    Preparador: [
+      { path: "/profile", icon: "bi bi-person-circle", label: "Mi perfil" },
+      { path: "/profile/myOrders", icon: "bi bi-search", label: "Ordenes" },
+      {
+        path: "/profile/scan",
+        icon: "bi bi-upc-scan",
+        label: "Escanear Código",
+      },
+      // { path: "/login", icon: "bi bi-box-arrow-left", label: "Cerrar sesión" },
+    ],
+  };
+
+  const userType = user?.tipoUsuario || "Nadie"; // Si no hay usuario, asume que es un usuario normal
+  const routes = routesConfig[userType] || [];
   return (
     <>
       <ConteinerNavStyled fluid>
@@ -160,7 +223,16 @@ export const NavBarComponent = () => {
                     <hr /> */}
 
                     <ul className="w-80 p-0 items-start flex flex-column   gap-4 ">
-                      {user?.tipoUsuario === "Admin" ? (
+                      {routes.map((route, index) => (
+                        <li key={index}>
+                          <NavLinkStyled to={route.path} onClick={handleClose}>
+                            <i className={route.icon}></i>
+                            <span> {route.label}</span>
+                          </NavLinkStyled>
+                        </li>
+                      ))}
+
+                      {/* {user?.tipoUsuario === "Admin" ? (
                         <>
                           <li className="">
                             <NavLinkStyled to={"/profile/"}>
@@ -253,7 +325,7 @@ export const NavBarComponent = () => {
                             </NavLinkStyled>
                           </li>
                         </>
-                      )}
+                      )} */}
                     </ul>
                     <hr />
 
