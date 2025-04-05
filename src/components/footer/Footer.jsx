@@ -1,10 +1,11 @@
-import { Container, Image } from "react-bootstrap";
-import { ContaynerFooterStyled } from "../StyledComponents";
+import { Image } from "react-bootstrap";
+import { ContaynerFooterStyled, FooterContainer } from "../StyledComponents";
 
 export const Footer = () => {
   return (
-    <div className="">
+    <FooterContainer>
       <div
+        className="footer-wave"
         style={{
           height: "70px",
           width: "100%",
@@ -13,37 +14,80 @@ export const Footer = () => {
         }}
       ></div>
       <ContaynerFooterStyled fluid>
-        <div className="d-flex justify-content-around  pt-10 align-items-center">
-          <div>
-            <h4>AMV_KIDS</h4>
-            <p>¡Pequeños pasos, grandes aventuras! 👟</p>
+        <div className="footer-content">
+          <div className="footer-section">
+            <h4 className="footer-title">AMV_KIDS</h4>
+            <p className="footer-description">
+              ¡Pequeños pasos, grandes aventuras! 👟
+            </p>
+            <p className="footer-text">
+              Somos tu tienda de confianza para calzado infantil de calidad.
+              Ofrecemos los mejores diseños y comodidad para los más pequeños.
+            </p>
           </div>
-          <div>
+
+          <div className="footer-logo">
             <Image
               src="https://res.cloudinary.com/dppqkypts/image/upload/v1709156443/AMV_LOGO_1_nx3ofa.png"
               alt="AMV_KIDS"
-              width="100"
-              height="100"
+              width="120"
+              height="120"
+              className="logo-image"
             />
           </div>
-          <div>
-            <h4>Redes Sociales y Contacto</h4>
-            <div>
-              <ul>
-                <li>
-                  <i className="bi bi-facebook"> amv_kids</i>
-                </li>
-                <li>
-                  <i className="bi bi-instagram"> amv_kids</i>
-                </li>
-              </ul>
+
+          <div className="footer-section">
+            <h4 className="footer-title">Contáctanos</h4>
+            <div className="social-links">
+              <a
+                href="https://facebook.com/amv_kids"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="social-link"
+              >
+                <i className="bi bi-facebook"></i> Facebook
+              </a>
+              <a
+                href="https://instagram.com/amv_kids"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="social-link"
+              >
+                <i className="bi bi-instagram"></i> Instagram
+              </a>
+              <a
+                href="https://wa.me/1234567890"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="social-link"
+              >
+                <i className="bi bi-whatsapp"></i> WhatsApp
+              </a>
+              <a href="mailto:info@amvkids.com" className="social-link">
+                <i className="bi bi-envelope"></i> Email
+              </a>
+            </div>
+            <div className="contact-info">
+              <p>
+                <i className="bi bi-geo-alt"></i> Dirección: Calle Principal
+                #123
+              </p>
+              <p>
+                <i className="bi bi-telephone"></i> Teléfono: (123) 456-7890
+              </p>
+              <p>
+                <i className="bi bi-clock"></i> Horario: Lunes a Sábado 9:00 -
+                18:00
+              </p>
             </div>
           </div>
         </div>
-        <div className="d-flex justify-content-center pt-3 pb-3">
-          <span>Created by @Wesg 2024</span>
+
+        <div className="footer-bottom">
+          <span>© 2024 AMV_KIDS - Todos los derechos reservados</span>
+          <span>Created by @Wesg</span>
         </div>
       </ContaynerFooterStyled>
-    </div>
+    </FooterContainer>
   );
 };

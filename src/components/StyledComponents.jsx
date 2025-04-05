@@ -110,7 +110,148 @@ export const ButtonCardStyled = styled(Button)(({ theme }) => ({
 export const ContaynerFooterStyled = styled(Container)(({ theme }) => ({
   background: theme.colors.mainColor,
   color: "white",
+  padding: "2rem 0",
 }));
+
+export const FooterContainer = styled.div`
+  width: 100%;
+
+  margin: 0 auto;
+  padding: 0;
+
+  .footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 1rem 0;
+    flex-wrap: wrap;
+    gap: 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 0.5rem 0;
+    }
+  }
+
+  .footer-section {
+    flex: 1;
+    min-width: 250px;
+    max-width: 300px;
+    margin: 0;
+    padding: 0 0.5rem;
+
+    @media (max-width: 768px) {
+      max-width: 100%;
+      padding: 0 0.5rem;
+    }
+  }
+
+  .footer-title {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    color: white;
+    text-align: center;
+  }
+
+  .footer-description {
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+    text-align: center;
+  }
+
+  .footer-text {
+    font-size: 0.8rem;
+    opacity: 0.8;
+    text-align: center;
+    line-height: 1.3;
+    margin-bottom: 0.5rem;
+  }
+
+  .footer-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.5rem;
+  }
+
+  .logo-image {
+    transition: transform 0.3s ease;
+    max-width: 100px;
+    height: auto;
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+
+  .social-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    align-items: center;
+  }
+
+  .social-link {
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: color 0.3s ease;
+    width: fit-content;
+    font-size: 0.9rem;
+
+    &:hover {
+      color: ${({ theme }) => theme.colors.secondaryColor};
+    }
+
+    i {
+      font-size: 1rem;
+    }
+  }
+
+  .contact-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+
+    p {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 0;
+      font-size: 0.8rem;
+      text-align: center;
+
+      i {
+        color: ${({ theme }) => theme.colors.secondaryColor};
+      }
+    }
+  }
+
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.8rem;
+    max-width: 1200px;
+    margin: 0 auto;
+
+    @media (max-width: 576px) {
+      flex-direction: column;
+      gap: 0.25rem;
+      text-align: center;
+      padding: 0.5rem 0;
+    }
+  }
+`;
 
 export const FormStyled = styled.form(({ theme }) => ({
   marginTop: "80px",
