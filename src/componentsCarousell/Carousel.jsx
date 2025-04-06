@@ -52,9 +52,14 @@ const Carousel = ({
         })}
       </div>
       <div className="arrows">
-        <Button content={"back"} id="prev" onClick={handlePrev} />
         <Button
-          content="go back"
+          content={<i className="bi bi-skip-backward-circle-fill"></i>}
+          id="prev"
+          onClick={handlePrev}
+        />
+        <Button
+          className="text-black"
+          content="Volver"
           id="back"
           onClick={() => setShowDetail(false)}
         />

@@ -5,6 +5,7 @@ import { useContext, useState } from "react";
 import { AuthContext } from "../../auth/context/AuthContext";
 import { createOrder } from "../../api/orders/orders";
 import { set } from "zod";
+import AddiWidget from "../payments/AddiWidget";
 
 export const CarCheckout = ({ calcularTotal, dispatch, state }) => {
   const { user } = useContext(AuthContext);
@@ -86,6 +87,9 @@ export const CarCheckout = ({ calcularTotal, dispatch, state }) => {
             "Realizar pedido"
           )}
         </ButtonPayment>
+
+        <AddiWidget price={String(calcularTotal())} allySlug="sandbox" />
+        {/* <AddiWidget price={"100000"} allySlug="sandbox" /> */}
       </Card.Body>
     </CardChekoutStyle>
   );

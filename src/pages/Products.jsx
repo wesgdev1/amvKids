@@ -37,9 +37,11 @@ export const Products = () => {
         {/* <hr /> */}
         <div className="relative w-full h-[20px] mb-1 bg-gray-800 overflow-hidden">
           <div className="absolute whitespace-nowrap animate-marquee text-white text-sm">
-            <span className="mx-4">🔥 ¡Todo al 20%! 🔥</span>
-            <span className="mx-4">🔥 ¡Todo al 20%! 🔥</span>
-            <span className="mx-4">🔥 ¡Todo al 20%! 🔥</span>
+            <span className="mx-4">🔥 Pagos por todo los medios - 🔥</span>
+            <span className="mx-4">
+              🔥 Revisa la disponibilidad del calzado 🔥
+            </span>
+            <span className="mx-4">🔥 ¡Todo con el 5%! de descuento🔥</span>
           </div>
         </div>
         {/* si la location contiene /productos/search/ tengo boton de borrar busqueda que me redirige a products  */}

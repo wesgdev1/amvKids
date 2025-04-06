@@ -29,7 +29,7 @@ export const ProductDetail = () => {
             <Carousel
               style={{
                 width: "320px",
-                height: "auto",
+                height: "320px",
                 borderRadius: "60px",
                 boxShadow: "0 0 5px rgba(0,0,0,1)",
               }}
@@ -40,7 +40,7 @@ export const ProductDetail = () => {
                     src={image.url}
                     alt={data?.name}
                     style={{
-                      // objectFit: "cover",
+                      //objectFit: "cover",
                       borderRadius: "60px",
                       boxShadow: "0 0 5px rgba(0,0,0,1)",
                     }}

@@ -9,6 +9,42 @@ export const CardDescroptionStyle = styled(Card.Text)(() => ({
   borderRadius: "5px",
 }));
 
+export const ImageContainer = styled.div`
+  width: 100%;
+  aspect-ratio: 1;
+  position: relative;
+  overflow: hidden;
+`;
+
+export const ImageSkeleton = styled.div`
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: 5px;
+
+  @keyframes loading {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+`;
+
+export const CardImage = styled.img`
+  transition: opacity 0.3s ease-in-out;
+  opacity: ${({ loaded }) => (loaded ? 1 : 0)};
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  position: absolute;
+  top: 0;
+  left: 0;
+`;
+
 export const IconStyled = styled("a")(() => ({
   backgroundColor: "green",
   color: "white",

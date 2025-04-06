@@ -1,5 +1,5 @@
-import Button from './Button'
-import './carousel.css'
+import Button from "./Button";
+import "./carousel.css";
 
 const CarouselItem = ({
   item,
@@ -12,10 +12,10 @@ const CarouselItem = ({
 }) => {
   return (
     <div
-      className={`item ${isSelected ? 'selected' : ''} ${
-        isPrevious ? 'previous' : ''
-      } ${isNext ? 'next' : ''} ${isFar ? 'far' : ''} ${
-        isVeryFar ? 'very-far' : ''
+      className={`item ${isSelected ? "selected" : ""} ${
+        isPrevious ? "previous" : ""
+      } ${isNext ? "next" : ""} ${isFar ? "far" : ""} ${
+        isVeryFar ? "very-far" : ""
       }`}
     >
       <img src={item?.image} alt={item?.title} />
@@ -23,10 +23,14 @@ const CarouselItem = ({
         <h4 className="subtitle">New Collection</h4>
         <h2 className="title">{item?.title}</h2>
         <p className="description">{item?.description}</p>
-        <Button content="see more" className="seeMore" onClick={onSeeMore} />
+        <Button
+          content="Ver mas"
+          className="seeMore text-black"
+          onClick={onSeeMore}
+        />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default CarouselItem
+export default CarouselItem;
