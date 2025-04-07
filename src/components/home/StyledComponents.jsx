@@ -104,8 +104,15 @@ export const ContainerMov = styled("div")(() => ({
 }));
 
 export const ButtonAction = styled(Button)(({ theme }) => ({
+  position: "absolute",
+  top: "80%",
+  //centrar horizontalmente
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+
   backgroundColor: theme.colors.buttonColor,
-  width: "50%",
+  width: "30%",
+
   color: theme.colors.mainColor,
   border: "none",
   padding: "10px 20px",
