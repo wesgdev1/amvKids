@@ -8,6 +8,7 @@ import { ProductDetail } from "../pages/ProductDetail";
 import { CarList } from "../pages/CarList";
 import { Chatboot } from "../pages/Chatboot";
 import { Curvas } from "../pages/Curvas";
+import { Contact } from "../pages/Contact";
 
 export const AmvRoutes = () => {
   return (
@@ -24,6 +25,7 @@ export const AmvRoutes = () => {
 
         <Route path="/login" element={<Login />} />
         <Route path="/chatTest" element={<Chatboot />} />
+        <Route path="/contact" element={<Contact />} />
       </Routes>
     </>
   );
