@@ -88,7 +88,10 @@ export const CarCheckout = ({ calcularTotal, dispatch, state }) => {
           )}
         </ButtonPayment>
 
-        <AddiWidget price={String(calcularTotal())} allySlug="sandbox" />
+        <AddiWidget
+          price={String(calcularTotal())}
+          allySlug="amvstoreboutique-ecommerce"
+        />
         {/* <AddiWidget price={"100000"} allySlug="sandbox" /> */}
       </Card.Body>
     </CardChekoutStyle>

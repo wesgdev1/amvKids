@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Card } from "react-bootstrap";
+import { Button, Card } from "react-bootstrap";
 
 export const CardDescroptionStyle = styled(Card.Text)(() => ({
   height: "70px",
@@ -100,5 +100,18 @@ export const ContainerMov = styled("div")(() => ({
       opacity: 1,
       transform: "rotateY(0deg)",
     },
+  },
+}));
+
+export const ButtonAction = styled(Button)(({ theme }) => ({
+  backgroundColor: theme.colors.buttonColor,
+  width: "50%",
+  color: theme.colors.mainColor,
+  border: "none",
+  padding: "10px 20px",
+  borderRadius: "5px",
+  cursor: "pointer",
+  "&:hover": {
+    backgroundColor: theme.colors.secondaryColor,
   },
 }));
