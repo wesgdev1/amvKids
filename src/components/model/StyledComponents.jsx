@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Form } from "react-bootstrap";
+import { Form, Modal, Badge } from "react-bootstrap";
 
 export const ContainerImages = styled("div")(({ theme }) => ({
   display: "flex",
@@ -87,3 +87,87 @@ export const ImagePreview = styled.div({
     borderRadius: "0.5rem",
   },
 });
+
+// Componentes estilizados para el modal
+export const StyledModal = styled(Modal)(({ theme }) => ({
+  "& .modal-content": {
+    borderRadius: "15px",
+
+    border: "none",
+  },
+}));
+
+export const ModalHeader = styled(Modal.Header)(({ theme }) => ({
+  backgroundColor: theme.colors.mainColor,
+  color: "white",
+  borderBottom: `2px solid ${theme.colors.secondaryColor}`,
+  borderTopLeftRadius: "15px",
+  borderTopRightRadius: "15px",
+  padding: "1rem 1.5rem",
+  "& .modal-title": {
+    fontSize: "1.3rem",
+    fontWeight: "bold",
+  },
+  "& .btn-close": {
+    color: "white",
+    opacity: 0.8,
+    filter: "brightness(2)",
+    "&:hover": {
+      opacity: 1,
+    },
+  },
+}));
+
+export const ModalBody = styled(Modal.Body)({
+  padding: "1.5rem",
+  maxHeight: "60vh",
+  overflowY: "auto",
+});
+
+export const StockList = styled.ul({
+  listStyle: "none",
+  padding: 0,
+  margin: 0,
+});
+
+export const StockItem = styled.li(({ isLow }) => ({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  padding: "12px 15px",
+  margin: "8px 0",
+  borderRadius: "8px",
+  backgroundColor: isLow ? "rgba(255, 193, 7, 0.1)" : "rgba(40, 167, 69, 0.1)",
+  border: `1px solid ${
+    isLow ? "rgba(255, 193, 7, 0.3)" : "rgba(40, 167, 69, 0.3)"
+  }`,
+  transition: "transform 0.2s ease",
+  "&:hover": {
+    transform: "translateY(-2px)",
+  },
+}));
+
+export const SizeBadge = styled(Badge)(({ theme, isLow }) => ({
+  fontSize: "1rem",
+  padding: "6px 12px",
+  backgroundColor: isLow
+    ? theme.colors.secondaryColor
+    : theme.colors.buttonColor,
+  color: isLow ? "white" : theme.colors.mainColor,
+  fontWeight: "bold",
+}));
+
+export const QuantityBadge = styled(Badge)(({ isLow }) => ({
+  fontSize: "1rem",
+  padding: "6px 12px",
+  backgroundColor: isLow ? "#ffc107" : "#28a745",
+  color: isLow ? "#212529" : "white",
+}));
+
+export const ModalFooter = styled(Modal.Footer)(({ theme }) => ({
+  borderTop: `2px solid ${theme.colors.secondaryColor}`,
+  padding: "1rem 1.5rem",
+  borderBottomLeftRadius: "15px",
+  borderBottomRightRadius: "15px",
+  justifyContent: "center",
+}));

@@ -1,50 +1,43 @@
 import { useState } from "react";
-import { Badge, Button, Image, Modal, Table } from "react-bootstrap";
-
+import { Badge, Image, Table, Modal } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { ControlButton } from "../products/StyledComponents";
 import { Paginator } from "../paginator/Paginator";
-import { Formik } from "formik";
-import { z } from "zod";
 import { ButtonCardStyled } from "../StyledComponents";
-
-const sizeRqd = z.number({
-  required_error: "El tamaño es requerido",
-});
-
-const quantityRqd = z.number({
-  required_error: "La cantidad es requerida",
-});
-
-const stockSchema = z.object({
-  size: sizeRqd,
-  quantity: quantityRqd,
-});
+import {
+  StyledModal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  StockList,
+  StockItem,
+  SizeBadge,
+  QuantityBadge,
+} from "./StyledComponents";
+import PropTypes from "prop-types";
 
 export const ModelsTable = ({ modelos }) => {
   const [show, setShow] = useState(false);
-  const [lowStockSizes, setLowStockSizes] = useState([]); // Estado para tallas con bajo inventario
+  const [lowStockSizes, setLowStockSizes] = useState([]);
 
   const handleClose = () => setShow(false);
   const handleShow = (stocks) => {
     const lowStock = stocks.filter((stock) => stock.quantity < 10);
-    setLowStockSizes(lowStock); // Guardar las tallas en el estado
-    setShow(true); // Mostrar el modal
+    setLowStockSizes(lowStock);
+    setShow(true);
   };
-  const [modelosBypage, setModelosByPage] = useState(10);
+
+  const [modelosBypage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const totalModelos = modelos.length;
   const lastIndex = currentPage * modelosBypage;
   const firstIndex = lastIndex - modelosBypage;
   const navigate = useNavigate();
-  const initialValues = {
-    size: "",
-    quantity: "",
-  };
 
   const viewProduct = (modelo) => {
     navigate(`/profile/models/${modelo.id}`);
   };
+
   const editProduct = (modelo) => {
     navigate(`/profile/products/${modelo.productId}/models/new`, {
       state: { modelo },
@@ -54,6 +47,7 @@ export const ModelsTable = ({ modelos }) => {
   const calculateStock = (stocks) => {
     return stocks.reduce((acc, stock) => acc + stock.quantity, 0);
   };
+
   return (
     <div className="pt-4 ">
       <div className="table-responsive ">
@@ -107,24 +101,29 @@ export const ModelsTable = ({ modelos }) => {
 
                   <td>{calculateStock(modelo.stocks)}</td>
                   <td>
-                    <td>
-                      {modelo.stocks.some((stock) => stock.quantity < 10) && (
-                        <Badge
-                          bg="warning"
-                          text="dark"
-                          onClick={() => {
-                            handleShow(modelo.stocks);
-                          }}
-                        >
-                          Info: Stock bajo
-                        </Badge>
-                      )}
-                      {modelo.stocks.every((stock) => stock.quantity >= 10) && (
+                    {modelo.stocks.some((stock) => stock.quantity < 10) && (
+                      <Badge
+                        bg="warning"
+                        text="dark"
+                        onClick={() => {
+                          handleShow(modelo.stocks);
+                        }}
+                        style={{ cursor: "pointer" }}
+                      >
+                        Info: Stock bajo
+                      </Badge>
+                    )}
+                    {modelo.stocks.length === 0 ? (
+                      <Badge bg="danger" text="light">
+                        No hay stock registrado
+                      </Badge>
+                    ) : (
+                      modelo.stocks.every((stock) => stock.quantity >= 10) && (
                         <Badge bg="success" text="dark">
                           Info: Stock normal
                         </Badge>
-                      )}
-                    </td>
+                      )
+                    )}
                   </td>
                   <td>
                     <div className="flex justify-center gap-2">
@@ -150,29 +149,57 @@ export const ModelsTable = ({ modelos }) => {
         </Table>
       </div>
 
-      <Modal show={show} onHide={handleClose} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Alertas de inventario</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
+      <StyledModal show={show} onHide={handleClose} centered>
+        <ModalHeader closeButton>
+          <Modal.Title>
+            <i className="bi bi-exclamation-triangle-fill me-2"></i>
+            Alertas de inventario
+          </Modal.Title>
+        </ModalHeader>
+        <ModalBody>
           {lowStockSizes.length > 0 ? (
-            <ul>
-              {lowStockSizes.map((stock, index) => (
-                <li key={index}>
-                  Talla: {stock.size} - Cantidad: {stock.quantity}
-                </li>
-              ))}
-            </ul>
+            <>
+              <p className="text-muted mb-3">
+                Las siguientes tallas tienen un inventario por debajo de 10
+                unidades:
+              </p>
+              <StockList>
+                {lowStockSizes.map((stock, index) => (
+                  <StockItem key={index} isLow={stock.quantity < 5}>
+                    <div>
+                      <SizeBadge isLow={stock.quantity < 5}>
+                        Talla {stock.size}
+                      </SizeBadge>
+                    </div>
+                    <div>
+                      <QuantityBadge isLow={stock.quantity < 5}>
+                        {stock.quantity}{" "}
+                        {stock.quantity === 1 ? "unidad" : "unidades"}
+                      </QuantityBadge>
+                    </div>
+                  </StockItem>
+                ))}
+              </StockList>
+              <div className="alert alert-warning mt-3">
+                <i className="bi bi-info-circle-fill me-2"></i>
+                Se recomienda reabastecer las tallas con menos de 5 unidades.
+              </div>
+            </>
           ) : (
-            <p>No hay tallas con bajo inventario.</p>
+            <div className="alert alert-success">
+              <i className="bi bi-check-circle-fill me-2"></i>
+              No hay tallas con bajo inventario.
+            </div>
           )}
-        </Modal.Body>
-        <Modal.Footer>
-          <ButtonCardStyled variant="primary" onClick={handleClose}>
+        </ModalBody>
+        <ModalFooter>
+          <ButtonCardStyled onClick={handleClose}>
+            <i className="bi bi-check-lg me-2"></i>
             Entendido
           </ButtonCardStyled>
-        </Modal.Footer>
-      </Modal>
+        </ModalFooter>
+      </StyledModal>
+
       <Paginator
         byPage={modelosBypage}
         currentPage={currentPage}
@@ -181,4 +208,8 @@ export const ModelsTable = ({ modelos }) => {
       />
     </div>
   );
+};
+
+ModelsTable.propTypes = {
+  modelos: PropTypes.array.isRequired,
 };
