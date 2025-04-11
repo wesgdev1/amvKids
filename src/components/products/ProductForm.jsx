@@ -10,6 +10,7 @@ import { ButtonStyled } from "../StyledComponents";
 
 import Swal from "sweetalert2";
 import { createProduct, updateProduct } from "../../api/products/products";
+import { Button } from "react-bootstrap";
 
 const nombreCompletoRqd = z.string({
   required_error: "El nombre es requerido",
@@ -104,6 +105,16 @@ export const ProductForm = () => {
 
   return (
     <div className="pt-5 px-4">
+      <div className="w-100 d-flex justify-content-start mb-4">
+        <Button
+          variant="light"
+          onClick={() => {
+            navigate(`/profile/products/`);
+          }}
+        >
+          Volver
+        </Button>
+      </div>
       <h4 className="pb-3">
         <i className="bi bi-box"></i> Productos
       </h4>

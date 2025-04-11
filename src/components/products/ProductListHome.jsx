@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Table } from "react-bootstrap";
 
 import { useNavigate } from "react-router-dom";
@@ -13,23 +13,16 @@ export const ProductListHome = ({ models }) => {
   const totalProductos = models.length;
   const lastIndex = currentPage * productosBypage;
   const firstIndex = lastIndex - productosBypage;
-  const navigate = useNavigate();
 
-  const viewProduct = (producto) => {
-    // navigate(`/profile/products/${producto.id}/models`);
-  };
-  const editProduct = (producto) => {
-    // navigate(`/profile/products/new`, {
-    //   state: { producto },
-    // });
-    // data.map((model) => <ShoeCard key={model.id} model={model} />)
-  };
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [models]);
   return (
     <div>
       <div className="d-flex gap-3 flex-wrap justify-content-center aligns-items-center ">
-        {models.map((model) => (
-          <ShoeCard key={model.id} model={model} />
-        ))}
+        {models
+          .map((model) => <ShoeCard key={model.id} model={model} />)
+          .slice(firstIndex, lastIndex)}
       </div>
 
       <Paginator

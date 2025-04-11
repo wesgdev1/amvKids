@@ -3,7 +3,7 @@ import { Card } from "react-bootstrap";
 import { ButtonCardStyled, ShoesCardStyled } from "../StyledComponents";
 import { CardDescroptionStyle } from "./StyledComponents";
 import { useNavigate } from "react-router-dom";
-import { useContext, useState } from "react";
+import { useContext, useState, useRef, useEffect } from "react";
 import { AuthContext } from "../../auth/context/AuthContext";
 import styled from "@emotion/styled";
 
@@ -54,9 +54,35 @@ export const ShoeCard = ({ model }) => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const [imageLoaded, setImageLoaded] = useState(false);
+  const containerRef = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      {
+        threshold: 0.1,
+        rootMargin: "100px",
+      }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => {
+      if (observer) {
+        observer.disconnect();
+      }
+    };
+  }, []);
 
   const handleClick = () => {
-    // Reviso si esta logueado, si no estra logueado, lo envio a la pagina de login
     if (user) {
       navigate(`/productos/${model.id}`);
     } else {
@@ -66,15 +92,18 @@ export const ShoeCard = ({ model }) => {
 
   return (
     <>
-      <ShoesCardStyled>
+      <ShoesCardStyled ref={containerRef}>
         <ImageContainer>
           {!imageLoaded && <ImageSkeleton />}
           <CardImage
             variant="top"
-            src={model.images[0]?.url || "https://via.placeholder.com/150"}
+            src={
+              isVisible
+                ? model.images[0]?.url || "https://via.placeholder.com/150"
+                : ""
+            }
             loaded={imageLoaded}
             onLoad={() => setImageLoaded(true)}
-            style={{ display: imageLoaded ? "block" : "none" }}
           />
         </ImageContainer>
         <Card.Body>
@@ -102,11 +131,9 @@ export const ShoeCard = ({ model }) => {
             {user?.tipoUsuario === "Whatsapp" &&
               model.normalPrice.toLocaleString("es-CO") + " COP"}
 
-            {/* si no hay user */}
             {!user && model.normalPrice.toLocaleString("es-CO") + " COP"}
-            {/* {model.price.toLocaleString("es-CO")} COP */}
           </Card.Text>
-          <div className="d-flex justify-center ">
+          <div className="d-flex justify-center">
             <ButtonCardStyled onClick={handleClick}>
               Ver Detalle
             </ButtonCardStyled>

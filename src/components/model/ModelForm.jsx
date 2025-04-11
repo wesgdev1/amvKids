@@ -86,7 +86,7 @@ export const ModelForm = () => {
           text: "El Modelo no se creo correctamente, intenta nuevamente",
         });
       }
-      navigate("/profile/products", { replace: true });
+      navigate(`/profile/products/${idProduct}/models`, { replace: true });
     } catch (error) {
       Swal.fire({
         icon: "error",
