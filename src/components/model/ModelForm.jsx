@@ -6,7 +6,7 @@ import { z } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import Swal from "sweetalert2";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { createModel } from "../../api/model/model";
+import { createModel, updateModel } from "../../api/model/model";
 
 const nameRqd = z.string({
   required_error: "El nombre del modelo es requerido",
@@ -91,7 +91,8 @@ export const ModelForm = () => {
 
   const editModel = async (values) => {
     try {
-      const response = await createModel(values);
+      const response = await updateModel(actionEdit.id, values);
+
       if (response) {
         Swal.fire({
           icon: "success",
@@ -105,7 +106,7 @@ export const ModelForm = () => {
           text: "El Modelo no se edito correctamente, intenta nuevamente",
         });
       }
-      navigate("/profile/products", { replace: true });
+      navigate(`/profile/products/${idProduct}/models`, { replace: true });
     } catch (error) {
       Swal.fire({
         icon: "error",
@@ -141,7 +142,7 @@ export const ModelForm = () => {
 
       // await addModel(formData);
       if (actionEdit) {
-        // await editModel(formData);
+        await editModel(formData);
         console.log("formData", formData);
       } else {
         await addModel(formData);

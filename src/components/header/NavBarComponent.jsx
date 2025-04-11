@@ -28,10 +28,12 @@ import {
 } from "./StyledComponents";
 import { useCart } from "../../store";
 import Offcanvas from "react-bootstrap/Offcanvas";
+import { useProfile } from "../../domain/auth/useProfile";
 
 export const NavBarComponent = () => {
   const { state } = useCart();
   const { user, logout } = useContext(AuthContext);
+  // const { data, loading, error } = useProfile(user?.id);
 
   const cerrarsesion = () => {
     logout();

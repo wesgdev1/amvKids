@@ -47,7 +47,7 @@ export const createModel = async (payload) => {
 
 export const updateModel = async (id, payload) => {
   try {
-    const { data: response } = await http.put(`/models/${id}`, payload);
+    const { data: response } = await http.patch(`/models/${id}`, payload);
     return { data: response.data };
   } catch (error) {
     return Promise.reject(error);
