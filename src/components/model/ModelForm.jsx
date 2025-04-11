@@ -1,5 +1,5 @@
 import { ErrorMessage, Formik } from "formik";
-import { Alert, Button, Col, Form, Row, Spinner } from "react-bootstrap";
+import { Alert, Button, Form, Spinner } from "react-bootstrap";
 import { ButtonStyled } from "../StyledComponents";
 import { useState } from "react";
 import { z } from "zod";
@@ -7,6 +7,13 @@ import { toFormikValidationSchema } from "zod-formik-adapter";
 import Swal from "sweetalert2";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { createModel, updateModel } from "../../api/model/model";
+import {
+  FormContainer,
+  FormGroup,
+  FormWrapper,
+  ImagePreviewContainer,
+  ImagePreview,
+} from "./StyledComponents";
 
 const nameRqd = z.string({
   required_error: "El nombre del modelo es requerido",
@@ -39,7 +46,6 @@ const modelSchema = z.object({
   alliancePrice: alliancePrice,
   image: imageRqd,
   description: descriptionRqd,
-
   color: colorRqd,
 });
 
@@ -61,6 +67,7 @@ export const ModelForm = () => {
   };
 
   const [error, setError] = useState(false);
+  // eslint-disable-next-line no-unused-vars
   const [errorMessage, setErrorMessage] = useState("");
 
   const addModel = async (values) => {
@@ -160,251 +167,238 @@ export const ModelForm = () => {
   };
 
   return (
-    <div className="pt-5 px-4">
-      <Button
-        className="mb-4"
-        variant="light"
-        onClick={() => {
-          navigate(`/profile/products/${idProduct}/models`);
-        }}
-      >
-        Volver
-      </Button>
-      <h4 className="pb-3">
-        <i className="bi bi-box2-fill"> </i>
-        {actionEdit ? "Editar Modelo" : "Agregar Modelo"}
-      </h4>
+    <FormContainer>
+      <div className="w-100 d-flex flex-column align-items-center">
+        <div className="w-100 d-flex justify-content-start mb-4">
+          <Button
+            variant="light"
+            onClick={() => {
+              navigate(`/profile/products/${idProduct}/models`);
+            }}
+          >
+            Volver
+          </Button>
+        </div>
+        <h4 className="pb-3 text-center">
+          <i className="bi bi-box2-fill"> </i>
+          {actionEdit ? "Editar Modelo" : "Agregar Modelo"}
+        </h4>
 
-      <Formik
-        initialValues={initialValues}
-        onSubmit={onSubmit}
-        validationSchema={toFormikValidationSchema(modelSchema)}
-      >
-        {({
-          values,
-          errors,
-          touched,
-          handleChange,
-          handleBlur,
-          handleSubmit,
-          isSubmitting,
-          setFieldValue,
-        }) => (
-          <>
-            <Form
-              className="d-flex flex-column gap-4 "
-              onSubmit={handleSubmit}
-              style={{ width: "100%", margin: "auto", marginTop: "10px" }}
-            >
-              {error && (
-                <Alert
-                  variant="danger"
-                  style={{ width: "75%", margin: "auto", marginTop: "10px" }}
-                >
-                  Hubo un error, intentalo nuevamente
-                </Alert>
-              )}
-              <Form.Group className="" controlId="formBasicNombreCompleto">
-                <Form.Label>Nombre del modelo</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Escibe aqui el nombre del modelo"
-                  name="name"
-                  style={{ width: "50%" }}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.name}
-                  className={touched.name && errors.name ? "is-invalid" : ""}
-                />
-                <ErrorMessage
-                  name="name"
-                  component="div"
-                  className="invalid-feedback"
-                />
-              </Form.Group>
-
-              <Form.Group className="" controlId="formBasicNombreCompleto">
-                <Form.Label>Color</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Escibe aqui el color"
-                  name="color"
-                  style={{ width: "50%" }}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.color}
-                  className={touched.color && errors.color ? "is-invalid" : ""}
-                />
-                <ErrorMessage
-                  name="color"
-                  component="div"
-                  className="invalid-feedback"
-                />
-              </Form.Group>
-
-              <Form.Group className="" controlId="formBasicNombreCompleto">
-                <Form.Label>Descripcion del modelo</Form.Label>
-                <Form.Control
-                  as={"textarea"}
-                  role={2}
-                  style={{ width: "50%" }}
-                  placeholder="Escibe aqui la descripcion del modelo"
-                  name="description"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.description}
-                  className={
-                    touched.description && errors.description
-                      ? "is-invalid"
-                      : ""
-                  }
-                />
-                <ErrorMessage
-                  name="description"
-                  component="div"
-                  className="invalid-feedback"
-                />
-              </Form.Group>
-              <Form.Group className="" controlId="formBasicNombreCompleto">
-                <Form.Label>Precio del modelo</Form.Label>
-                <Form.Control
-                  type="number"
-                  style={{ width: "50%" }}
-                  placeholder="Escibe aqui el precio del modelo"
-                  name="normalPrice"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.normalPrice}
-                  className={
-                    touched.normalPrice && errors.normalPrice
-                      ? "is-invalid"
-                      : ""
-                  }
-                />
-                <ErrorMessage
-                  name="normalPrice"
-                  component="div"
-                  className="invalid-feedback"
-                />
-              </Form.Group>
-
-              <Form.Group className="" controlId="formBasicNombreCompleto">
-                <Form.Label>Precio de reventa</Form.Label>
-                <Form.Control
-                  type="number"
-                  style={{ width: "50%" }}
-                  placeholder="Escibe aqui el precio del modelo"
-                  name="price"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.price}
-                  className={touched.price && errors.price ? "is-invalid" : ""}
-                />
-                <ErrorMessage
-                  name="price"
-                  component="div"
-                  className="invalid-feedback"
-                />
-              </Form.Group>
-              <Form.Group className="" controlId="formBasicNombreCompleto">
-                <Form.Label>Precio para aliado</Form.Label>
-                <Form.Control
-                  type="number"
-                  style={{ width: "50%" }}
-                  placeholder="Escibe aqui el precio del modelo"
-                  name="alliancePrice"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.alliancePrice}
-                  className={
-                    touched.alliancePrice && errors.alliancePrice
-                      ? "is-invalid"
-                      : ""
-                  }
-                />
-                <ErrorMessage
-                  name="alliancePrice"
-                  component="div"
-                  className="invalid-feedback"
-                />
-              </Form.Group>
-
-              <Form.Group
-                className="align-items-center"
-                controlId="formProdFileIMG"
+        <Formik
+          initialValues={initialValues}
+          onSubmit={onSubmit}
+          validationSchema={toFormikValidationSchema(modelSchema)}
+        >
+          {({
+            values,
+            errors,
+            touched,
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            isSubmitting,
+            setFieldValue,
+          }) => (
+            <FormWrapper>
+              <Form
+                className="d-flex flex-column w-100 align-items-center"
+                onSubmit={handleSubmit}
               >
-                <Form.Label>Imagenes del modelo</Form.Label>
-                {actionEdit?.images.length > 0 && (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-4">
-                    {actionEdit.images.map((image) => (
-                      <div
-                        key={image.id}
-                        className="relative overflow-hidden rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
-                      >
-                        <img
-                          src={image.url}
-                          alt={image.name}
-                          className="w-full h-full object-cover rounded-lg"
-                        />
-                      </div>
-                    ))}
-                  </div>
+                {error && (
+                  <Alert
+                    variant="danger"
+                    className="mb-4 w-100 mx-auto"
+                    style={{ maxWidth: "800px" }}
+                  >
+                    Hubo un error, intentalo nuevamente
+                  </Alert>
                 )}
-                <p className="font-semibold text-purple-500">
-                  Adjunta (3) o mas imagenes del modelo{" "}
-                </p>
-                <Form.Control
-                  style={{ width: "50%" }}
-                  type="file"
-                  multiple
-                  size="sm"
-                  name="images"
-                  accept=".jpg, .jpeg, .png"
-                  onChange={(e) => {
-                    // const file = e.currentTarget.files[0];
-                    const file = Array.from(e.currentTarget.files);
-                    setFieldValue("images", file);
-                  }}
-                  //onBlur={handleBlur}
-                  // value={values.name}
-                  className={
-                    touched.images && errors.images ? "is-invalid" : ""
-                  }
-                />
-                <ErrorMessage
-                  name="images"
-                  component="div"
-                  className="invalid-feedback"
-                />
-              </Form.Group>
+                <FormGroup controlId="formBasicNombreCompleto">
+                  <Form.Label>Nombre del modelo</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Escibe aqui el nombre del modelo"
+                    name="name"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.name}
+                    className={touched.name && errors.name ? "is-invalid" : ""}
+                  />
+                  <ErrorMessage
+                    name="name"
+                    component="div"
+                    className="invalid-feedback"
+                  />
+                </FormGroup>
 
-              <div className="d-flex justify-content-center">
-                <ButtonStyled
-                  variant="primary"
-                  type="submit"
-                  size="lg"
-                  disabled={isSubmitting}
-                >
-                  {!isSubmitting ? (
-                    actionEdit ? (
-                      "Actualizar"
-                    ) : (
-                      "Crear Modelo"
-                    )
-                  ) : (
-                    <Spinner
-                      as="span"
-                      animation="grow"
-                      role="status"
-                      aria-hidden="true"
-                    />
+                <FormGroup controlId="formBasicColor">
+                  <Form.Label>Color</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Escibe aqui el color"
+                    name="color"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.color}
+                    className={
+                      touched.color && errors.color ? "is-invalid" : ""
+                    }
+                  />
+                  <ErrorMessage
+                    name="color"
+                    component="div"
+                    className="invalid-feedback"
+                  />
+                </FormGroup>
+
+                <FormGroup controlId="formBasicDescripcion">
+                  <Form.Label>Descripcion del modelo</Form.Label>
+                  <Form.Control
+                    as={"textarea"}
+                    rows={3}
+                    placeholder="Escibe aqui la descripcion del modelo"
+                    name="description"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.description}
+                    className={
+                      touched.description && errors.description
+                        ? "is-invalid"
+                        : ""
+                    }
+                  />
+                  <ErrorMessage
+                    name="description"
+                    component="div"
+                    className="invalid-feedback"
+                  />
+                </FormGroup>
+                <FormGroup controlId="formBasicPrecioNormal">
+                  <Form.Label>Precio del modelo</Form.Label>
+                  <Form.Control
+                    type="number"
+                    placeholder="Escibe aqui el precio del modelo"
+                    name="normalPrice"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.normalPrice}
+                    className={
+                      touched.normalPrice && errors.normalPrice
+                        ? "is-invalid"
+                        : ""
+                    }
+                  />
+                  <ErrorMessage
+                    name="normalPrice"
+                    component="div"
+                    className="invalid-feedback"
+                  />
+                </FormGroup>
+
+                <FormGroup controlId="formBasicPrecioReventa">
+                  <Form.Label>Precio de reventa</Form.Label>
+                  <Form.Control
+                    type="number"
+                    placeholder="Escibe aqui el precio del modelo"
+                    name="price"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.price}
+                    className={
+                      touched.price && errors.price ? "is-invalid" : ""
+                    }
+                  />
+                  <ErrorMessage
+                    name="price"
+                    component="div"
+                    className="invalid-feedback"
+                  />
+                </FormGroup>
+                <FormGroup controlId="formBasicPrecioAliado">
+                  <Form.Label>Precio para aliado</Form.Label>
+                  <Form.Control
+                    type="number"
+                    placeholder="Escibe aqui el precio del modelo"
+                    name="alliancePrice"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.alliancePrice}
+                    className={
+                      touched.alliancePrice && errors.alliancePrice
+                        ? "is-invalid"
+                        : ""
+                    }
+                  />
+                  <ErrorMessage
+                    name="alliancePrice"
+                    component="div"
+                    className="invalid-feedback"
+                  />
+                </FormGroup>
+
+                <FormGroup controlId="formProdFileIMG">
+                  <Form.Label>Imagenes del modelo</Form.Label>
+                  {actionEdit?.images?.length > 0 && (
+                    <ImagePreviewContainer>
+                      {actionEdit.images.map((image) => (
+                        <ImagePreview key={image.id}>
+                          <img src={image.url} alt={image.name} />
+                        </ImagePreview>
+                      ))}
+                    </ImagePreviewContainer>
                   )}
-                </ButtonStyled>
-              </div>
-            </Form>
-          </>
-        )}
-      </Formik>
-    </div>
+                  <p className="font-semibold text-purple-500 mt-3">
+                    Adjunta (3) o mas imagenes del modelo{" "}
+                  </p>
+                  <Form.Control
+                    type="file"
+                    multiple
+                    size="sm"
+                    name="images"
+                    accept=".jpg, .jpeg, .png"
+                    onChange={(e) => {
+                      const file = Array.from(e.currentTarget.files);
+                      setFieldValue("images", file);
+                    }}
+                    className={
+                      touched.images && errors.images ? "is-invalid" : ""
+                    }
+                  />
+                  <ErrorMessage
+                    name="images"
+                    component="div"
+                    className="invalid-feedback"
+                  />
+                </FormGroup>
+
+                <div className="d-flex justify-content-center mt-4">
+                  <ButtonStyled
+                    variant="primary"
+                    type="submit"
+                    size="lg"
+                    disabled={isSubmitting}
+                  >
+                    {!isSubmitting ? (
+                      actionEdit ? (
+                        "Actualizar"
+                      ) : (
+                        "Crear Modelo"
+                      )
+                    ) : (
+                      <Spinner
+                        as="span"
+                        animation="grow"
+                        role="status"
+                        aria-hidden="true"
+                      />
+                    )}
+                  </ButtonStyled>
+                </div>
+              </Form>
+            </FormWrapper>
+          )}
+        </Formik>
+      </div>
+    </FormContainer>
   );
 };
