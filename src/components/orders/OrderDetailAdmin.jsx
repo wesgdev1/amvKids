@@ -14,6 +14,7 @@ import {
 } from "../../api/orders/orders";
 
 import { ButtonCardStyled, ShoesCardStyledPayment } from "../StyledComponents";
+import { ProgressBar } from "./ProgressBar";
 
 const imageRqd = z.any().optional();
 
@@ -244,6 +245,7 @@ export const OrdeDetailAdmin = () => {
         {error && <Alert variant="danger">{error}</Alert>}
         {data && (
           <ShoesCardStyledPayment>
+            <ProgressBar currentStep={5} />
             <Card.Header>
               <strong> Total: {data.total.toLocaleString("es-CO")} COP</strong>
             </Card.Header>
