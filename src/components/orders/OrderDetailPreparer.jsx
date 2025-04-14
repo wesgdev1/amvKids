@@ -1,235 +1,269 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useOrder } from "../../domain/orders/useOrder";
-import { Alert, Card, CloseButton, Spinner } from "react-bootstrap";
-import { z } from "zod";
+import { Alert, Card, Spinner } from "react-bootstrap";
 
-import { useState } from "react";
 import Swal from "sweetalert2";
 
-import {
-  deleteOrder,
-  updateOrder,
-  updateOrderItems,
-  updateOrderState,
-} from "../../api/orders/orders";
+import { updateOrderState } from "../../api/orders/orders";
 
 import { ButtonCardStyled, ShoesCardStyledPayment } from "../StyledComponents";
+import styled from "@emotion/styled";
 
-const imageRqd = z.any().optional();
+// Botón secundario con un estilo diferente
+const SecondaryButton = styled(ButtonCardStyled)`
+  background-color: #73ccfd;
+  margin-left: 10px;
+
+  &:hover {
+    background-color: #5ba8d9;
+  }
+`;
 
 export const OrdeDetailPreparer = () => {
   const params = useParams();
   const { id } = params;
   const { data, loading, error, cargarOrder: refresh } = useOrder(id);
 
-  const navigate = useNavigate();
+  // Función para imprimir el recibo en la impresora POS
+  const printReceipt = (orderData) => {
+    return new Promise((resolve, reject) => {
+      try {
+        // Crear el contenido del recibo
+        const receiptContent = generateReceiptContent(orderData);
 
-  const [error2, setError2] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+        // Usar la API de impresión del navegador
+        const printWindow = window.open("", "_blank", "width=300,height=600");
 
-  const calculateNewTotal = (orderItems) => {};
+        printWindow.document.write(`
+          <html>
+            <head>
+              <title>Recibo #${orderData.codigoOrder}</title>
+              <style>
+                body {
+                  font-family: 'Courier New', monospace;
+                  width: 80mm;
+                  margin: 0;
+                  padding: 5mm;
+                  font-size: 12px;
+                }
+                .header {
+                  text-align: center;
+                  margin-bottom: 10px;
+                  font-weight: bold;
+                }
+                .divider {
+                  border-top: 1px dashed #000;
+                  margin: 10px 0;
+                }
+                .order-info {
+                  margin-bottom: 10px;
+                }
+                .items {
+                  width: 100%;
+                }
+                .items th {
+                  text-align: left;
+                }
+                .total {
+                  text-align: right;
+                  font-weight: bold;
+                  margin-top: 10px;
+                }
+                .footer {
+                  text-align: center;
+                  margin-top: 20px;
+                  font-size: 10px;
+                }
+                @media print {
+                  body {
+                    width: 80mm;
+                  }
+                  @page {
+                    margin: 0;
+                    size: 80mm auto;
+                  }
+                }
+              </style>
+            </head>
+            <body>
+              ${receiptContent}
+              <script>
+                window.onload = function() {
+                  window.print();
+                  setTimeout(function() {
+                    window.close();
+                    window.opener.postMessage('print-completed', '*');
+                  }, 500);
+                };
+              </script>
+            </body>
+          </html>
+        `);
 
-  const handlePaymentConfirm = () => {
-    try {
-      Swal.fire({
-        title: "Confirmar Pago",
-        text: "¿Estas seguro de confirmar el pago?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Si",
-        cancelButtonText: "No",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          const values = {
-            state: "Pago Confirmado",
-          };
-          const result = updateOrderState(id, values);
-          if (result) {
-            Swal.fire({
-              icon: "success",
-              title: "Orden Actualizada",
-              text: "La orden se actualizo correctamente",
-            });
-            refresh(id);
+        printWindow.document.close();
+
+        // Escuchar el mensaje de que la impresión ha sido completada
+        window.addEventListener("message", function messageHandler(event) {
+          if (event.data === "print-completed") {
+            window.removeEventListener("message", messageHandler);
+            resolve();
           }
-        }
-      });
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "No se pudo confirmar el pago",
-      });
-    }
-  };
-
-  const handlePedidoEntregado = () => {
-    try {
-      Swal.fire({
-        title: "Pedido Entregado",
-        text: "¿Estas seguro de confirmar la entrega del pedido?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Si",
-        cancelButtonText: "No",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          const values = {
-            state: "Pedido Entregado",
-          };
-          const result = updateOrderState(id, values);
-          if (result) {
-            Swal.fire({
-              icon: "success",
-              title: "Orden Actualizada",
-              text: "La orden se actualizo correctamente",
-            });
-            refresh(id);
-          }
-        }
-      });
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "No se pudo confirmar la entrega del pedido",
-      });
-    }
-  };
-
-  const handlePaymentCancel = () => {
-    try {
-      Swal.fire({
-        title: "Cancelar Pago",
-        text: "¿Estas seguro de cancelar el pago?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Si",
-        cancelButtonText: "No",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          const values = {
-            state: "Creada",
-          };
-          const result = updateOrderState(id, values);
-          if (result) {
-            Swal.fire({
-              icon: "success",
-              title: "Orden Actualizada",
-              text: "La orden se actualizo correctamente",
-            });
-            refresh(id);
-          }
-        }
-      });
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "No se pudo cancelar el pago",
-      });
-    }
-  };
-
-  const handlePaymentCancelAll = async () => {
-    try {
-      // Mostrar alerta de confirmación
-      const result = await Swal.fire({
-        title: "Cancelar Orden",
-        text: "¿Estás seguro de cancelar la orden?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Sí",
-        cancelButtonText: "No",
-      });
-
-      // Si el usuario confirma
-      if (result.isConfirmed) {
-        // Llamada a la API para eliminar la orden
-        const response = await deleteOrder(id);
-
-        // Verificar que la respuesta sea 200 OK
-        if (response) {
-          // Mostrar mensaje de éxito
-          await Swal.fire({
-            icon: "success",
-            title: "Orden Cancelada",
-            text: "La orden se actualizó correctamente",
-          });
-
-          // Redirigir a la página de órdenes después de un pequeño retraso
-          setTimeout(() => {
-            navigate("/profile/orders", {
-              replace: true,
-            });
-          }, 1000); // Espera 1 segundo antes de redirigir
-        }
-      }
-    } catch (error) {
-      // Manejar errores de la API o del proceso
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Ocurrió un error inesperado al cancelar la orden",
-      });
-    }
-  };
-
-  const handleClickDeleteItem = async (orderId, ItemId) => {
-    try {
-      // Mostrar alerta de confirmación
-      const result = await Swal.fire({
-        title: "Eliminar Item",
-        text: "¿Estás seguro que deseas eliminar este item de la orden?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Sí",
-        cancelButtonText: "No",
-      });
-
-      // Si el usuario confirma
-      if (result.isConfirmed) {
-        // Llamada a la API para eliminar la orden
-        const response = await updateOrderItems({
-          orderId: orderId,
-          itemId: ItemId,
         });
 
-        // Verificar que la respuesta sea 200 OK
-        if (response) {
-          // Mostrar mensaje de éxito
-          await Swal.fire({
-            icon: "success",
-            title: "Item Eliminado",
-            text: "La orden se actualizó correctamente",
-          });
+        // Por si acaso el mensaje falla, resolver después de un tiempo razonable
+        setTimeout(() => {
+          resolve();
+        }, 3000);
+      } catch (error) {
+        console.error("Error al imprimir recibo:", error);
+        reject(error);
+      }
+    });
+  };
 
-          // Redirigir a la página de órdenes después de un pequeño retraso
-          setTimeout(() => {
-            // navigate("/profile/orders", {
-            //   replace: true,
-            // });
-            refresh(id);
-          }, 1000); // Espera 1 segundo antes de redirigir
+  // Generar el contenido del recibo
+  const generateReceiptContent = (orderData) => {
+    const fecha = new Date().toLocaleString("es-CO");
+    const items = orderData.orderItems
+      .map(
+        (item) => `
+      <tr>
+        <td>${item.quantity} x ${item.model.name}</td>
+        <td>Talla: ${item.size}</td>
+        <td>${item.model.color ? `Color: ${item.model.color}` : ""}</td>
+      </tr>
+    `
+      )
+      .join("");
+
+    return `
+      <div class="header">
+        AMV KIDS<br>
+        RECIBO DE PREPARACIÓN
+      </div>
+      <div class="divider"></div>
+      <div class="order-info">
+        <strong>Orden #:</strong> ${orderData.codigoOrder}<br>
+        <strong>Fecha:</strong> ${fecha}<br>
+        <strong>Estado:</strong> Alistado
+      </div>
+      <div class="divider"></div>
+      <div class="client-info">
+        <strong>Cliente:</strong> ${orderData.user.name}<br>
+        <strong>Tipo:</strong> ${orderData.user.tipoUsuario}<br>
+        <strong>Código:</strong> ${orderData.user.codigo}<br>
+      </div>
+      <div class="divider"></div>
+      <strong>Productos:</strong><br>
+      <table class="items">
+        <tbody>
+          ${items}
+        </tbody>
+      </table>
+      <div class="divider"></div>
+      <div class="total">
+        TOTAL: ${orderData.total.toLocaleString("es-CO")} COP
+      </div>
+      ${
+        orderData.comments
+          ? `
+      <div class="divider"></div>
+      <div>
+        <strong>Comentarios:</strong><br>
+        ${orderData.comments}
+      </div>
+      `
+          : ""
+      }
+      <div class="divider"></div>
+      <div class="footer">
+        Este recibo certifica que la orden ha sido preparada.<br>
+        Gracias por su preferencia!
+      </div>
+    `;
+  };
+
+  // Función común para actualizar el estado
+  const updateOrderStatus = async (shouldPrint) => {
+    try {
+      const result = await Swal.fire({
+        title: "Pedido preparado",
+        text: "¿Está seguro que el pedido está listo para ser entregado?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si",
+        cancelButtonText: "No",
+      });
+
+      if (result.isConfirmed) {
+        const values = {
+          state: "Alistado",
+        };
+
+        const updateResult = await updateOrderState(id, values);
+
+        if (updateResult) {
+          // Imprimir el recibo solo si se solicita
+          if (shouldPrint) {
+            try {
+              // Mostrar indicador de carga mientras se imprime
+              Swal.fire({
+                title: "Imprimiendo recibo...",
+                text: "Por favor espere",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                  Swal.showLoading();
+                },
+              });
+
+              // Esperar a que se complete la impresión
+              await printReceipt(data);
+
+              // Cerrar el indicador de carga y mostrar mensaje de éxito
+              Swal.fire({
+                icon: "success",
+                title: "Orden Actualizada",
+                text: "La orden se actualizó correctamente y se ha impreso el recibo",
+              });
+            } catch (printError) {
+              Swal.fire({
+                icon: "error",
+                title: "Error de impresión",
+                text: "No se pudo imprimir el recibo. Verifique la conexión con la impresora.",
+              });
+            }
+          } else {
+            Swal.fire({
+              icon: "success",
+              title: "Orden Actualizada",
+              text: "La orden se actualizó correctamente",
+            });
+          }
+
+          refresh(id);
         }
       }
     } catch (error) {
+      console.error("Error al actualizar orden:", error);
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: "Ocurrió un error inesperado al cancelar la orden",
+        text: "Error al actualizar la orden",
       });
     }
+  };
+
+  // Actualizar e imprimir
+  const handlePedidoEntregadoConImpresion = () => {
+    updateOrderStatus(true);
+  };
+
+  // Solo actualizar
+  const handlePedidoEntregadoSinImpresion = () => {
+    updateOrderStatus(false);
   };
 
   return (
@@ -264,18 +298,12 @@ export const OrdeDetailPreparer = () => {
               <Card.Title className="fw-bold">Productos</Card.Title>
               <Card.Text>
                 {data.orderItems.map((item) => (
-                  <>
-                    <div className="d-flex  gap-4">
-                      <p key={item.id}>
-                        {item.quantity} x {item.model.name} -{" "}
-                        {/* {item.model.price.toLocaleString("es-CO")} COP - talla:{" "} */}
-                        talla: {item.size}
-                      </p>
-                      <CloseButton
-                        onClick={() => handleClickDeleteItem(data.id, item.id)}
-                      />
-                    </div>
-                  </>
+                  <div className="d-flex gap-4" key={item.id}>
+                    <p>
+                      {item.quantity} x {item.model.name} - talla: {item.size}
+                      {item.model.color && ` - color: ${item.model.color}`}
+                    </p>
+                  </div>
                 ))}
               </Card.Text>
             </Card.Body>
@@ -308,45 +336,16 @@ export const OrdeDetailPreparer = () => {
               )}
             </Card.Body>
             <hr />
-            <div className="flex flex-wrap gap-4 justify-center">
-              {data.state === "Pedido Entregado" ? null : (
-                <>
-                  {data.state === "Creada" ||
-                  data.state === "Pago Confirmado" ? null : (
-                    <>
-                      <ButtonCardStyled
-                        onClick={() => {
-                          handlePaymentCancel();
-                        }}
-                      >
-                        Pago Invalido
-                      </ButtonCardStyled>
-                      <ButtonCardStyled
-                        onClick={() => {
-                          handlePaymentConfirm();
-                        }}
-                      >
-                        Pago Confirmado
-                      </ButtonCardStyled>
-                    </>
-                  )}
+            <div className="d-flex justify-content-center gap-2 mb-3">
+              <ButtonCardStyled onClick={handlePedidoEntregadoConImpresion}>
+                <i className="bi bi-printer me-2"></i>
+                Marcar listo e imprimir
+              </ButtonCardStyled>
 
-                  <ButtonCardStyled
-                    onClick={() => {
-                      handlePaymentCancelAll();
-                    }}
-                  >
-                    Cancelar Orden
-                  </ButtonCardStyled>
-                  <ButtonCardStyled
-                    onClick={() => {
-                      handlePedidoEntregado();
-                    }}
-                  >
-                    Pedido Entregado
-                  </ButtonCardStyled>
-                </>
-              )}
+              <SecondaryButton onClick={handlePedidoEntregadoSinImpresion}>
+                <i className="bi bi-check-circle me-2"></i>
+                Solo marcar listo
+              </SecondaryButton>
             </div>
           </ShoesCardStyledPayment>
         )}

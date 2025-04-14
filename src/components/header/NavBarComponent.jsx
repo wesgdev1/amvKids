@@ -116,7 +116,11 @@ export const NavBarComponent = () => {
 
     Preparador: [
       { path: "/profile", icon: "bi bi-person-circle", label: "Mi perfil" },
-      { path: "/profile/myOrders", icon: "bi bi-search", label: "Ordenes" },
+      {
+        path: "/profile/prepareOrders",
+        icon: "bi bi-search",
+        label: "Ordenes",
+      },
       {
         path: "/profile/scan",
         icon: "bi bi-upc-scan",

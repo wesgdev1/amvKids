@@ -14,6 +14,8 @@ import { UserForm } from "../users/UserForm";
 import { ScanShoe } from "../scan/ScanShoe";
 import { ReportList } from "../reports/ReportList";
 import { OrderListByUser } from "../users/OrderListbyUser";
+import { OrderPreparer } from "../orders/OrderPreparer";
+import { OrdeDetailPreparer } from "../orders/OrderDetailPreparer";
 
 export const ProfileRoutes = () => {
   return (
@@ -24,8 +26,10 @@ export const ProfileRoutes = () => {
         <Route path="/scan" element={<ScanShoe />} />
         <Route path="/myOrders" element={<OrderList />} />
         <Route path="/orders" element={<OrdersAdmin />} />
+        <Route path="/prepareOrders" element={<OrderPreparer />} />
         <Route path="/myOrders/:id" element={<OrdeDetail />} />
         <Route path="/order/:id" element={<OrdeDetailAdmin />} />
+        <Route path="/prepareOrders/:id" element={<OrdeDetailPreparer />} />
         <Route path="/products" element={<ProductList />} />
 
         <Route path="/products/new" element={<ProductForm />} />
