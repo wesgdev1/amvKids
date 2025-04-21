@@ -1,18 +1,40 @@
 import { useParams } from "react-router-dom";
 import { useModel } from "../domain/models/useModel";
-import { Alert, Card, Carousel, Col, Image, Spinner } from "react-bootstrap";
+import {
+  Alert,
+  Card,
+  Carousel,
+  Col,
+  Image,
+  Spinner,
+  Modal,
+} from "react-bootstrap";
 import {
   ButtonProfile,
   CardStoreStyle,
 } from "../components/products/StyledComponents";
 import { ControlProduct } from "../components/products/ControlProduct";
 import { ContainerMov } from "../components/home/StyledComponents";
+import { useState } from "react";
 
 export const ProductDetail = () => {
   const params = useParams();
   const { id } = params;
 
   const { data, loading, error } = useModel(id);
+
+  const [showModal, setShowModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  const handleImageClick = (image) => {
+    setSelectedImage(image);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedImage(null);
+  };
 
   return (
     <>
@@ -35,7 +57,10 @@ export const ProductDetail = () => {
               }}
             >
               {data?.images.map((image, index) => (
-                <Carousel.Item key={index}>
+                <Carousel.Item
+                  key={index}
+                  onClick={() => handleImageClick(image.url)}
+                >
                   <Image
                     src={image.url}
                     alt={data?.name}
@@ -73,6 +98,25 @@ export const ProductDetail = () => {
             <ControlProduct data={data} />
             <div>{data?.description}</div>
           </div>
+
+          <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
+            <Modal.Header closeButton>
+              <Modal.Title>{data?.name}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body className="text-center">
+              {selectedImage && (
+                <Image
+                  src={selectedImage}
+                  alt={data?.name}
+                  style={{
+                    width: "100%",
+                    height: "auto",
+                    cursor: "zoom-in",
+                  }}
+                />
+              )}
+            </Modal.Body>
+          </Modal>
         </ContainerMov>
       )}
     </>
