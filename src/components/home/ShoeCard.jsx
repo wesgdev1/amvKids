@@ -50,6 +50,17 @@ const CardTitleStyled = styled(Card.Title)`
   max-width: 100%;
 `;
 
+const ColorTag = styled.span`
+  display: inline-block;
+  background-color: white;
+  color: #000000;
+  padding: 0.2em 0.5em;
+  border-radius: 5px;
+  font-size: 0.8em;
+  margin-top: 0.5em;
+  text-transform: capitalize;
+`;
+
 export const ShoeCard = ({ model }) => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -92,7 +103,7 @@ export const ShoeCard = ({ model }) => {
 
   return (
     <>
-      <ShoesCardStyled ref={containerRef}>
+      <ShoesCardStyled ref={containerRef} onClick={handleClick}>
         <ImageContainer>
           {!imageLoaded && <ImageSkeleton />}
           <CardImage
@@ -108,6 +119,7 @@ export const ShoeCard = ({ model }) => {
         </ImageContainer>
         <Card.Body>
           <CardTitleStyled>{model.name}</CardTitleStyled>
+          <ColorTag color={model.color}>{model.color}</ColorTag>
           <CardDescroptionStyle>{model.description}</CardDescroptionStyle>
           <Card.Text
             style={{
@@ -133,11 +145,11 @@ export const ShoeCard = ({ model }) => {
 
             {!user && model.normalPrice.toLocaleString("es-CO") + " COP"}
           </Card.Text>
-          <div className="d-flex justify-center">
+          {/* <div className="d-flex justify-center">
             <ButtonCardStyled onClick={handleClick}>
               Ver Detalle
             </ButtonCardStyled>
-          </div>
+          </div> */}
         </Card.Body>
       </ShoesCardStyled>
     </>
