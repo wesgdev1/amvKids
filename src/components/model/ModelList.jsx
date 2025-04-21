@@ -24,9 +24,16 @@ export const ModelList = () => {
     if (e.key === "Enter" && e.target.value !== "") {
       e.preventDefault();
 
+      const searchWords = searchValue
+        .toLowerCase()
+        .split(" ")
+        .filter((word) => word);
+
       const filter = data.models.filter((model) => {
-        return model.name.toLowerCase().includes(searchValue.toLowerCase());
+        const modelName = model.name.toLowerCase();
+        return searchWords.every((word) => modelName.includes(word));
       });
+
       setFilteredData(filter);
       setNotificacion(filter.length === 0);
       setSearchValue("");

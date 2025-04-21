@@ -21,9 +21,16 @@ export const ProductList = () => {
     if (e.key === "Enter" && e.target.value !== "") {
       e.preventDefault();
 
+      const searchWords = searchValue
+        .toLowerCase()
+        .split(" ")
+        .filter((word) => word);
+
       const filter = data.filter((product) => {
-        return product.name.toLowerCase().includes(searchValue.toLowerCase());
+        const productName = product.name.toLowerCase();
+        return searchWords.every((word) => productName.includes(word));
       });
+
       setFilteredData(filter);
       setNotificacion(filter.length === 0);
       setSearchValue("");
