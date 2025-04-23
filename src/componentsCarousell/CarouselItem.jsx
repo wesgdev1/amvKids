@@ -30,7 +30,17 @@ const CarouselItem = ({
           {item?.name} - {item?.color}{" "}
         </h4>
         <h2 className="title">{item?.title}</h2>
-        <p className="description">{item?.description}</p>
+        <p
+          className="description"
+          style={{
+            display: "-webkit-box",
+            WebkitLineClamp: 3,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+          }}
+        >
+          {item?.description}
+        </p>
         <Button
           content="Ver mas"
           className="seeMore text-black"

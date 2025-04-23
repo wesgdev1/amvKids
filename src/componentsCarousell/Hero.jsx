@@ -45,7 +45,17 @@ const Hero = () => {
       {showDetail && selectedShoe && (
         <div className="detail">
           <h2 className="title">{selectedShoe?.name}</h2>
-          <p className="description">{selectedShoe?.description}</p>
+          <p
+            className="description"
+            style={{
+              display: "-webkit-box",
+              WebkitLineClamp: 4,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+            }}
+          >
+            {selectedShoe?.description}
+          </p>
           <div className="specifications">
             {/* <div>
               <p>Durability</p>
