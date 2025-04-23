@@ -1,19 +1,34 @@
-import React, { useState } from "react";
-import { shoes } from "../utils/data";
+import React, { useContext, useState } from "react";
+// import { shoes } from "../utils/data";
 import Carousel from "./Carousel";
 import Button from "./Button";
 import "./hero.css";
+import { useModelRecommended } from "../domain/models/useModels";
+import { AuthContext } from "../auth/context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
+  const { data: shoes, loading, error } = useModelRecommended();
   const [carouselDirection, setCarouselDirection] = useState("");
-  const [currentIndex, setCurrentIndex] = useState(1);
-  const [selectedShoe, setSelectedShoe] = useState(shoes[1]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [selectedShoe, setSelectedShoe] = useState(shoes ? shoes[0] : null);
   const [showDetail, setShowDetail] = useState(false);
+  console.log("data", shoes);
 
   const handleSeeMore = (index) => {
     setSelectedShoe(shoes[index]);
     setShowDetail(true);
     setCarouselDirection("");
+  };
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleClick = (id) => {
+    if (user) {
+      navigate(`/productos/${id}`);
+    } else {
+      navigate(`/login`);
+    }
   };
 
   return (
@@ -29,7 +44,7 @@ const Hero = () => {
       />
       {showDetail && selectedShoe && (
         <div className="detail">
-          <h2 className="title">{selectedShoe?.title}</h2>
+          <h2 className="title">{selectedShoe?.name}</h2>
           <p className="description">{selectedShoe?.description}</p>
           <div className="specifications">
             {/* <div>
@@ -46,12 +61,22 @@ const Hero = () => {
             </div> */}
             <div>
               <p>Precio</p>
-              <p>{selectedShoe?.specifications?.traction}</p>
+              <p>
+                {selectedShoe?.normalPrice.toLocaleString("es-CO", {
+                  style: "currency",
+                  currency: "COP",
+                  minimumFractionDigits: 0,
+                  maximumFractionDigits: 0,
+                })}
+              </p>
             </div>
           </div>
           <div className="checkout">
             {/* <Button content="add to cart" /> */}
-            <Button content="ver detalle" />
+            <Button
+              content="ver detalle"
+              onClick={() => handleClick(selectedShoe.id)}
+            />
           </div>
         </div>
       )}

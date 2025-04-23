@@ -110,7 +110,9 @@ export const ShoeCard = ({ model }) => {
             variant="top"
             src={
               isVisible
-                ? model.images[0]?.url || "https://via.placeholder.com/150"
+                ? model.images.find((img) => img.isPrimary)?.url ||
+                  model.images[0]?.url ||
+                  "https://via.placeholder.com/150"
                 : ""
             }
             loaded={imageLoaded}

@@ -14,6 +14,7 @@ import { createStock } from "../../api/stock/stock";
 import {
   addPhotoModel,
   deletePhotoModel,
+  updateModelText,
   updatePhotoModel,
 } from "../../api/model/model";
 
@@ -204,7 +205,12 @@ export const ModelDetail = () => {
         const response = await updatePhotoModel(image.id, {
           isRecommended: !image.isRecommended,
         });
-        if (response) {
+
+        // actualizo ahora el modelo si es recomendado o no
+        const responseModel = await updateModelText(idModel, {
+          isRecommended: !image.isRecommended,
+        });
+        if (response && responseModel) {
           Swal.fire({
             icon: "success",
             title: "Imagen Recomendada Actualizada",

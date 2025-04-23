@@ -18,9 +18,17 @@ const CarouselItem = ({
         isVeryFar ? "very-far" : ""
       }`}
     >
-      <img src={item?.image} alt={item?.title} />
+      <img
+        src={
+          item?.images.find((img) => img.isRecommended)?.url ||
+          item?.images[0]?.url
+        }
+        alt={item?.name}
+      />
       <div className="introduce">
-        <h4 className="subtitle">New Collection</h4>
+        <h4 className="subtitle">
+          {item?.name} - {item?.color}{" "}
+        </h4>
         <h2 className="title">{item?.title}</h2>
         <p className="description">{item?.description}</p>
         <Button

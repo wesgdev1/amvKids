@@ -3,6 +3,7 @@ import {
   getAllModelBySearch,
   getAllModels,
   getAllModelWithFilters,
+  getRecommendedModels,
 } from "../../api/model/model";
 import { generateFilterFormat } from "./utils";
 import { useLocation } from "react-router-dom";
@@ -80,4 +81,31 @@ export const useModelsFilter = () => {
   }, []);
 
   return { data, loading, error };
+};
+
+export const useModelRecommended = () => {
+  const [data, setData] = useState();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const cargarRecomendados = async () => {
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await getRecommendedModels();
+
+      setData(response.data);
+    } catch (error) {
+      setError(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    cargarRecomendados();
+  }, []);
+
+  return { data, loading, error, cargarRecomendados };
 };

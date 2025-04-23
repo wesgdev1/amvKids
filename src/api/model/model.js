@@ -54,6 +54,15 @@ export const updateModel = async (id, payload) => {
   }
 };
 
+export const updateModelText = async (id, payload) => {
+  try {
+    const { data: response } = await http.put(`/models/${id}`, payload);
+    return { data: response.data };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 export const getModelById = async (id) => {
   try {
     const { data: response } = await http.get(`/models/${id}`);
@@ -84,6 +93,15 @@ export const addPhotoModel = async (payload) => {
 export const deletePhotoModel = async (id) => {
   try {
     const { data: response } = await http.delete(`/photos/${id}`);
+    return { data: response.data };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+export const getRecommendedModels = async () => {
+  try {
+    const { data: response } = await http.get(`/models/recommended`);
     return { data: response.data };
   } catch (error) {
     return Promise.reject(error);

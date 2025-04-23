@@ -63,7 +63,11 @@ const Carousel = ({
           id="back"
           onClick={() => setShowDetail(false)}
         />
-        <Button content={"next"} id="next" onClick={handleNext} />
+        <Button
+          content={<i className="bi bi-skip-forward-circle-fill"></i>}
+          id="next"
+          onClick={handleNext}
+        />
       </div>
     </div>
   );
