@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import { useModel } from "../../domain/models/useModel";
 import { Alert, Button, Form, Image, Modal, Spinner } from "react-bootstrap";
 import { StockTable } from "./StockTable";
-import { ContainerImages } from "./StyledComponents";
+import { ContainerImages, ImageWrapper } from "./StyledComponents";
 import { ButtonProfile } from "../products/StyledComponents";
 import { useState } from "react";
 import { ErrorMessage, Formik } from "formik";
@@ -11,6 +11,11 @@ import { toFormikValidationSchema } from "zod-formik-adapter";
 import { ButtonCardStyled, ButtonStyled } from "../StyledComponents";
 import Swal from "sweetalert2";
 import { createStock } from "../../api/stock/stock";
+import {
+  addPhotoModel,
+  deletePhotoModel,
+  updatePhotoModel,
+} from "../../api/model/model";
 
 const sizeRqd = z.number({
   required_error: "El tamaño es requerido",
@@ -41,6 +46,42 @@ export const ModelDetail = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+  const handleButtonClick = async (image) => {
+    // busca en las otras imaagenes si hay una imagen principal definida , si la y muestro un alert donde diga que primero debe desmarcar la imagen principal
+    const isPrimary = data.images.some(
+      (img) => img.isPrimary && img.id !== image.id
+    );
+    if (isPrimary) {
+      Swal.fire({
+        icon: "warning",
+        title: "Imagen Principal",
+        text: "Primero debes desmarcar la imagen principal",
+      });
+    } else {
+      try {
+        const response = await updatePhotoModel(image.id, {
+          isPrimary: !image.isPrimary,
+        });
+        if (response) {
+          Swal.fire({
+            icon: "success",
+            title: "Imagen Principal Actualizada",
+            text: "La imagen principal se actualizo correctamente",
+          });
+          refresh(idModel);
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "No se pudo actualizar la imagen principal",
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
   const onSubmit = async (values, { setSubmitting }) => {
     try {
       setSubmitting(true);
@@ -69,6 +110,117 @@ export const ModelDetail = () => {
         title: "Producto no creado",
         text: "El Producto no se creo correctamente, intenta nuevamente",
       });
+    }
+  };
+
+  const handleUploadImages = async (formData) => {
+    try {
+      Swal.fire({
+        title: "Cargando...",
+        text: "Por favor espera mientras se cargan las imágenes.",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
+
+      const response = await addPhotoModel(formData);
+      Swal.close();
+
+      if (response) {
+        Swal.fire({
+          icon: "success",
+          title: "Imágenes Cargadas",
+          text: "Las imágenes se han cargado correctamente.",
+        });
+        refresh(idModel);
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "No se pudieron cargar las imágenes. Intenta nuevamente.",
+        });
+      }
+    } catch (error) {
+      Swal.close();
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Ocurrió un error al cargar las imágenes. Intenta nuevamente.",
+      });
+      console.log(error);
+    }
+  };
+
+  const handleDeleteClick = (image) => {
+    Swal.fire({
+      title: "Eliminar Imagen",
+      text: "¿Estás seguro de que deseas eliminar esta imagen?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Eliminar",
+      cancelButtonText: "Cancelar",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await deletePhotoModel(image.id);
+          if (response) {
+            Swal.fire({
+              icon: "success",
+              title: "Imagen Eliminada",
+              text: "La imagen se ha eliminado correctamente.",
+            });
+            refresh(idModel);
+          } else {
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: "No se pudo eliminar la imagen. Intenta nuevamente.",
+            });
+          }
+        } catch (error) {
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Ocurrió un error al eliminar la imagen. Intenta nuevamente.",
+          });
+        }
+      }
+    });
+  };
+
+  const handleRecommendClick = async (image) => {
+    const isRecommended = data.images.some(
+      (img) => img.isRecommended && img.id !== image.id
+    );
+    if (isRecommended) {
+      Swal.fire({
+        icon: "warning",
+        title: "Imagen Recomendada",
+        text: "Primero debes desmarcar la imagen recomendada",
+      });
+    } else {
+      try {
+        const response = await updatePhotoModel(image.id, {
+          isRecommended: !image.isRecommended,
+        });
+        if (response) {
+          Swal.fire({
+            icon: "success",
+            title: "Imagen Recomendada Actualizada",
+            text: "La imagen recomendada se actualizo correctamente",
+          });
+          refresh(idModel);
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "No se pudo actualizar la imagen recomendada",
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
   return (
@@ -115,20 +267,128 @@ export const ModelDetail = () => {
               <span>{data.description}</span>
             </p>
           </div>
+          {!data.images.some((image) => image.isPrimary) && (
+            <Alert variant="warning">
+              No hay ninguna imagen de portada, por defecto se colocará de
+              manera aleatoria.
+            </Alert>
+          )}
           <ContainerImages>
             {data.images.map((image, index) => {
               return (
-                <Image
-                  key={index}
-                  src={image.url}
-                  alt={"amv_kid_shoe"}
-                  width={150}
-                  height={150}
-                  rounded
-                  className="hover:scale-110 hover:shadow-purple-600 hover:shadow-xl transition duration-300 ease-in-out border-1 border-purple-300 "
-                />
+                <ImageWrapper key={index}>
+                  <Image
+                    src={image.url}
+                    alt={"amv_kid_shoe"}
+                    width={150}
+                    height={150}
+                    rounded
+                    className={`hover:scale-110 transition duration-300 ease-in-out border-1 ${
+                      image.isPrimary
+                        ? "border-green-500 shadow-green-500"
+                        : "border-red-500 shadow-red-500"
+                    }`}
+                  />
+                  <div
+                    style={{
+                      position: "absolute",
+                      bottom: "5px",
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      display: "flex",
+                      gap: "5px",
+                    }}
+                  >
+                    <Button
+                      variant="light"
+                      onClick={() => handleButtonClick(image)}
+                      style={{
+                        backgroundColor: "rgba(255, 255, 255, 0.8)",
+                        fontSize: "0.7em",
+                        padding: "0.2em 0.5em",
+                      }}
+                    >
+                      {image.isPrimary ? (
+                        <i className="bi bi-eye-slash"></i>
+                      ) : (
+                        <i className="bi bi-eye-fill"></i>
+                      )}
+                    </Button>
+                    <Button
+                      variant="light"
+                      onClick={() => handleDeleteClick(image)}
+                      style={{
+                        backgroundColor: "rgba(255, 255, 255, 0.8)",
+                        fontSize: "0.7em",
+                        padding: "0.2em 0.5em",
+                      }}
+                    >
+                      <i className="bi bi-trash"></i>
+                    </Button>
+                    <Button
+                      variant="light"
+                      onClick={() => handleRecommendClick(image)}
+                      style={{
+                        backgroundColor: image.isRecommended
+                          ? "yellow"
+                          : "rgba(255, 255, 255, 0.8)",
+                        fontSize: "0.7em",
+                        padding: "0.2em 0.5em",
+                      }}
+                    >
+                      <i className="bi bi-star"></i>
+                    </Button>
+                  </div>
+                </ImageWrapper>
               );
             })}
+            <ImageWrapper
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                border: "2px dashed #ccc",
+                cursor: "pointer",
+                width: "150px",
+                height: "150px",
+              }}
+            >
+              <input
+                //type de fotos
+                type="file"
+                accept="image/*"
+                multiple
+                style={{ display: "none" }}
+                id="upload-images"
+                onChange={(e) => {
+                  const files = e.target.files;
+                  const formData = new FormData();
+                  for (let i = 0; i < files.length; i++) {
+                    formData.append("images", files[i]);
+                  }
+                  //imprimir la primera posicion del formData
+                  formData.append("idModel", idModel);
+
+                  handleUploadImages(formData);
+                }}
+              />
+              <label
+                htmlFor="upload-images"
+                style={{
+                  cursor: "pointer",
+                  padding: "10px",
+                  textAlign: "center",
+                }}
+              >
+                <i
+                  className="bi bi-upload"
+                  style={{ fontSize: "2em", color: "#ccc" }}
+                ></i>
+                <p style={{ margin: 0, fontSize: "0.9em", color: "#666" }}>
+                  Subir imágenes
+                </p>
+              </label>
+            </ImageWrapper>
           </ContainerImages>
 
           <div>

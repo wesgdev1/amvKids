@@ -1,20 +1,19 @@
 import styled from "@emotion/styled";
 import { Form, Modal, Badge } from "react-bootstrap";
 
-export const ContainerImages = styled("div")(({ theme }) => ({
+export const ContainerImages = styled("div")({
   display: "flex",
   flexWrap: "wrap",
-  gap: "5em",
+  gap: "15px",
   justifyContent: "center",
-  alignItems: "center",
-  flexDirection: "row",
-  padding: "10px",
-  boxShadow: `0px 0px 10px 0px ${theme.colors.secondaryColor}`,
-  borderRadius: "15px",
+  padding: "20px",
+  backgroundColor: "#f9f9f9",
+  borderRadius: "10px",
+  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
   marginTop: "20px",
   marginBottom: "20px",
   width: "100%",
-}));
+});
 
 export const FormContainer = styled.div({
   padding: "2rem 1rem",
@@ -85,6 +84,31 @@ export const ImagePreview = styled.div({
     height: "100%",
     objectFit: "cover",
     borderRadius: "0.5rem",
+  },
+});
+
+export const ImageWrapper = styled.div({
+  position: "relative",
+  overflow: "hidden",
+  borderRadius: "10px",
+  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+  transition: "transform 0.3s ease, box-shadow 0.3s ease",
+  width: "150px",
+  height: "150px",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  border: "2px dashed #ccc",
+  cursor: "pointer",
+  "&:hover": {
+    transform: "translateY(-5px)",
+    boxShadow: "0 6px 12px rgba(0, 0, 0, 0.15)",
+  },
+  "& img": {
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+    borderRadius: "10px",
   },
 });
 
