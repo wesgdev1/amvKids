@@ -30,8 +30,8 @@ export const ModelList = () => {
         .filter((word) => word);
 
       const filter = data.models.filter((model) => {
-        const modelName = model.name.toLowerCase();
-        return searchWords.every((word) => modelName.includes(word));
+        const modelNameColor = `${model.name.toLowerCase()} ${model.color.toLowerCase()}`;
+        return searchWords.every((word) => modelNameColor.includes(word));
       });
 
       setFilteredData(filter);
