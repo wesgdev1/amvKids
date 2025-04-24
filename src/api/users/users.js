@@ -30,3 +30,15 @@ export const getOrdersByUser = async ({ userId }) => {
     return Promise.reject(error);
   }
 };
+
+export const updatePhotoUserProfile = async (userId, payload) => {
+  try {
+    const { data: response, status } = await http.patch(
+      `/users/${userId}`,
+      payload
+    );
+    return { data: response.data, status };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};

@@ -31,6 +31,12 @@ export const AuthProvider = ({ children }) => {
     window.location = "/login";
   };
 
+  const cambiarImagen = (imagen) => {
+    const user = { ...authState.user, urlFoto: imagen };
+    setAuthState({ user });
+    localStorage.setItem("user", JSON.stringify(user));
+  };
+
   useEffect(() => {
     const inicializar = async () => {
       await init();
@@ -45,6 +51,7 @@ export const AuthProvider = ({ children }) => {
         setAuthState,
         login,
         logout,
+        cambiarImagen,
       }}
     >
       {children}
