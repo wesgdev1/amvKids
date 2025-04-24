@@ -22,11 +22,13 @@ export const Contact = () => {
             <ContactInfo>
               <ContactItem>
                 <i className="bi bi-geo-alt-fill"></i>
-                <span>Calle Principal #123, Ciudad</span>
+                <span>
+                  Centro Comercial Plaza Los Andes. Local 117 2do Piso
+                </span>
               </ContactItem>
               <ContactItem>
                 <i className="bi bi-telephone-fill"></i>
-                <a href="tel:+573123456789">+57 312 345 6789</a>
+                <a href="tel:+573123456789">+57 311 2728811</a>
               </ContactItem>
               <ContactItem>
                 <i className="bi bi-envelope-fill"></i>
@@ -43,7 +45,7 @@ export const Contact = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  @amvkids
+                  @amv__kids
                 </a>
               </ContactItem>
               <ContactItem>
@@ -58,9 +60,7 @@ export const Contact = () => {
               </ContactItem>
             </ContactInfo>
             <WhatsAppButton
-              href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-                whatsappMessage
-              )}`}
+              href="https://api.whatsapp.com/send?phone=573112728811&text=Hola%2C%20vengo%20de%20la%20p%C3%A1gina%20web%20https%3A%2F%2Famvkids.com.co%2F%20y%20me%20gustar%C3%ADa%20saber%20informaci%C3%B3n%20de%20sus%20productos."
               target="_blank"
               rel="noopener noreferrer"
             >

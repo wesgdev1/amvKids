@@ -356,7 +356,7 @@ export const NavBarComponent = () => {
           >
             <NavLinkStyled to="/">Inicio</NavLinkStyled>
             <NavLinkStyled to="/productos">Calzado</NavLinkStyled>
-            <NavLinkStyled to="/">Contacto</NavLinkStyled>
+            <NavLinkStyled to="/contact">Contacto</NavLinkStyled>
           </div>
         </Row>
       </ConteinerNavStyled>

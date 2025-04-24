@@ -48,7 +48,7 @@ export const Footer = () => {
                 <i className="bi bi-facebook"></i> Facebook
               </a>
               <a
-                href="https://instagram.com/amv_kids"
+                href="https://www.instagram.com/amv__kids/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="social-link"
@@ -56,7 +56,7 @@ export const Footer = () => {
                 <i className="bi bi-instagram"></i> Instagram
               </a>
               <a
-                href="https://wa.me/1234567890"
+                href="https://api.whatsapp.com/send?phone=573112728811&text=Hola%2C%20vengo%20de%20la%20p%C3%A1gina%20web%20https%3A%2F%2Famvkids.com.co%2F%20y%20me%20gustar%C3%ADa%20saber%20informaci%C3%B3n%20de%20sus%20productos."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="social-link"
@@ -69,11 +69,11 @@ export const Footer = () => {
             </div>
             <div className="contact-info">
               <p>
-                <i className="bi bi-geo-alt"></i> Dirección: Calle Principal
-                #123
+                <i className="bi bi-geo-alt"></i> Centro comercial plaza de los
+                andes, Cl. 9 #6-1, Local 117, Cúcuta, Norte de Santander
               </p>
               <p>
-                <i className="bi bi-telephone"></i> Teléfono: (123) 456-7890
+                <i className="bi bi-telephone"></i> Teléfono: +57 311 2728811
               </p>
               <p>
                 <i className="bi bi-clock"></i> Horario: Lunes a Sábado 9:00 -

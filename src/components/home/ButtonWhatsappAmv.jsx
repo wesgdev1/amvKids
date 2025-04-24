@@ -5,7 +5,7 @@ export const ButtonWhatsappAmv = () => {
   return (
     <>
       <IconStyled2
-        href="https://api.whatsapp.com/send?phone=573122821189&text=Hola%2C+quiero+saber+mas+sobre+el+Internet+de+alta+de+Velocidad+de+Prolink%21"
+        href="https://api.whatsapp.com/send?phone=573112728811&text=Hola%2C%20vengo%20de%20la%20p%C3%A1gina%20web%20https%3A%2F%2Famvkids.com.co%2F%20y%20me%20gustar%C3%ADa%20saber%20informaci%C3%B3n%20de%20sus%20productos."
         target="_blank"
       >
         <Image
