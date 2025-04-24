@@ -12,7 +12,7 @@ export const ButtonProfile = styled(Button)(({ theme }) => ({
   },
 }));
 
-export const ProfilePhotoContainer = styled.div(({ theme }) => ({
+export const ProfilePhotoContainer = styled.div({
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
@@ -22,7 +22,11 @@ export const ProfilePhotoContainer = styled.div(({ theme }) => ({
   backgroundColor: "#fff",
   maxWidth: "450px",
   margin: "0 auto",
-}));
+  "@media (max-width: 768px)": {
+    padding: "1.5rem",
+    maxWidth: "100%",
+  },
+});
 
 export const PhotoPreviewContainer = styled.div(({ theme }) => ({
   width: "200px",
@@ -97,12 +101,17 @@ export const ProfilePhotoButton = styled(Button)(({ theme }) => ({
 }));
 
 export const ProfileContainer = styled.div({
-  padding: "2rem",
+  padding: "1.5rem",
   borderRadius: "15px",
   boxShadow: "0 10px 30px rgba(0, 0, 0, 0.08)",
   backgroundColor: "#fff",
   maxWidth: "900px",
   margin: "0 auto",
+  width: "100%",
+  "@media (max-width: 768px)": {
+    padding: "1rem",
+    borderRadius: "10px",
+  },
 });
 
 export const ProfileHeader = styled.div(({ theme }) => ({
@@ -120,11 +129,25 @@ export const ProfileHeader = styled.div(({ theme }) => ({
     fontWeight: "600",
     color: "#333",
   },
+  "@media (max-width: 768px)": {
+    marginBottom: "1.5rem",
+    "& i": {
+      fontSize: "1.5rem",
+    },
+    "& h4": {
+      fontSize: "1.4rem",
+    },
+  },
 }));
 
 export const ProfileTabsContainer = styled.div({
   marginBottom: "2rem",
   borderBottom: "none",
+  display: "flex",
+  flexWrap: "wrap",
+  "@media (max-width: 768px)": {
+    marginBottom: "1rem",
+  },
 });
 
 export const ProfileTab = styled.button(({ active, theme }) => ({
@@ -137,9 +160,11 @@ export const ProfileTab = styled.button(({ active, theme }) => ({
   fontSize: "1rem",
   fontWeight: active ? "600" : "400",
   marginRight: "0.5rem",
+  marginBottom: "0.5rem",
   transition: "all 0.2s ease",
   position: "relative",
   top: "2px",
+  whiteSpace: "nowrap",
   "&:hover": {
     background: active ? "white" : "#f1f3f5",
     color: theme.colors.mainColor,
@@ -159,6 +184,24 @@ export const ProfileTab = styled.button(({ active, theme }) => ({
         background: "white",
       }
     : {},
+  "@media (max-width: 768px)": {
+    fontSize: "0.85rem",
+    padding: "0.6rem 1rem",
+    flexGrow: 1,
+    textAlign: "center",
+    marginRight: "0.3rem",
+    "& i": {
+      fontSize: "1rem",
+    },
+  },
+  "@media (max-width: 576px)": {
+    flexBasis: "calc(100% - 10px)",
+    borderRadius: active ? "10px" : "10px",
+    border: active
+      ? `2px solid ${theme.colors.mainColor}`
+      : "2px solid #e9ecef",
+    margin: "0 0 0.5rem 0",
+  },
 }));
 
 export const ProfileContent = styled.div({
@@ -167,4 +210,14 @@ export const ProfileContent = styled.div({
   borderRadius: "0 10px 10px 10px",
   padding: "2rem",
   minHeight: "400px",
+  "@media (max-width: 768px)": {
+    padding: "1.25rem",
+    minHeight: "300px",
+    borderRadius: "10px",
+  },
+  "@media (max-width: 576px)": {
+    padding: "1rem",
+    border: "none",
+    boxShadow: "0 4px 10px rgba(0, 0, 0, 0.05)",
+  },
 });
