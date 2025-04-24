@@ -19,7 +19,7 @@ export const Products = () => {
     selectedFilters,
     filtrosSeleccionadosAgrupados,
   } = useFilter();
-  const { data, loading, error } = useModels(
+  const { data, loading, error, cargarModel } = useModels(
     filtrosSeleccionadosAgrupados,
     searchValue
   );
@@ -72,7 +72,11 @@ export const Products = () => {
                 ))}
                 <span
                   className="badge bg-danger me-2 hover:cursor-pointer "
-                  onClick={clean}
+                  onClick={() => {
+                    clean();
+                    //recargar la pagina
+                    window.location.reload(); // mientras mientras
+                  }}
                 >
                   Eliminar filtros
                 </span>
@@ -92,6 +96,7 @@ export const Products = () => {
                 clean={clean}
                 checkFilter={checkFilter}
                 setCheckFilter={setCheckFilter}
+                cargarModel={cargarModel}
               />
             )}
           </div>

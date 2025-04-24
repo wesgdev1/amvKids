@@ -11,6 +11,7 @@ export const Filter = ({
   deleteFilter,
   checkFilter,
   setCheckFilter,
+  cargarModel,
 }) => {
   const [show, setShow] = useState(false);
 
@@ -48,6 +49,23 @@ export const Filter = ({
 
   // por aqui hacer un useEffect para filtrar los productos cada vez que se cambie el estado de filters
 
+  const basicColors = [
+    "Amarillo",
+    "Azul",
+    "Beige",
+    "Blanco",
+    "Gris",
+    "Marrón",
+    "Magenta",
+    "Morado",
+    "Naranja",
+    "Negro",
+    "Rosa",
+    "Rojo",
+    "Talco",
+    "Verde",
+  ];
+
   return (
     <>
       <ButtonStyled variant="primary" onClick={handleShow} className="me-2">
@@ -71,7 +89,7 @@ export const Filter = ({
                       label={marca}
                       checked={checkFilter[marca] || false}
                       onChange={() => handleFilter(event, marca, "marca")}
-                      onClick={handleClose}
+                      // onClick={handleClose}
                     />
                   ))}
                 </Accordion.Body>
@@ -92,7 +110,7 @@ export const Filter = ({
                       onChange={() =>
                         handleFilter(event, talla.toString(), "talla")
                       }
-                      onClick={handleClose}
+                      // onClick={handleClose}
                     />
                   ))}
                 </Accordion.Body>
@@ -103,7 +121,7 @@ export const Filter = ({
               <Accordion.Item eventKey="1" className="mb-4">
                 <Accordion.Header>Color</Accordion.Header>
                 <Accordion.Body>
-                  {uniqueCol.map((color) => (
+                  {basicColors.map((color) => (
                     <Form.Check
                       key={color}
                       type={`checkbox`}
@@ -115,7 +133,7 @@ export const Filter = ({
                         false
                       }
                       onChange={() => handleFilter(event, color, "color")}
-                      onClick={handleClose}
+                      // onClick={handleClose}
                     />
                   ))}
                 </Accordion.Body>
@@ -134,7 +152,7 @@ export const Filter = ({
                       label={gender}
                       checked={checkFilter[gender] || false}
                       onChange={() => handleFilter(event, gender, "genero")}
-                      onClick={handleClose}
+                      // onClick={handleClose}
                     />
                   ))}
                 </Accordion.Body>
@@ -142,6 +160,27 @@ export const Filter = ({
             </Accordion>
           </div>
         </OffcanvasBSfilter>
+        <div className="d-flex justify-content-center mt-4 mb-4">
+          <ButtonStyled
+            variant="primary"
+            onClick={() => {
+              cargarModel();
+              handleClose();
+            }}
+            style={{
+              backgroundColor: "#007bff",
+              borderColor: "#007bff",
+              borderRadius: "20px",
+              padding: "10px 20px",
+              fontSize: "16px",
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+              transition: "background-color 0.3s ease",
+            }}
+            className="hover:bg-blue-600"
+          >
+            Aplicar filtro
+          </ButtonStyled>
+        </div>
       </Offcanvas>
     </>
   );

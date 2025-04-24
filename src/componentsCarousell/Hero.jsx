@@ -33,6 +33,7 @@ const Hero = () => {
 
   return (
     <section className={` ${showDetail ? "hero showDetail" : "hero"}`}>
+      <h4 className="flex justify-center pt-3">Nuestras Recomendaciones</h4>
       <Carousel
         items={shoes}
         onSeeMore={handleSeeMore}

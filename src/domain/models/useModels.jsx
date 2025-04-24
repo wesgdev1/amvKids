@@ -52,9 +52,9 @@ export const useModels = (filtrosSeleccionadosAgrupados, searchValue = "") => {
 
   useEffect(() => {
     cargarModel();
-  }, [filtrosSeleccionadosAgrupados]);
+  }, []);
 
-  return { data, loading, error };
+  return { data, loading, error, cargarModel };
 };
 
 export const useModelsFilter = () => {

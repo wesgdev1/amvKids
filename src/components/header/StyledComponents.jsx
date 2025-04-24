@@ -45,10 +45,8 @@ export const OffcanvasHbs = styled(Offcanvas.Header)(({ theme }) => ({
 }));
 
 export const OffcanvasBSfilter = styled(Offcanvas.Body)(({ theme }) => ({
-  // backgroundColor: theme.colors.mainColor,
   backgroundColor: "white",
-  backgroundImage:
-    "url('https://res.cloudinary.com/du6lyyqjh/image/upload/v1724337163/found_mgp2uc.png')",
+  background: "linear-gradient(135deg, #f5f7fa, #c3cfe2)",
   backgroundSize: "cover",
   color: "white",
   opacity: "100%",
