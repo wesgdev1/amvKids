@@ -221,3 +221,25 @@ export const ProfileContent = styled.div({
     boxShadow: "0 4px 10px rgba(0, 0, 0, 0.05)",
   },
 });
+
+// Nuevo estilo para el botón del formulario de datos personales
+export const FormButton = styled(Button)(({ theme }) => ({
+  backgroundColor: theme.colors.secondaryColor, // Usando el color secundario
+  borderColor: theme.colors.secondaryColor,
+  color: "white",
+  padding: "0.6rem 1.8rem",
+  borderRadius: "8px",
+  fontWeight: "500",
+  transition: "all 0.2s ease-in-out",
+  "&:hover": {
+    backgroundColor: theme.colors.mainColor, // Cambia al color principal en hover
+    borderColor: theme.colors.mainColor,
+    transform: "scale(1.03)",
+    boxShadow: "0 4px 15px rgba(0, 0, 0, 0.1)",
+  },
+  "&:disabled": {
+    backgroundColor: "#cccccc",
+    borderColor: "#cccccc",
+    cursor: "not-allowed",
+  },
+}));

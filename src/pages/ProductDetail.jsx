@@ -1,18 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useModel } from "../domain/models/useModel";
-import {
-  Alert,
-  Card,
-  Carousel,
-  Col,
-  Image,
-  Spinner,
-  Modal,
-} from "react-bootstrap";
-import {
-  ButtonProfile,
-  CardStoreStyle,
-} from "../components/products/StyledComponents";
+import { Alert, Carousel, Image, Spinner, Modal } from "react-bootstrap";
+import {} from "../components/products/StyledComponents";
 import { ControlProduct } from "../components/products/ControlProduct";
 import { ContainerMov } from "../components/home/StyledComponents";
 import { useState } from "react";
@@ -25,6 +14,8 @@ export const ProductDetail = () => {
 
   const [showModal, setShowModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [zoomedIndex, setZoomedIndex] = useState(-1);
+  const [zoomCoords, setZoomCoords] = useState({ x: 0, y: 0 });
 
   const handleImageClick = (image) => {
     setSelectedImage(image);
@@ -34,6 +25,23 @@ export const ProductDetail = () => {
   const handleCloseModal = () => {
     setShowModal(false);
     setSelectedImage(null);
+  };
+
+  const handleMouseMove = (e, index) => {
+    if (zoomedIndex === index) {
+      const { left, top, width, height } = e.target.getBoundingClientRect();
+      const x = ((e.clientX - left) / width) * 100;
+      const y = ((e.clientY - top) / height) * 100;
+      setZoomCoords({ x, y });
+    }
+  };
+
+  const handleMouseEnter = (index) => {
+    setZoomedIndex(index);
+  };
+
+  const handleMouseLeave = () => {
+    setZoomedIndex(-1);
   };
 
   return (
@@ -57,46 +65,52 @@ export const ProductDetail = () => {
               }}
             >
               {data?.images.map((image, index) => (
-                <Carousel.Item
-                  key={index}
-                  onClick={() => handleImageClick(image.url)}
-                >
-                  <Image
-                    src={image.url}
-                    alt={data?.name}
+                <Carousel.Item key={index}>
+                  <div
                     style={{
-                      //objectFit: "cover",
+                      width: "100%",
+                      height: "320px",
                       borderRadius: "60px",
-                      boxShadow: "0 0 5px rgba(0,0,0,1)",
+                      overflow: "hidden",
+                      cursor: "zoom-in",
                     }}
-                  />
+                    onMouseEnter={() => handleMouseEnter(index)}
+                    onMouseLeave={handleMouseLeave}
+                    onMouseMove={(e) => handleMouseMove(e, index)}
+                    onClick={() => handleImageClick(image.url)}
+                  >
+                    <Image
+                      src={image.url}
+                      alt={data?.name}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        borderRadius: "60px",
+                        transition: "transform 0.2s ease-out",
+                        transform:
+                          zoomedIndex === index ? "scale(1.75)" : "scale(1)",
+                        transformOrigin:
+                          zoomedIndex === index
+                            ? `${zoomCoords.x}% ${zoomCoords.y}%`
+                            : "center center",
+                      }}
+                    />
+                  </div>
                 </Carousel.Item>
               ))}
-              {/* <Carousel.Item>
-                <Image
-                  src={data?.images[0]?.url}
-                  alt={data?.name}
-                  style={{
-                    objectFit: "cover",
-                    borderRadius: "60px",
-                    boxShadow: "0 0 5px rgba(0,0,0,1)",
-                  }}
-                />
-              </Carousel.Item> */}
             </Carousel>
-            {/* <div>
-              <Image
-                src={data?.images[0]?.url}
-                alt={data?.name}
-                style={{
-                  objectFit: "cover",
-                  borderRadius: "10px",
-                  boxShadow: "0 0 10px rgba(0,0,0,1)",
-                }}
-              />
-            </div> */}
             <ControlProduct data={data} />
-            <div>{data?.description}</div>
+          </div>
+          {/* Descripción estilizada */}
+          <div className="mt-8 p-6 bg-gradient-to-br from-purple-50 to-indigo-100 rounded-xl shadow-lg text-gray-800 max-w-3xl mx-auto">
+            <h5 className="text-xl font-bold mb-3 text-indigo-800 border-b border-indigo-200 pb-2">
+              <i className="bi bi-info-circle-fill mr-2"></i>Descripción del
+              Producto
+            </h5>
+            <p className="text-base leading-relaxed text-justify">
+              {data?.description}
+            </p>
           </div>
 
           <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
