@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { Badge, Image, Table, Modal } from "react-bootstrap";
+import {
+  Badge,
+  Image,
+  Table,
+  Modal,
+  OverlayTrigger,
+  Popover,
+} from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { ControlButton } from "../products/StyledComponents";
 import { Paginator } from "../paginator/Paginator";
@@ -67,76 +74,140 @@ export const ModelsTable = ({ modelos }) => {
           </thead>
           <tbody>
             {modelos
-              .map((modelo) => (
-                <tr key={modelo.id}>
-                  <td>{modelo.color}</td>
-                  <td>
-                    <Image
-                      src={modelo.images[0]?.url}
-                      alt={"amv_kid_shoe"}
-                      width={30}
-                      height={30}
-                      roundedCircle
-                    />
-                  </td>
-                  <td>{modelo.name}</td>
-                  <td>
-                    {modelo.normalPrice?.toLocaleString("es-CO", {
-                      style: "currency",
-                      currency: "COP",
-                    })}
-                  </td>
-                  <td>
-                    {modelo.price?.toLocaleString("es-CO", {
-                      style: "currency",
-                      currency: "COP",
-                    })}
-                  </td>
-                  <td>
-                    {modelo.alliancePrice?.toLocaleString("es-CO", {
-                      style: "currency",
-                      currency: "COP",
-                    })}
-                  </td>
+              .map((modelo) => {
+                const principalImage =
+                  modelo.images.find((img) => img.isPrimary === true) ||
+                  modelo.images[0];
 
-                  <td>{calculateStock(modelo.stocks)}</td>
-                  <td>
-                    {modelo.stocks.some((stock) => stock.quantity < 10) && (
-                      <Badge
-                        bg="warning"
-                        text="dark"
-                        onClick={() => {
-                          handleShow(modelo.stocks);
+                // Popover grande con scroll horizontal para imágenes grandes
+                const imagePopover = (
+                  <Popover
+                    id={`popover-scroll-${modelo.id}`}
+                    style={{
+                      maxWidth: "500px", // Ancho del popover
+                      border: "none",
+                      boxShadow: "0 6px 15px rgba(0,0,0,0.2)",
+                      // Eliminar padding por defecto del popover si es necesario
+                      // padding: 0
+                    }}
+                  >
+                    <Popover.Body
+                      style={{
+                        padding: 0 /* Quitar padding para que el div ocupe todo */,
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          overflowX: "auto", // Habilitar scroll horizontal
+                          gap: "10px", // Espacio entre imágenes
+                          padding: "10px", // Padding interno para el contenedor de scroll
+                          alignItems: "center", // Centrar verticalmente si las alturas varían un poco
                         }}
-                        style={{ cursor: "pointer" }}
                       >
-                        Info: Stock bajo
-                      </Badge>
-                    )}
-                    {modelo.stocks.length === 0 ? (
-                      <Badge bg="danger" text="light">
-                        No hay stock registrado
-                      </Badge>
-                    ) : (
-                      modelo.stocks.every((stock) => stock.quantity >= 10) && (
-                        <Badge bg="success" text="dark">
-                          Info: Stock normal
+                        {modelo.images.length > 0 ? (
+                          modelo.images.map((img, idx) => (
+                            <Image
+                              key={img.id || idx}
+                              src={img.url}
+                              alt={`Imagen ${idx + 1}`}
+                              style={{
+                                height: "180px", // Altura fija y grande
+                                width: "auto", // Ancho automático para mantener proporción
+                                objectFit: "contain", // Asegurar que la imagen se vea completa
+                                borderRadius: "4px", // Bordes redondeados leves
+                                flexShrink: 0, // Evitar que las imágenes se encojan
+                              }}
+                            />
+                          ))
+                        ) : (
+                          <div className="text-muted p-3">No hay imágenes</div>
+                        )}
+                      </div>
+                    </Popover.Body>
+                  </Popover>
+                );
+
+                return (
+                  <tr key={modelo.id}>
+                    <td>{modelo.color}</td>
+                    <td>
+                      <OverlayTrigger
+                        placement="right"
+                        delay={{ show: 250, hide: 400 }}
+                        overlay={imagePopover}
+                      >
+                        <Image
+                          src={principalImage?.url}
+                          alt={modelo.name}
+                          width={30}
+                          height={30}
+                          roundedCircle
+                          style={{ cursor: "pointer" }}
+                        />
+                      </OverlayTrigger>
+                    </td>
+                    <td>{modelo.name}</td>
+                    <td>
+                      {modelo.normalPrice?.toLocaleString("es-CO", {
+                        style: "currency",
+                        currency: "COP",
+                      })}
+                    </td>
+                    <td>
+                      {modelo.price?.toLocaleString("es-CO", {
+                        style: "currency",
+                        currency: "COP",
+                      })}
+                    </td>
+                    <td>
+                      {modelo.alliancePrice?.toLocaleString("es-CO", {
+                        style: "currency",
+                        currency: "COP",
+                      })}
+                    </td>
+
+                    <td>{calculateStock(modelo.stocks)}</td>
+                    <td>
+                      {modelo.stocks.some((stock) => stock.quantity < 10) && (
+                        <Badge
+                          bg="warning"
+                          text="dark"
+                          onClick={() => {
+                            handleShow(modelo.stocks);
+                          }}
+                          style={{ cursor: "pointer" }}
+                        >
+                          Info: Stock bajo
                         </Badge>
-                      )
-                    )}
-                  </td>
-                  <td>
-                    <div className="flex justify-center gap-2">
-                      <ControlButton onClick={() => viewProduct(modelo)}>
-                        <i className="bi bi-eye-fill"></i>
-                      </ControlButton>
-                      <ControlButton onClick={() => editProduct(modelo)}>
-                        <i className="bi bi-pencil-fill"></i>
-                      </ControlButton>
-                    </div>
-                  </td>
-                </tr>
-              ))
+                      )}
+                      {modelo.stocks.length === 0 ? (
+                        <Badge bg="danger" text="light">
+                          No hay stock registrado
+                        </Badge>
+                      ) : (
+                        modelo.stocks.every(
+                          (stock) => stock.quantity >= 10
+                        ) && (
+                          <Badge bg="success" text="dark">
+                            Info: Stock normal
+                          </Badge>
+                        )
+                      )}
+                    </td>
+                    <td>
+                      <div className="flex justify-center gap-2">
+                        <ControlButton onClick={() => viewProduct(modelo)}>
+                          <i className="bi bi-eye-fill"></i>
+                        </ControlButton>
+                        <ControlButton onClick={() => editProduct(modelo)}>
+                          <i className="bi bi-pencil-fill"></i>
+                        </ControlButton>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })
               .slice(firstIndex, lastIndex)}
           </tbody>
           <tfoot>
