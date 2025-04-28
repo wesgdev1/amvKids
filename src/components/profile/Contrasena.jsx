@@ -1,7 +1,12 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { FormButton } from "./StyledComponentes"; // Reutilizar el botón estilizado
+import { updatePassword } from "../../api/auth/auth";
+import Swal from "sweetalert2"; // Importar SweetAlert
+import { useContext } from "react";
+import { AuthContext } from "../../auth/context/AuthContext";
 
 // Añadir validación básica (opcional pero recomendado)
+
 const validateForm = (values) => {
   const errors = {};
   if (!values.password) {
@@ -21,6 +26,7 @@ const validateForm = (values) => {
 };
 
 const Contrasena = () => {
+  const { user, logout } = useContext(AuthContext);
   return (
     <div className="bg-white p-6 rounded-lg shadow-md text-gray-700">
       <h5 className="text-lg font-semibold mb-6 text-gray-800 border-b pb-2">
@@ -34,15 +40,40 @@ const Contrasena = () => {
           confirmPassword: "",
         }}
         validate={validateForm} // Añadir la función de validación
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          console.log("Datos del formulario de contraseña:", values);
-          // Aquí iría la lógica para llamar a la API y cambiar la contraseña
-          // Simulación:
-          setTimeout(() => {
-            alert("Contraseña actualizada (simulación)");
-            resetForm(); // Limpiar el formulario después de enviar
-            setSubmitting(false);
-          }, 500);
+        onSubmit={async (values, { setSubmitting, resetForm }) => {
+          try {
+            await updatePassword(values); // Llamar sin asignar a 'response'
+            // Asumiendo que 'updatePassword' lanza un error en caso de fallo
+            // o devuelve algo que indique éxito/fallo.
+            // Aquí asumimos éxito si no hay error.
+
+            Swal.fire({
+              title: "¡Éxito!",
+              text: "Tu contraseña ha sido actualizada correctamente.",
+              icon: "success",
+              confirmButtonText: "Ok",
+            });
+            resetForm(); // Resetear el formulario en caso de éxito
+            logout(); // Llamar a logout para cerrar sesión
+
+            // redireccionar al login y borrar localStorage
+          } catch (error) {
+            // Intentar obtener un mensaje de error más específico si está disponible
+            const errorMessage =
+              error?.response?.data?.message ||
+              error.message ||
+              "Hubo un problema al actualizar tu contraseña. Inténtalo de nuevo.";
+
+            Swal.fire({
+              title: "Error",
+              text: errorMessage,
+              icon: "error",
+              confirmButtonText: "Ok",
+            });
+          } finally {
+            // Formik maneja setSubmitting(false) automáticamente al resolver/rechazar la promesa
+            // setSubmitting(false); // Descomentar si es necesario control manual
+          }
         }}
       >
         {({ handleSubmit, isSubmitting }) => (

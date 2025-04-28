@@ -3,8 +3,11 @@ import { Formik, Form, Field } from "formik";
 import { AuthContext } from "../../auth/context/AuthContext";
 import { FormButton } from "./StyledComponentes"; // Importar el botón estilizado
 
+import Swal from "sweetalert2"; // Importar SweetAlert
+import { editUser } from "../../api/users/users";
+
 const DatosPersonales = () => {
-  const { user } = useContext(AuthContext); // Eliminar setAuthState
+  const { user, actualizarDatosPersonales } = useContext(AuthContext); // Eliminar setAuthState
 
   // Valores iniciales asegurando que no haya null/undefined
   const initialValues = {
@@ -29,18 +32,41 @@ const DatosPersonales = () => {
       </h5>
       <Formik
         initialValues={initialValues}
-        onSubmit={(values, { setSubmitting }) => {
+        onSubmit={async (values, { setSubmitting }) => {
           // Aquí iría la lógica para enviar solo los datos modificables
           const updatedData = {
             name: values.name,
             celular: values.celular,
           };
-          console.log("Datos a actualizar:", updatedData);
-          // Simular llamada a API
-          setTimeout(() => {
-            alert(JSON.stringify(updatedData, null, 2));
-            setSubmitting(false);
-          }, 400);
+
+          try {
+            const response = await editUser(user?.id, updatedData);
+            actualizarDatosPersonales(response.data);
+
+            Swal.fire({
+              title: "¡Éxito!",
+              text: "Tus datos han sido actualizados correctamente.",
+              icon: "success",
+              confirmButtonText: "Ok",
+            });
+
+            // Opcional: Actualizar el contexto de usuario si editUser no lo hace automáticamente
+            // Aquí podrías llamar a una función `refreshUser()` o similar del AuthContext
+          } catch (error) {
+            const errorMessage =
+              error?.response?.data?.message ||
+              error.message ||
+              "Hubo un problema al actualizar tus datos. Inténtalo de nuevo.";
+
+            Swal.fire({
+              title: "Error",
+              text: errorMessage,
+              icon: "error",
+              confirmButtonText: "Ok",
+            });
+          } finally {
+            // Formik maneja setSubmitting(false) automáticamente
+          }
         }}
         enableReinitialize // Para actualizar si el user cambia
       >

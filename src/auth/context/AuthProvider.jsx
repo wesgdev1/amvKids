@@ -37,6 +37,12 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("user", JSON.stringify(user));
   };
 
+  const actualizarDatosPersonales = (datos) => {
+    const user = { ...authState.user, ...datos };
+    setAuthState({ user });
+    localStorage.setItem("user", JSON.stringify(user));
+  };
+
   useEffect(() => {
     const inicializar = async () => {
       await init();
@@ -52,6 +58,7 @@ export const AuthProvider = ({ children }) => {
         login,
         logout,
         cambiarImagen,
+        actualizarDatosPersonales,
       }}
     >
       {children}

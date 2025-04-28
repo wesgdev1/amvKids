@@ -35,3 +35,15 @@ export const myProfile = async (id) => {
     return Promise.reject(error);
   }
 };
+
+export const updatePassword = async (payload) => {
+  try {
+    const { data: response } = await http.put(
+      "/users/auth/change-password",
+      payload
+    );
+    return { data: response.data };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
