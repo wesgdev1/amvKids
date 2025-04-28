@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Image, Table } from "react-bootstrap";
+import { Image, Table, OverlayTrigger, Popover } from "react-bootstrap";
 
 import { useNavigate } from "react-router-dom";
 import { Paginator } from "../paginator/Paginator";
@@ -70,8 +70,8 @@ export const UsersTable = ({ users, cargarUsuarios }) => {
             <th>Telefono</th>
             <th>Tipo de Usuario</th>
             <th>Numero de multas</th>
-            <th>Operaciones</th>
             <th>Estado</th>
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -79,18 +79,39 @@ export const UsersTable = ({ users, cargarUsuarios }) => {
             .map((user) => (
               <tr key={user.id}>
                 <td>{user.codigo}</td>
-                <td className="flex justify-center">
-                  <Image
-                    src={
-                      user.fotoPerfil
-                        ? user.fotoPerfil
-                        : "https://res.cloudinary.com/dppqkypts/image/upload/v1701901417/Dise%C3%B1o_sin_t%C3%ADtulo_11_r8jfvs.png"
+                <td className="text-center">
+                  <OverlayTrigger
+                    placement="right"
+                    delay={{ show: 250, hide: 400 }}
+                    overlay={
+                      <Popover id={`popover-image-${user.id}`}>
+                        <Popover.Body className="p-1">
+                          <Image
+                            src={
+                              user.urlFoto
+                                ? user.urlFoto
+                                : "https://res.cloudinary.com/dppqkypts/image/upload/v1701901417/Dise%C3%B1o_sin_t%C3%ADtulo_11_r8jfvs.png"
+                            }
+                            alt={user.name}
+                            style={{ maxWidth: "150px", height: "auto" }}
+                          />
+                        </Popover.Body>
+                      </Popover>
                     }
-                    alt={user.name}
-                    width="30"
-                    height="30"
-                    roundedCircle
-                  />
+                  >
+                    <Image
+                      src={
+                        user.urlFoto
+                          ? user.urlFoto
+                          : "https://res.cloudinary.com/dppqkypts/image/upload/v1701901417/Dise%C3%B1o_sin_t%C3%ADtulo_11_r8jfvs.png"
+                      }
+                      alt={user.name}
+                      width="30"
+                      height="30"
+                      roundedCircle
+                      style={{ cursor: "pointer" }}
+                    />
+                  </OverlayTrigger>
                 </td>
                 <td>{user.name}</td>
                 <td>{user.email}</td>
