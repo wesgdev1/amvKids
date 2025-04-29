@@ -1,11 +1,13 @@
-import { Card, Col, Row } from "react-bootstrap";
+import { Card, Col, Row, Button, Image } from "react-bootstrap";
 import { useCart } from "../store";
 import { CarCheckout } from "../components/car/CarCheckout";
 import { CardElements } from "../components/car/CardElements";
 import { Continue } from "../components/car/Continue";
+import { useNavigate } from "react-router-dom";
 
 export const CarList = () => {
   const { state, dispatch } = useCart();
+  const navigate = useNavigate();
 
   const calcularTotalCarrito = () => {
     let total = 0;
@@ -56,7 +58,25 @@ export const CarList = () => {
                 </Col>
               </div>
             ) : (
-              <p>No hay productos en el carrito</p>
+              <div className="text-center py-5 d-flex flex-column align-items-center">
+                <Image
+                  src="https://res.cloudinary.com/dppqkypts/image/upload/v1745961207/ChatGPT_Image_29_abr_2025_04_13_10_p.m._uoefiq.png"
+                  alt="Carrito Vacío"
+                  fluid
+                  style={{ maxWidth: "250px", marginBottom: "2rem" }}
+                />
+                <h4 className="text-muted mb-3">Tu carrito está vacío</h4>
+                <p className="text-secondary mb-4">
+                  Parece que aún no has añadido ningún producto.
+                </p>
+                <Button
+                  variant="outline-primary"
+                  onClick={() => navigate("/productos")}
+                  className="btn-lg"
+                >
+                  <i className="bi bi-box-seam me-2"></i> Ver Productos
+                </Button>
+              </div>
             )}
           </Card.Body>
         </Card>

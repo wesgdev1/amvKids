@@ -9,6 +9,8 @@ import { CarList } from "../pages/CarList";
 import { Chatboot } from "../pages/Chatboot";
 import { Curvas } from "../pages/Curvas";
 import { Contact } from "../pages/Contact";
+import { ForbiddenPage } from "../pages/ForbiddenPage";
+import { ProtectedRoute } from "../auth/ProtectedRoute";
 
 export const AmvRoutes = () => {
   return (
@@ -19,13 +21,22 @@ export const AmvRoutes = () => {
         <Route path="/curvas" element={<Curvas />} />
         {/* <Route path="/productos" element={<Products />} /> */}
         <Route path="/productos/search/:searchValue" element={<Products />} />
-        <Route path="/productos/:id" element={<ProductDetail />} />
+        <Route
+          path="/productos/:id"
+          element={
+            <ProtectedRoute>
+              <ProductDetail />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/profile/*" element={<Profile />} />
         <Route path="/verCarritoDeCompras" element={<CarList />} />
 
         <Route path="/login" element={<Login />} />
         <Route path="/chatTest" element={<Chatboot />} />
         <Route path="/contact" element={<Contact />} />
+
+        <Route path="/forbidden" element={<ForbiddenPage />} />
       </Routes>
     </>
   );

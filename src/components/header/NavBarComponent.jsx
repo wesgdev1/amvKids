@@ -101,7 +101,7 @@ export const NavBarComponent = () => {
       },
       // { path: "/login", icon: "bi bi-box-arrow-left", label: "Cerrar sesión" },
     ],
-    "Tienda aliada": [
+    "Tienda Aliada": [
       { path: "/profile", icon: "bi bi-person-circle", label: "Mi perfil" },
       { path: "/productos", icon: "bi bi-person-circle", label: "Productos" },
       { path: "/curvas", icon: "bi bi-diagram-2", label: "Curvas" },
@@ -158,7 +158,8 @@ export const NavBarComponent = () => {
               {user ? (
                 <div className="flex justify-center items-center gap-3">
                   {user?.tipoUsuario === "Cliente" ||
-                  user?.tipoUsuario == "Reventa" ? (
+                  user?.tipoUsuario == "Reventa" ||
+                  user?.tipoUsuario == "Tienda Aliada" ? (
                     <ContainerIcon
                       onClick={() => navigate("/verCarritoDeCompras")}
                     >

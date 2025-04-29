@@ -4,17 +4,19 @@ import { Alert, Card, Form, Spinner } from "react-bootstrap";
 import { z } from "zod";
 import { ErrorMessage, Formik } from "formik";
 import { toFormikValidationSchema } from "zod-formik-adapter";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Swal from "sweetalert2";
 
 import { ButtonProfile, ControlButton } from "../products/StyledComponents";
 import { updateOrder } from "../../api/orders/orders";
 import { da } from "date-fns/locale";
 import { ShoesCardStyledPayment } from "../StyledComponents";
+import { AuthContext } from "../../auth/context/AuthContext";
 
 const imageRqd = z.any().optional();
 
 export const OrdeDetail = () => {
+  const { user } = useContext(AuthContext);
   const copyToClipboardBC = () => {
     const accountNumber = "83200001513";
     navigator.clipboard.writeText(accountNumber).then(() => {
@@ -124,7 +126,15 @@ export const OrdeDetail = () => {
                 {data.orderItems.map((item) => (
                   <p key={item.id}>
                     {item.quantity} x {item.model.name} -{" "}
-                    {item.model.price.toLocaleString("es-CO")} COP - talla:{" "}
+                    {user?.tipoUsuario === "Cliente"
+                      ? item.model.normalPrice.toLocaleString("es-CO") +
+                        "COP - Talla:"
+                      : user?.tipoUsuario === "Tienda Aliada"
+                      ? item.model.alliancePrice.toLocaleString("es-CO") +
+                        "COP - Talla:"
+                      : item.model.price.toLocaleString("es-CO") +
+                        "COP - Talla:"}
+                    {/* {item.model.price.toLocaleString("es-CO")} COP - talla:{" "} */}
                     {item.size}
                   </p>
                 ))}

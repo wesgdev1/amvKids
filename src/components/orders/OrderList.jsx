@@ -67,8 +67,24 @@ export const OrderList = () => {
           </ButtonProfile>
           <OrdersTable orders={filteredData} />
         </>
+      ) : data?.length > 0 ? (
+        <OrdersTable orders={data} />
       ) : (
-        data?.length > 0 && <OrdersTable orders={data} />
+        <div className="d-flex flex-column align-items-center justify-content-center text-center pt-5 pb-4">
+          <img
+            src="https://res.cloudinary.com/dppqkypts/image/upload/v1745958810/29_abr_2025_03_33_08_p.m._by1awa.png"
+            alt="No hay ordenes pendientes"
+            style={{
+              maxWidth: "250px",
+              marginBottom: "1.5rem",
+              filter: "grayscale(50%)",
+            }}
+          />
+          <h5 className="text-muted">No tienes órdenes todavia ...</h5>
+          <p className="text-secondary small">
+            Que esperas para crear una orden?
+          </p>
+        </div>
       )}
     </div>
   );
