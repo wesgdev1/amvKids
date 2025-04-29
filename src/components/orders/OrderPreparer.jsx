@@ -1,19 +1,11 @@
-import { useNavigate } from "react-router-dom";
-import { useOrders } from "../../domain/orders/useOrders";
 import { useState, useEffect } from "react";
 import { Alert, Form, Spinner } from "react-bootstrap";
 import { ButtonProfile } from "../products/StyledComponents";
-import { OrdersTable } from "./OrdersTable";
 import { useOrderAdmin } from "../../domain/orders/useOrderAdmin";
-import { OrdersTableAdmin } from "./OrdersTableAdmin";
 import { OrdersTablePreparer } from "./OrdersTablePreparer";
 
 export const OrderPreparer = () => {
-  const navigate = useNavigate();
   const { data, loading, error, cargarOrders } = useOrderAdmin();
-  const handleClick = () => {
-    console.log("Agregar orden");
-  };
 
   const [searchValue, setSearchValue] = useState("");
   const [filteredData, setFilteredData] = useState([]);
@@ -86,8 +78,26 @@ export const OrderPreparer = () => {
           </ButtonProfile>
           <OrdersTablePreparer orders={filteredData} />
         </>
+      ) : data?.length > 0 ? (
+        <OrdersTablePreparer orders={data} />
       ) : (
-        data?.length > 0 && <OrdersTablePreparer orders={data} />
+        <div className="d-flex flex-column align-items-center justify-content-center text-center pt-5 pb-4">
+          <img
+            src="https://res.cloudinary.com/dppqkypts/image/upload/v1745958810/29_abr_2025_03_33_08_p.m._by1awa.png"
+            alt="No hay ordenes pendientes"
+            style={{
+              maxWidth: "250px",
+              marginBottom: "1.5rem",
+              filter: "grayscale(50%)",
+            }}
+          />
+          <h5 className="text-muted">
+            No tienes órdenes pendientes por alistar
+          </h5>
+          <p className="text-secondary small">
+            ¡Buen trabajo manteniéndote al día!
+          </p>
+        </div>
       )}
     </div>
   );

@@ -7,16 +7,23 @@ import { ButtonProfile } from "./StyledComponents";
 
 export const ProductList = () => {
   const navigate = useNavigate();
-  const { data, loading, error, cargarProductos } = useProducts();
+  const { data, loading, error } = useProducts();
   const handleClick = () => {
     navigate("/profile/products/new");
   };
   const [searchValue, setSearchValue] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const [notificacion, setNotificacion] = useState(false);
+  const [sortOption, setSortOption] = useState("name-asc");
+
   const handleInputChange = (e) => {
     setSearchValue(e.target.value);
   };
+
+  const handleSortChange = (e) => {
+    setSortOption(e.target.value);
+  };
+
   const onSearch = (e) => {
     if (e.key === "Enter" && e.target.value !== "") {
       e.preventDefault();
@@ -36,6 +43,37 @@ export const ProductList = () => {
       setSearchValue("");
     }
   };
+
+  // Función para ordenar productos
+  const sortProducts = (products, option) => {
+    const sortedProducts = [...products]; // Crear una copia para no mutar el estado original
+    switch (option) {
+      case "name-asc":
+        sortedProducts.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case "name-desc":
+        sortedProducts.sort((a, b) => b.name.localeCompare(a.name));
+        break;
+      case "models-asc":
+        sortedProducts.sort(
+          (a, b) => (a.models?.length || 0) - (b.models?.length || 0)
+        );
+        break;
+      case "models-desc":
+        sortedProducts.sort(
+          (a, b) => (b.models?.length || 0) - (a.models?.length || 0)
+        );
+        break;
+      default:
+        break;
+    }
+    return sortedProducts;
+  };
+
+  // Determinar qué datos mostrar y ordenarlos
+  const dataToShow = filteredData.length > 0 ? filteredData : data || [];
+  const sortedData = sortProducts(dataToShow, sortOption);
+
   return (
     <div className="pt-5 px-4">
       <Button
@@ -48,7 +86,7 @@ export const ProductList = () => {
         Volver
       </Button>
       <h4 className="pb-3">
-        <i className="bi bi-box"></i> Productos
+        <i className="bi bi-box"></i> Productos o Categorias
       </h4>
       <div className="d-flex justify-content-start pb-3">
         <ButtonProfile onClick={handleClick}>Agregar Producto</ButtonProfile>
@@ -64,6 +102,14 @@ export const ProductList = () => {
           onKeyDown={onSearch}
           value={searchValue}
         />
+      </div>
+      <div className="my-3 w-50">
+        <Form.Select size="sm" value={sortOption} onChange={handleSortChange}>
+          <option value="name-asc">Nombre (A-Z)</option>
+          <option value="name-desc">Nombre (Z-A)</option>
+          <option value="models-asc">Menos Modelos</option>
+          <option value="models-desc">Más Modelos</option>
+        </Form.Select>
       </div>
       {loading && <Spinner animation="border" variant="info" />}
       {error && <Alert variant="danger">{error}</Alert>}
@@ -83,10 +129,10 @@ export const ProductList = () => {
           <ButtonProfile onClick={() => setFilteredData([])}>
             Mostrar todo
           </ButtonProfile>
-          <ProductsTable productos={filteredData} />
+          <ProductsTable productos={sortedData} />
         </>
       ) : (
-        data.length > 0 && <ProductsTable productos={data} />
+        sortedData.length > 0 && <ProductsTable productos={sortedData} />
       )}
     </div>
   );

@@ -55,7 +55,7 @@ export const ProductsTable = ({ productos }) => {
         <tfoot>
           <tr>
             <td colSpan="3">
-              <strong>Total Producto: {productos.length}</strong>
+              <strong>Total Productos o categorias: {productos.length}</strong>
             </td>
           </tr>
         </tfoot>
