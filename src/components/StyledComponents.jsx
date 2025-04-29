@@ -21,7 +21,7 @@ export const NavLinkStyled = styled(NavLink)(({ theme }) => ({
 
 export const ButtonStyled = styled(Button)(({ theme }) => ({
   background: theme.colors.buttonColor,
-  color: "white",
+  color: "black",
   fontWeight: "bold",
   border: "none",
   borderRadius: "5px",
@@ -254,6 +254,7 @@ export const FooterContainer = styled.div`
 `;
 
 export const FormStyled = styled.form(({ theme }) => ({
+  height: "50%",
   marginTop: "80px",
   paddingRight: "2rem",
   paddingLeft: "2rem",

@@ -105,7 +105,7 @@ export const ContainerMov = styled("div")(() => ({
 
 export const ButtonAction = styled(Button)(({ theme }) => ({
   position: "absolute",
-  top: "80%",
+  top: "70%",
   //centrar horizontalmente
   left: "50%",
   transform: "translate(-50%, -50%)",

@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useOrders } from "../../domain/orders/useOrders";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Alert, Form, Spinner } from "react-bootstrap";
 import { ButtonProfile } from "../products/StyledComponents";
 import { OrdersTable } from "./OrdersTable";
@@ -37,6 +37,18 @@ export const OrderPreparer = () => {
       setSearchValue("");
     }
   };
+
+  // useEffect para recargar datos cada 20 segundos
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      console.log("Recargando órdenes..."); // Opcional: para verificar en consola
+      cargarOrders();
+    }, 20000); // 20000 ms = 20 segundos
+
+    // Función de limpieza para detener el intervalo cuando el componente se desmonte
+    return () => clearInterval(intervalId);
+  }, [cargarOrders]); // Dependencia para asegurar que se use la última función cargarOrders
+
   return (
     <div className="pt-5 px-4">
       <h4 className="pb-3">

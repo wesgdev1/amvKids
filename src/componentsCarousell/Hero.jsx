@@ -85,6 +85,7 @@ const Hero = () => {
           <div className="checkout">
             {/* <Button content="add to cart" /> */}
             <Button
+              className="bg-blue-500 text-black"
               content="ver detalle"
               onClick={() => handleClick(selectedShoe.id)}
             />

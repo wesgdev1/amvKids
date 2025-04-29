@@ -128,6 +128,12 @@ export const NavBarComponent = () => {
       },
       // { path: "/login", icon: "bi bi-box-arrow-left", label: "Cerrar sesión" },
     ],
+    Cliente: [
+      { path: "/profile", icon: "bi bi-person-circle", label: "Mi perfil" },
+      { path: "/productos", icon: "bi bi-person-circle", label: "Productos" },
+      { path: "/curvas", icon: "bi bi-diagram-2", label: "Curvas" },
+      { path: "/profile/myOrders", icon: "bi bi-search", label: "Mis pedidos" },
+    ],
   };
 
   const userType = user?.tipoUsuario || "Nadie"; // Si no hay usuario, asume que es un usuario normal
@@ -213,7 +219,7 @@ export const NavBarComponent = () => {
                         alt="Nombre de usuario"
                         className=" w-16 h-16 rounded-full border-2 border-gray-300 hover:border-gray-500 cursor-pointer"
                       />
-                      <span className="text-2xl">{user.name}</span>
+                      <span className="text-2xl text-center">{user.name}</span>
 
                       {/* <ButtonCardStyled>Gestionar Perfil </ButtonCardStyled> */}
                     </div>

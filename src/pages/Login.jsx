@@ -162,14 +162,14 @@ export const Login = () => {
                 }
               </ButtonStyled>
             </div>
-            <div>
+            {/* <div>
               <p className="text-center pt-4">¿No tienes cuenta?</p>
               <div className="d-flex justify-center">
                 <NavLinkStyled to={"/signup"}>
                   <p className="text-center">Registrate Aqui</p>
                 </NavLinkStyled>
               </div>
-            </div>
+            </div> */}
           </FormStyled>
         )}
       </Formik>

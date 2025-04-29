@@ -44,7 +44,6 @@ export const UserForm = () => {
     "Admin",
     "Reventa",
     "Cliente",
-    "Whatsapp",
     "Tienda Aliada",
     "Preparador",
   ];
