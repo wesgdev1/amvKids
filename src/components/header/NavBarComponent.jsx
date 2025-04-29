@@ -157,19 +157,22 @@ export const NavBarComponent = () => {
             <Nav className="d-flex  gap-3 items-center ">
               {user ? (
                 <div className="flex justify-center items-center gap-3">
-                  <ContainerIcon
-                    onClick={() => navigate("/verCarritoDeCompras")}
-                  >
-                    <i className="bi bi-cart4"></i>
-                    <Badge
-                      bg="danger"
-                      className="position-absolute"
-                      style={{ marginLeft: "26px", marginTop: "-30px" }}
-                      hidden={total === 0}
+                  {user?.tipoUsuario === "Cliente" ||
+                  user?.tipoUsuario == "Reventa" ? (
+                    <ContainerIcon
+                      onClick={() => navigate("/verCarritoDeCompras")}
                     >
-                      {total}
-                    </Badge>
-                  </ContainerIcon>
+                      <i className="bi bi-cart4"></i>
+                      <Badge
+                        bg="danger"
+                        className="position-absolute"
+                        style={{ marginLeft: "26px", marginTop: "-30px" }}
+                        hidden={total === 0}
+                      >
+                        {total}
+                      </Badge>
+                    </ContainerIcon>
+                  ) : null}
 
                   <div className="flex items-center justify-center flex-col gap-2">
                     <Image
