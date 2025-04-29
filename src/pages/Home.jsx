@@ -1,3 +1,4 @@
+import Asesors from "../components/Asesors";
 import { ButtonWhatsapp } from "../components/home/ButtonWhatsapp";
 import { ButtonWhatsappAmv } from "../components/home/ButtonWhatsappAmv";
 import { Carrousel } from "../components/home/Carrousel";
@@ -11,6 +12,7 @@ export const Home = () => {
       <Carrousel />
       {/* <ShoesPrincipal /> */}
       <Hero />
+      <Asesors />
       <Homevideo />
       <ButtonWhatsapp />
       <ButtonWhatsappAmv />
