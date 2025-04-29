@@ -3,9 +3,10 @@ import { Alert, Form, Spinner } from "react-bootstrap";
 import { ButtonProfile } from "../products/StyledComponents";
 import { useOrderAdmin } from "../../domain/orders/useOrderAdmin";
 import { OrdersTablePreparer } from "./OrdersTablePreparer";
+import { useOrderPreparer } from "../../domain/orders/useOrderPreparer";
 
 export const OrderPreparer = () => {
-  const { data, loading, error, cargarOrders } = useOrderAdmin();
+  const { data, loading, error, cargarOrders } = useOrderPreparer();
 
   const [searchValue, setSearchValue] = useState("");
   const [filteredData, setFilteredData] = useState([]);

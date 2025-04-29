@@ -199,7 +199,7 @@ export const OrdeDetailPreparer = () => {
 
       if (result.isConfirmed) {
         const values = {
-          state: "Alistado",
+          areReady: true,
         };
 
         const updateResult = await updateOrderState(id, values);
@@ -319,6 +319,10 @@ export const OrdeDetailPreparer = () => {
               <p>
                 <strong>Estado del pedido: </strong>
                 {data.state}
+              </p>
+              <p>
+                <strong>Alistado: </strong>
+                {data.areReady ? "Si" : "No"}
               </p>
               {data.state === "Creada" ? (
                 <p>Sin registro de pago</p>

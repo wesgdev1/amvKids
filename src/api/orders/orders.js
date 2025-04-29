@@ -27,6 +27,15 @@ export const getAllOrders = async () => {
   }
 };
 
+export const getAllPreparer = async () => {
+  try {
+    const { data: response } = await http.get("/orders/preparer");
+    return { data: response.data };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 export const updateOrder = async (id, payload) => {
   try {
     const { data: response } = await http.put(`/orders/${id}`, payload);
@@ -37,6 +46,15 @@ export const updateOrder = async (id, payload) => {
 };
 
 export const updateOrderState = async (id, payload) => {
+  try {
+    const { data: response } = await http.patch(`/orders/${id}`, payload);
+    return { data: response.data };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+export const updateOrderStatePreparer = async (id, payload) => {
   try {
     const { data: response } = await http.patch(`/orders/${id}`, payload);
     return { data: response.data };
