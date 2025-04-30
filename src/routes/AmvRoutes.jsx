@@ -11,6 +11,7 @@ import { Curvas } from "../pages/Curvas";
 import { Contact } from "../pages/Contact";
 import { ForbiddenPage } from "../pages/ForbiddenPage";
 import { ProtectedRoute } from "../auth/ProtectedRoute";
+import { ForbiddenPageAdmin } from "../pages/ForbiddenPageAdmin";
 
 export const AmvRoutes = () => {
   return (
@@ -37,6 +38,7 @@ export const AmvRoutes = () => {
         <Route path="/contact" element={<Contact />} />
 
         <Route path="/forbidden" element={<ForbiddenPage />} />
+        <Route path="/forbiddenAdmin" element={<ForbiddenPageAdmin />} />
       </Routes>
     </>
   );

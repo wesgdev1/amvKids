@@ -16,23 +16,51 @@ import { ReportList } from "../reports/ReportList";
 import { OrderListByUser } from "../users/OrderListbyUser";
 import { OrderPreparer } from "../orders/OrderPreparer";
 import { OrdeDetailPreparer } from "../orders/OrderDetailPreparer";
+import { AdminRoute } from "../../auth/AdminRoute";
 
 export const ProfileRoutes = () => {
   return (
     <>
       <Routes>
         <Route path="/" element={<MyProfile />} />
-        <Route path="/reports" element={<ReportList />} />
+        <Route
+          path="/reports"
+          element={
+            <AdminRoute>
+              <ReportList />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/orders"
+          element={
+            <AdminRoute>
+              <OrdersAdmin />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/order/:id"
+          element={
+            <AdminRoute>
+              <OrdeDetailAdmin />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/products/new"
+          element={
+            <AdminRoute>
+              <ProductForm />
+            </AdminRoute>
+          }
+        />
         <Route path="/scan" element={<ScanShoe />} />
         <Route path="/myOrders" element={<OrderList />} />
-        <Route path="/orders" element={<OrdersAdmin />} />
         <Route path="/prepareOrders" element={<OrderPreparer />} />
         <Route path="/myOrders/:id" element={<OrdeDetail />} />
-        <Route path="/order/:id" element={<OrdeDetailAdmin />} />
         <Route path="/prepareOrders/:id" element={<OrdeDetailPreparer />} />
         <Route path="/products" element={<ProductList />} />
-
-        <Route path="/products/new" element={<ProductForm />} />
         <Route path="/products/:idProduct/models" element={<ModelList />} />
         <Route path="/products/:idProduct/models/new" element={<ModelForm />} />
         <Route path="/models/:idModel" element={<ModelDetail />} />
