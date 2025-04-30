@@ -1,4 +1,5 @@
 import { AuthContext } from "./AuthContext";
+import PropTypes from "prop-types";
 
 import { useEffect, useState } from "react";
 
@@ -12,11 +13,20 @@ export const AuthProvider = ({ children }) => {
     // },
   });
 
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
+
   const init = async () => {
-    const json = localStorage.getItem("user");
-    if (json) {
-      const user = JSON.parse(json);
-      setAuthState({ user });
+    try {
+      const json = localStorage.getItem("user");
+      if (json) {
+        const user = JSON.parse(json);
+        setAuthState({ user });
+      }
+    } catch (error) {
+      console.error("Error al inicializar AuthProvider:", error);
+      setAuthState({});
+    } finally {
+      setIsAuthLoading(false);
     }
   };
 
@@ -44,16 +54,14 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const inicializar = async () => {
-      await init();
-    };
-    inicializar();
+    init();
   }, []);
 
   return (
     <AuthContext.Provider
       value={{
         ...authState,
+        isAuthLoading,
         setAuthState,
         login,
         logout,
@@ -64,4 +72,8 @@ export const AuthProvider = ({ children }) => {
       {children}
     </AuthContext.Provider>
   );
+};
+
+AuthProvider.propTypes = {
+  children: PropTypes.node.isRequired,
 };
