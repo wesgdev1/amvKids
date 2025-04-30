@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useOrder } from "../../domain/orders/useOrder";
-import { Alert, Card, CloseButton, Spinner } from "react-bootstrap";
+import { Alert, Card, Spinner, OverlayTrigger, Tooltip } from "react-bootstrap";
 
 import Swal from "sweetalert2";
 
@@ -181,51 +181,137 @@ export const OrdeDetailAdmin = () => {
     }
   };
 
+  // Función para calcular el nuevo total si se elimina un item
+  const calculateNewTotalAfterItemRemoval = (order, itemIdToRemove) => {
+    if (!order || !order.orderItems || !order.user) {
+      console.error("Datos de orden incompletos para calcular nuevo total.");
+      return order?.total; // Devolver el total actual si hay error
+    }
+
+    const itemToRemove = order.orderItems.find(
+      (item) => item.id === itemIdToRemove
+    );
+
+    if (!itemToRemove || !itemToRemove.model) {
+      console.error("Item a eliminar no encontrado o modelo inválido.");
+      return order.total; // Devolver el total actual si hay error
+    }
+
+    const userType = order.user.tipoUsuario;
+    let priceField;
+
+    switch (userType) {
+      case "Reventa":
+        priceField = "price";
+        break;
+      case "Cliente":
+        priceField = "NormalPrice";
+        break;
+      case "Tienda Aliada":
+        priceField = "alliancePrice";
+        break;
+      default:
+        // Asumir un precio por defecto o manejar como error si es necesario
+        console.warn(
+          `Tipo de usuario desconocido: ${userType}. Usando 'price' por defecto.`
+        );
+        priceField = "price";
+    }
+
+    const price = itemToRemove.model[priceField];
+
+    if (typeof price !== "number") {
+      console.error(
+        `Precio inválido o no encontrado para el campo ${priceField}`
+      );
+      // Decide cómo manejar esto: devolver total actual, 0, o lanzar error?
+      // Por ahora, devolvemos el total actual para evitar romper el flujo.
+      return order.total;
+    }
+
+    const itemValue = price * itemToRemove.quantity;
+    const newTotal = order.total - itemValue;
+
+    // Asegurarse de que el total no sea negativo
+    return Math.max(0, newTotal);
+  };
+
   const handleClickDeleteItem = async (orderId, ItemId) => {
+    // Verificar si es el último item
+    if (data && data.orderItems.length === 1) {
+      // Si es el último item, confirmar la cancelación de la ORDEN COMPLETA
+      const result = await Swal.fire({
+        title: "Último Item en la Orden",
+        text: "Al eliminar el último item, se cancelará la orden completa. ¿Deseas continuar?",
+        icon: "warning",
+        showCancelButton: true, // Para permitir al usuario arrepentirse
+        confirmButtonColor: "#d33", // Rojo para acción destructiva
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Sí, cancelar orden",
+        cancelButtonText: "No, mantener orden", // Cambiado para claridad
+      });
+
+      // Si confirma cancelar la orden completa
+      if (result.isConfirmed) {
+        await handlePaymentCancelAll();
+      }
+      // Si presiona "No, mantener orden", no se hace nada.
+      return; // Salir, ya que se manejó el caso del último item
+    } else {
+      // Si hay más de un item, proceder con la lógica de eliminar solo el item
+
+      // --- Inicio: Calcular el nuevo total potencial ---
+      const potentialNewTotal = calculateNewTotalAfterItemRemoval(data, ItemId);
+      console.log(
+        "El nuevo total si se elimina el item sería:",
+        potentialNewTotal
+      );
+      // Nota: Este es solo el cálculo. El total real de la orden
+      // se actualizará en el backend al confirmar la eliminación.
+      // Puedes usar 'potentialNewTotal' si quieres mostrarlo en el Swal de confirmación.
+      // --- Fin: Calcular el nuevo total potencial ---
+
+      await proceedToDeleteItem(orderId, ItemId, potentialNewTotal);
+    }
+  };
+
+  // Extraer la lógica de eliminación de item a una función separada para reutilizarla
+  const proceedToDeleteItem = async (orderId, ItemId, potentialNewTotal) => {
     try {
-      // Mostrar alerta de confirmación
       const result = await Swal.fire({
         title: "Eliminar Item",
-        text: "¿Estás seguro que deseas eliminar este item de la orden?",
+        text: "¿Estás seguro que deseas eliminar este item específico de la orden?", // Texto ajustado para claridad
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
-        confirmButtonText: "Sí",
+        confirmButtonText: "Sí, eliminar item",
         cancelButtonText: "No",
       });
 
-      // Si el usuario confirma
       if (result.isConfirmed) {
-        // Llamada a la API para eliminar la orden
         const response = await updateOrderItems({
           orderId: orderId,
           itemId: ItemId,
+          potentialNewTotal,
         });
 
-        // Verificar que la respuesta sea 200 OK
         if (response) {
-          // Mostrar mensaje de éxito
           await Swal.fire({
             icon: "success",
             title: "Item Eliminado",
             text: "La orden se actualizó correctamente",
           });
-
-          // Redirigir a la página de órdenes después de un pequeño retraso
           setTimeout(() => {
-            // navigate("/profile/orders", {
-            //   replace: true,
-            // });
             refresh(id);
-          }, 1000); // Espera 1 segundo antes de redirigir
+          }, 1000);
         }
       }
     } catch (error) {
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: "Ocurrió un error inesperado al cancelar la orden",
+        text: "Ocurrió un error inesperado al eliminar el item",
       });
     }
   };
@@ -279,18 +365,32 @@ export const OrdeDetailAdmin = () => {
               <Card.Title className="fw-bold">Productos</Card.Title>
               <Card.Text>
                 {data.orderItems.map((item) => (
-                  <>
-                    <div className="d-flex  gap-4">
-                      <p key={item.id}>
-                        {item.quantity} x {item.model.name} -{" "}
-                        {/* {item.model.price.toLocaleString("es-CO")} COP - talla:{" "} */}
-                        talla: {item.size}
-                      </p>
-                      <CloseButton
+                  <div
+                    key={item.id}
+                    className="d-flex align-items-center gap-3 mb-2"
+                  >
+                    <span>
+                      {item.quantity} x {item.model.name} - talla: {item.size}
+                    </span>
+                    <OverlayTrigger
+                      placement="top"
+                      overlay={
+                        <Tooltip id={`tooltip-delete-item-${item.id}`}>
+                          Cuidado, esto eliminará el total de productos de esta
+                          referencia.
+                        </Tooltip>
+                      }
+                    >
+                      <span
                         onClick={() => handleClickDeleteItem(data.id, item.id)}
-                      />
-                    </div>
-                  </>
+                        className="text-danger fw-bold cursor-pointer"
+                        style={{ fontSize: "1.1rem" }}
+                        aria-label="Eliminar item"
+                      >
+                        <i className="bi bi-x-circle-fill"></i>
+                      </span>
+                    </OverlayTrigger>
+                  </div>
                 ))}
               </Card.Text>
             </Card.Body>

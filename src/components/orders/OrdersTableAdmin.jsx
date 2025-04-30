@@ -23,6 +23,16 @@ export const OrdersTableAdmin = ({ orders }) => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+  // Mapa de colores para tipos de usuario (Tailwind CSS)
+  const userTypeColors = {
+    Cliente: "bg-blue-100 text-blue-800",
+    "Tienda Aliada": "bg-purple-100 text-purple-800",
+    Reventa: "bg-green-100 text-green-800",
+    Admin: "bg-red-100 text-red-800", // Añadir otros si existen
+    Preparador: "bg-yellow-100 text-yellow-800", // Añadir otros si existen
+    default: "bg-gray-100 text-gray-800", // Color por defecto
+  };
+
   const iconMap = {
     Creada: "bi bi-exclamation-octagon bg-yellow-300 rounded-full ",
     "Pago Enviado": "bi bi-hourglass-split rounded-full bg-orange-500",
@@ -55,7 +65,18 @@ export const OrdersTableAdmin = ({ orders }) => {
               <tr key={order.id}>
                 <td>{order.codigoOrder}</td>
                 <td>{order.user.codigo}</td>
-                <td>{order.user.name}</td>
+                <td>
+                  {order.user.name}
+                  {/* Badge para Tipo de Usuario */}
+                  <span
+                    className={`ms-2 px-2 py-1 rounded-full text-xs font-medium ${
+                      userTypeColors[order.user.tipoUsuario] ||
+                      userTypeColors.default
+                    }`}
+                  >
+                    {order.user.tipoUsuario}
+                  </span>
+                </td>
 
                 <td>{format(new Date(order.createdAt), "MM/dd/yyyy")}</td>
                 <td>$ {order.total.toLocaleString("es-CO")}</td>
@@ -153,12 +174,13 @@ OrdersTableAdmin.propTypes = {
       user: PropTypes.shape({
         codigo: PropTypes.string,
         name: PropTypes.string,
+        tipoUsuario: PropTypes.string,
       }),
       createdAt: PropTypes.string.isRequired,
       total: PropTypes.number.isRequired,
       state: PropTypes.string,
-      paymentUrl: PropTypes.string,
       areReady: PropTypes.bool,
+      paymentUrl: PropTypes.string,
     })
   ).isRequired,
 };
