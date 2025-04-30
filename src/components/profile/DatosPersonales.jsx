@@ -24,12 +24,6 @@ const DatosPersonales = () => {
       className="bg-white p-6 rounded-lg shadow-md text-gray-700"
       // style={{ color: "var(--gray-2)" }} // Quitando estilos inline si usamos Tailwind
     >
-      <h5
-        className="text-lg font-semibold mb-6 text-gray-800 border-b pb-2"
-        // style={{ color: "var(--gray-1)" }} // Quitando estilos inline
-      >
-        <i className="bi bi-person-badge mr-2"></i>Mis datos personales
-      </h5>
       <Formik
         initialValues={initialValues}
         onSubmit={async (values, { setSubmitting }) => {

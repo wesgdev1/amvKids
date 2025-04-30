@@ -29,10 +29,6 @@ const Contrasena = () => {
   const { user, logout } = useContext(AuthContext);
   return (
     <div className="bg-white p-6 rounded-lg shadow-md text-gray-700">
-      <h5 className="text-lg font-semibold mb-6 text-gray-800 border-b pb-2">
-        <i className="bi bi-shield-lock-fill mr-2"></i>Cambiar mi contraseña
-      </h5>
-
       <Formik
         initialValues={{
           password: "",
