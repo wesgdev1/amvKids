@@ -1,13 +1,12 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
-import { Accordion, Button, Form, Offcanvas } from "react-bootstrap";
+import { Accordion, Form, Offcanvas } from "react-bootstrap";
 import { ButtonStyled } from "./StyledComponents";
-import { OffcanvasBS, OffcanvasBSfilter } from "../header/StyledComponents";
+import { OffcanvasBSfilter } from "../header/StyledComponents";
 
 export const Filter = ({
   data,
   addFilter,
-  clena,
   deleteFilter,
   checkFilter,
   setCheckFilter,
@@ -17,11 +16,20 @@ export const Filter = ({
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  const marcas = data.map((product) => product.product.name);
-  const marcasUnicas = [...new Set(marcas)];
 
-  const colors = data.map((product) => product.color);
-  const uniqueCol = [...new Set(colors)];
+  // Función para capitalizar cada palabra
+  const capitalizeWords = (str) => {
+    if (!str) return "";
+    return str
+      .toLowerCase()
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
+
+  // Capitalizar nombres de marcas
+  const marcas = data.map((product) => capitalizeWords(product.product.name));
+  const marcasUnicas = [...new Set(marcas)];
 
   const sizes = data.map((product) => {
     return product.stocks.map((stock) => stock.size);
@@ -31,8 +39,6 @@ export const Filter = ({
   const uniqueSizes = [...new Set(sizesUnidimensional)].sort();
 
   const genres = ["Hombre", "Mujer", "Niño", "Niña"];
-
-  const [filters, setFilters] = useState([]);
 
   const handleFilter = (event, marca, type) => {
     // Esto para que se actualice el estado de los filtros en el check

@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { Card } from "react-bootstrap";
-import { ButtonCardStyled, ShoesCardStyled } from "../StyledComponents";
+import { ShoesCardStyled } from "../StyledComponents";
 import { CardDescroptionStyle } from "./StyledComponents";
 import { useNavigate } from "react-router-dom";
 import { useContext, useState, useRef, useEffect } from "react";
@@ -61,6 +61,18 @@ const ColorTag = styled.span`
   text-transform: capitalize;
 `;
 
+const ProductTag = styled.span`
+  display: inline-block;
+  background-color: #a7f3d0;
+  color: #047857;
+  padding: 0.2em 0.5em;
+  border-radius: 5px;
+  font-size: 0.8em;
+  margin-top: 0.5em;
+  margin-left: 0.5em;
+  font-weight: 500;
+`;
+
 export const ShoeCard = ({ model }) => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -101,6 +113,15 @@ export const ShoeCard = ({ model }) => {
     }
   };
 
+  const capitalizeWords = (str) => {
+    if (!str) return "";
+    return str
+      .toLowerCase()
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
+
   return (
     <>
       <ShoesCardStyled ref={containerRef} onClick={handleClick}>
@@ -121,7 +142,12 @@ export const ShoeCard = ({ model }) => {
         </ImageContainer>
         <Card.Body>
           <CardTitleStyled>{model.name}</CardTitleStyled>
-          <ColorTag color={model.color}>{model.color}</ColorTag>
+          <div>
+            {model.color && <ColorTag>{model.color}</ColorTag>}
+            {model.product?.name && (
+              <ProductTag>{capitalizeWords(model.product.name)}</ProductTag>
+            )}
+          </div>
           <CardDescroptionStyle>{model.description}</CardDescroptionStyle>
           <Card.Text
             style={{
@@ -147,11 +173,6 @@ export const ShoeCard = ({ model }) => {
 
             {!user && model.normalPrice.toLocaleString("es-CO") + " COP"}
           </Card.Text>
-          {/* <div className="d-flex justify-center">
-            <ButtonCardStyled onClick={handleClick}>
-              Ver Detalle
-            </ButtonCardStyled>
-          </div> */}
         </Card.Body>
       </ShoesCardStyled>
     </>

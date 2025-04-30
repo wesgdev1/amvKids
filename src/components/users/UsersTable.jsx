@@ -175,3 +175,20 @@ export const UsersTable = ({ users, cargarUsuarios }) => {
     </div>
   );
 };
+
+UsersTable.propTypes = {
+  users: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+      codigo: PropTypes.string,
+      urlFoto: PropTypes.string,
+      name: PropTypes.string,
+      email: PropTypes.string,
+      celular: PropTypes.string,
+      tipoUsuario: PropTypes.string,
+      numeroMultas: PropTypes.number,
+      state: PropTypes.bool,
+    })
+  ).isRequired,
+  cargarUsuarios: PropTypes.func.isRequired,
+};
