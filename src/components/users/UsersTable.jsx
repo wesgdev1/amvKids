@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { Image, Table, OverlayTrigger, Popover } from "react-bootstrap";
+import PropTypes from "prop-types";
 
 import { useNavigate } from "react-router-dom";
 import { Paginator } from "../paginator/Paginator";
 import { ControlButton } from "../products/StyledComponents";
-import { useUsers } from "../../domain/auth/useUsers";
 import Swal from "sweetalert2";
 import { editUser } from "../../api/users/users";
 
 export const UsersTable = ({ users, cargarUsuarios }) => {
-  const [productosBypage, setProductosByPage] = useState(10);
+  const [productosBypage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const totalProductos = users.length;
   const lastIndex = currentPage * productosBypage;
@@ -60,7 +60,13 @@ export const UsersTable = ({ users, cargarUsuarios }) => {
   return (
     <div className="pt-4">
       {" "}
-      <Table striped bordered hover style={{ fontSize: "0.8rem" }}>
+      <Table
+        responsive="sm"
+        striped
+        bordered
+        hover
+        style={{ fontSize: "0.8rem" }}
+      >
         <thead>
           <tr>
             <th>Codigo</th>
