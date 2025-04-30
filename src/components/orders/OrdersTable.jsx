@@ -21,6 +21,13 @@ export const OrdersTable = ({ orders }) => {
   const [paymentUrl, setPaymentUrl] = useState("");
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const iconMap = {
+    Creada: "bi bi-exclamation-octagon bg-yellow-300 rounded-full ",
+    "Pago Enviado": "bi bi-hourglass-split rounded-full bg-orange-500",
+    "Pago Confirmado": "bi bi-check-circle rounded-full bg-green-500",
+    "Pedido Entregado": "bi bi-box-seam rounded-full bg-green-500",
+    CanceladaAdmin: "bi bi-x-circle",
+  };
 
   return (
     <div className="pt-4 ">
@@ -46,7 +53,23 @@ export const OrdersTable = ({ orders }) => {
 
                 <td>{format(new Date(order.createdAt), "MM/dd/yyyy")}</td>
                 <td>$ {order.total.toLocaleString("es-CO")}</td>
-                <td>{order.state}</td>
+                <td>
+                  <span className="me-2">
+                    {order.state} <i className={`${iconMap[order.state]}`}></i>
+                  </span>
+
+                  {order.areReady ? (
+                    <span className="text-green-600 whitespace-nowrap">
+                      <i className="bi bi-check-circle-fill me-1"></i>
+                      (Alistada)
+                    </span>
+                  ) : (
+                    <span className="text-orange-500 whitespace-nowrap">
+                      <i className="bi bi-clock-history me-1"></i>
+                      (Pendiente por alistar)
+                    </span>
+                  )}
+                </td>
                 <td>
                   {order.paymentUrl ? (
                     <span

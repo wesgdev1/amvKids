@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { Image, Modal, Table } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 import { ControlButton } from "../products/StyledComponents";
 import { Paginator } from "../paginator/Paginator";
 import { format } from "date-fns";
 
 export const OrdersTableAdmin = ({ orders }) => {
-  const [ordersBypage, setOrdersByPage] = useState(10);
+  const [ordersBypage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const totalOrders = orders.length;
   const lastIndex = currentPage * ordersBypage;
@@ -59,7 +60,21 @@ export const OrdersTableAdmin = ({ orders }) => {
                 <td>{format(new Date(order.createdAt), "MM/dd/yyyy")}</td>
                 <td>$ {order.total.toLocaleString("es-CO")}</td>
                 <td>
-                  {order.state} <i className={`${iconMap[order.state]}`}></i>
+                  <span className="me-2">
+                    {order.state} <i className={`${iconMap[order.state]}`}></i>
+                  </span>
+
+                  {order.areReady ? (
+                    <span className="text-green-600 whitespace-nowrap">
+                      <i className="bi bi-check-circle-fill me-1"></i>
+                      (Alistada)
+                    </span>
+                  ) : (
+                    <span className="text-orange-500 whitespace-nowrap">
+                      <i className="bi bi-clock-history me-1"></i>
+                      (Pendiente por alistar)
+                    </span>
+                  )}
                 </td>
                 <td>
                   {order.paymentUrl ? (
