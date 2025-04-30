@@ -144,3 +144,21 @@ export const OrdersTableAdmin = ({ orders }) => {
     </div>
   );
 };
+
+OrdersTableAdmin.propTypes = {
+  orders: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+      codigoOrder: PropTypes.string,
+      user: PropTypes.shape({
+        codigo: PropTypes.string,
+        name: PropTypes.string,
+      }),
+      createdAt: PropTypes.string.isRequired,
+      total: PropTypes.number.isRequired,
+      state: PropTypes.string,
+      paymentUrl: PropTypes.string,
+      areReady: PropTypes.bool,
+    })
+  ).isRequired,
+};

@@ -37,7 +37,7 @@ const ProgressFill = styled.div`
 
 const StepsContainer = styled.ol`
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   margin-top: 1rem;
   position: relative;
   padding: 0;
@@ -117,20 +117,20 @@ const StepMobileLabel = styled.span`
 `;
 
 export const ProgressBar = ({ currentStep }) => {
-  const totalSteps = 5;
+  const totalSteps = 4;
   const progressPercentage = (currentStep / totalSteps) * 100;
 
   const steps = [
     { id: 1, label: "Orden Creada", shortLabel: "Creada" },
     { id: 2, label: "Pago Realizado", shortLabel: "Pagada" },
     { id: 3, label: "Pago Confirmado", shortLabel: "Confirmada" },
-    { id: 4, label: "Alistado", shortLabel: "Alistada" },
-    { id: 5, label: "Entregado", shortLabel: "Entregada" },
+    // { id: 4, label: "Alistado", shortLabel: "Alistada" },
+    { id: 4, label: "Entregado", shortLabel: "Entregada" },
   ];
 
   return (
     <ProgressContainer>
-      <ProgressTitle>Estado de tu orden</ProgressTitle>
+      <ProgressTitle>Estado de la orden</ProgressTitle>
 
       <BarContainer>
         <ProgressFill style={{ width: `${progressPercentage}%` }} />

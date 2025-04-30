@@ -1,14 +1,11 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useOrder } from "../../domain/orders/useOrder";
 import { Alert, Card, CloseButton, Spinner } from "react-bootstrap";
-import { z } from "zod";
 
-import { useState } from "react";
 import Swal from "sweetalert2";
 
 import {
   deleteOrder,
-  updateOrder,
   updateOrderItems,
   updateOrderState,
 } from "../../api/orders/orders";
@@ -16,19 +13,12 @@ import {
 import { ButtonCardStyled, ShoesCardStyledPayment } from "../StyledComponents";
 import { ProgressBar } from "./ProgressBar";
 
-const imageRqd = z.any().optional();
-
 export const OrdeDetailAdmin = () => {
   const params = useParams();
   const { id } = params;
   const { data, loading, error, cargarOrder: refresh } = useOrder(id);
 
   const navigate = useNavigate();
-
-  const [error2, setError2] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-
-  const calculateNewTotal = (orderItems) => {};
 
   const handlePaymentConfirm = () => {
     try {
@@ -64,6 +54,13 @@ export const OrdeDetailAdmin = () => {
         text: "No se pudo confirmar el pago",
       });
     }
+  };
+
+  const progresoEnvio = {
+    Creada: 1,
+    "Pago Enviado": 2,
+    "Pago Confirmado": 3,
+    "Pedido Entregado": 4,
   };
 
   const handlePedidoEntregado = () => {
@@ -245,7 +242,23 @@ export const OrdeDetailAdmin = () => {
         {error && <Alert variant="danger">{error}</Alert>}
         {data && (
           <ShoesCardStyledPayment>
-            <ProgressBar currentStep={5} />
+            <ProgressBar currentStep={progresoEnvio[data.state]} />
+
+            {/* Indicador de Estado "areReady" */}
+            <div className="text-center my-4">
+              {data.areReady ? (
+                <span className="text-lg font-semibold text-green-700 bg-green-100 px-4 py-2 rounded-full inline-flex items-center shadow-sm border border-green-200">
+                  <i className="bi bi-check-circle-fill me-2"></i>
+                  Orden Lista para Enviar
+                </span>
+              ) : (
+                <span className="text-lg font-semibold text-orange-700 bg-orange-100 px-4 py-2 rounded-full inline-flex items-center shadow-sm border border-orange-200">
+                  <i className="bi bi-clock-history me-1"></i>
+                  Pendiente por Alistar
+                </span>
+              )}
+            </div>
+
             <Card.Header>
               <strong> Total: {data.total.toLocaleString("es-CO")} COP</strong>
             </Card.Header>
