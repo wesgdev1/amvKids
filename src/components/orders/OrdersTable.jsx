@@ -61,12 +61,12 @@ export const OrdersTable = ({ orders }) => {
                   {order.areReady ? (
                     <span className="text-green-600 whitespace-nowrap">
                       <i className="bi bi-check-circle-fill me-1"></i>
-                      (Alistada)
+                      (Tu orden esta Lista)
                     </span>
                   ) : (
                     <span className="text-orange-500 whitespace-nowrap">
                       <i className="bi bi-clock-history me-1"></i>
-                      (Pendiente por alistar)
+                      (En proceso de alistado)
                     </span>
                   )}
                 </td>

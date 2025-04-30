@@ -33,6 +33,7 @@ import Swal from "sweetalert2";
 import { useContext } from "react";
 import { AuthContext } from "../auth/context/AuthContext";
 import { setSession } from "../api/sessions";
+import { CustomLoader } from "../components/common/CustomLoader";
 
 export const Login = () => {
   const { login } = useContext(AuthContext);
@@ -157,7 +158,10 @@ export const Login = () => {
                   !isSubmitting ? (
                     "Iniciar sesion"
                   ) : (
-                    <Spinner animation="border" size="sm" />
+                    <>
+                      <Spinner animation="border" size="sm" />
+                      <CustomLoader />
+                    </>
                   )
                 }
               </ButtonStyled>

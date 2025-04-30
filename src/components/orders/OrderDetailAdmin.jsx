@@ -78,6 +78,7 @@ export const OrdeDetailAdmin = () => {
         if (result.isConfirmed) {
           const values = {
             state: "Pedido Entregado",
+            areReady: true,
           };
           const result = updateOrderState(id, values);
           if (result) {

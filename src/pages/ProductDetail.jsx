@@ -5,6 +5,7 @@ import {} from "../components/products/StyledComponents";
 import { ControlProduct } from "../components/products/ControlProduct";
 import { ContainerMov } from "../components/home/StyledComponents";
 import { useState } from "react";
+import { CustomLoader } from "../components/common/CustomLoader";
 
 export const ProductDetail = () => {
   const params = useParams();
@@ -46,7 +47,7 @@ export const ProductDetail = () => {
 
   return (
     <>
-      {loading && <Spinner animation="border" variant="info" />}
+      {loading && <CustomLoader />}
       {error && <Alert variant="danger">{error}</Alert>}
       {data && (
         <ContainerMov className="pt-5 px-5 pb-3">
