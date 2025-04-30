@@ -6,7 +6,7 @@ export const useProfile = (id) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const cargarUsuarios = async () => {
+  const cargarUsuarios = async (id) => {
     setLoading(true);
     setError("");
 
@@ -22,7 +22,7 @@ export const useProfile = (id) => {
 
   useEffect(() => {
     cargarUsuarios();
-  }, []);
+  }, [id]);
 
   return { data, loading, error, cargarUsuarios };
 };

@@ -1,11 +1,10 @@
-import { Alert, Col, Container, Row, Spinner } from "react-bootstrap";
-import { ShoeCard } from "../components/home/ShoeCard";
+import { Alert, Col, Container, Row } from "react-bootstrap";
 import { Filter } from "../components/product/Filter";
 import { useModels, useModelsFilter } from "../domain/models/useModels";
 import { ProductListHome } from "../components/products/ProductListHome";
-import { use } from "react";
 import { useFilter } from "../hooks/useFilter";
 import { useLocation, useParams } from "react-router-dom";
+import { CustomLoader } from "../components/common/CustomLoader";
 
 export const Products = () => {
   const { searchValue } = useParams();
@@ -23,7 +22,6 @@ export const Products = () => {
     filtrosSeleccionadosAgrupados,
     searchValue
   );
-  // const { data: dataforFilter } = useModels();
   const { data: dataforFilter } = useModelsFilter();
 
   const location = useLocation();
@@ -117,7 +115,7 @@ export const Products = () => {
         </Col> */}
         <Col md={12}>
           <div>
-            {loading && <Spinner animation="border" variant="info" />}
+            {loading && <CustomLoader />}
             {error && <Alert variant="danger">{error}</Alert>}
             {data?.length > 0 ? (
               <ProductListHome models={data} />
