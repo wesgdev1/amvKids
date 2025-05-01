@@ -76,7 +76,7 @@ export const NavBarComponent = () => {
       },
       { path: "/profile/orders", icon: "bi bi-border-width", label: "Ordenes" },
       { path: "/profile/products", icon: "bi bi-box", label: "Calzados" },
-      { path: "/profile/products", icon: "bi bi-box", label: "Curvas" },
+      // { path: "/profile/products", icon: "bi bi-box", label: "Curvas" },
       {
         path: "/profile/users",
         icon: "bi bi-person-circle",
