@@ -262,23 +262,23 @@ export const FooterContainer = styled.div`
   }
 `;
 
-export const FormStyled = styled.form`
-  height: "50%";
-  margin-top: "80px";
-  padding-right: "2rem";
-  padding-left: "2rem";
-  padding-top: "0.5rem";
-  position: "absolute";
-  top: "50%";
-  left: "50%";
-  transform: "translate(-50%, -50%)";
-  width: "40%";
-  box-shadow: "0 0 10px 0 #000";
-  border-radius: "10px";
+export const FormStyled = styled.form(({ theme }) => ({
+  height: "50%",
+  marginTop: "80px",
+  paddingRight: "2rem",
+  paddingLeft: "2rem",
+  paddingTop: "0.5rem",
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: "40%",
+  boxShadow: "0 0 10px 0 #000",
+  borderRadius: "10px",
   "@media (max-width: 576px)": {
     width: "80%",
   },
-`;
+}));
 
 // Contenedor Principal de Página
 export const PageContainerStyled = styled(Container)(({ theme }) => ({
@@ -292,9 +292,9 @@ export const GridRowStyled = styled(Row)(({ theme }) => ({
 }));
 
 // Columna de Grid (opcional, si necesitas estilos específicos)
-export const GridColStyled = styled(Col)`
+export const GridColStyled = styled(Col)(({ theme }) => ({
   // Estilos adicionales si son necesarios
-`;
+}));
 
 // Imagen Estilizada
 export const ImageStyled = styled(Image)(({ theme }) => ({
