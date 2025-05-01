@@ -12,6 +12,7 @@ import { Contact } from "../pages/Contact";
 import { ForbiddenPage } from "../pages/ForbiddenPage";
 import { ProtectedRoute } from "../auth/ProtectedRoute";
 import { ForbiddenPageAdmin } from "../pages/ForbiddenPageAdmin";
+import { ProductDetailCurva } from "../pages/ProductDetailCurva";
 
 export const AmvRoutes = () => {
   return (
@@ -27,6 +28,14 @@ export const AmvRoutes = () => {
           element={
             <ProtectedRoute>
               <ProductDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/productosCurvos/:id"
+          element={
+            <ProtectedRoute>
+              <ProductDetailCurva />
             </ProtectedRoute>
           }
         />

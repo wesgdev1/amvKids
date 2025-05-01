@@ -2,7 +2,7 @@
 import { Card } from "react-bootstrap";
 import { ShoesCardStyled } from "../StyledComponents";
 import { CardDescroptionStyle } from "./StyledComponents";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useContext, useState, useRef, useEffect } from "react";
 import { AuthContext } from "../../auth/context/AuthContext";
 import styled from "@emotion/styled";
@@ -76,6 +76,7 @@ const ProductTag = styled.span`
 export const ShoeCard = ({ model }) => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
   const [imageLoaded, setImageLoaded] = useState(false);
   const containerRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -107,7 +108,11 @@ export const ShoeCard = ({ model }) => {
 
   const handleClick = () => {
     if (user) {
-      navigate(`/productos/${model.id}`);
+      if (location.pathname === "/curvas") {
+        navigate(`/productosCurvos/${model.id}`);
+      } else {
+        navigate(`/productos/${model.id}`);
+      }
     } else {
       navigate(`/login`);
     }
