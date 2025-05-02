@@ -61,7 +61,7 @@ export const ControlProduct = ({ data }) => {
   };
 
   return (
-    <CardStoreStyle className="d-flex mb-3 px-5 ">
+    <CardStoreStyle className="d-flex mb-3 px-5  ">
       <Card.Body className="d-flex justify-content-between flex-wrap flex-col ">
         <Card.Title className="text-center">
           {data.name} - {data.color}

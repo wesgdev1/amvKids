@@ -77,12 +77,12 @@ export const ProductDetail = () => {
           </h4>
           <hr />
 
-          <div className="flex gap-5 flex-row flex-wrap justify-center pt-3 ">
+          <div className="flex gap-5  flex-row flex-wrap justify-center pt-3 ">
             <Carousel
               interval={null}
               style={{
-                width: "320px",
-                height: "320px",
+                width: "450px",
+                height: "450px",
                 borderRadius: "60px",
                 boxShadow: "0 0 5px rgba(0,0,0,1)",
               }}
@@ -92,7 +92,7 @@ export const ProductDetail = () => {
                   <div
                     style={{
                       width: "100%",
-                      height: "320px",
+                      height: "450px",
                       borderRadius: "60px",
                       overflow: "hidden",
                       cursor: "pointer",
@@ -125,18 +125,21 @@ export const ProductDetail = () => {
                 </Carousel.Item>
               ))}
             </Carousel>
-            <ControlProduct data={data} />
+            <div className="flex flex-col items-center px-4 gap-2 ">
+              <ControlProduct data={data} />
+              <div className="mt-8 p-6 bg-gradient-to-br from-purple-50 to-indigo-100 rounded-xl shadow-lg text-gray-800 max-w-3xl mx-auto ">
+                <h5 className="text-xl font-bold mb-3 text-indigo-800 border-b border-indigo-200 pb-2">
+                  <i className="bi bi-info-circle-fill mr-2"></i>Descripción del
+                  Producto
+                </h5>
+                <p className="text-base leading-relaxed text-justify">
+                  {data?.description}
+                </p>
+              </div>
+            </div>
           </div>
+
           {/* Descripción estilizada */}
-          <div className="mt-8 p-6 bg-gradient-to-br from-purple-50 to-indigo-100 rounded-xl shadow-lg text-gray-800 max-w-3xl mx-auto">
-            <h5 className="text-xl font-bold mb-3 text-indigo-800 border-b border-indigo-200 pb-2">
-              <i className="bi bi-info-circle-fill mr-2"></i>Descripción del
-              Producto
-            </h5>
-            <p className="text-base leading-relaxed text-justify">
-              {data?.description}
-            </p>
-          </div>
 
           <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
             <Modal.Header closeButton>
@@ -158,7 +161,6 @@ export const ProductDetail = () => {
                       <div
                         style={{
                           width: "100%",
-                          maxHeight: "75vh",
                           overflow: "hidden",
                           cursor: "zoom-in",
                           display: "flex",
@@ -175,7 +177,6 @@ export const ProductDetail = () => {
                           alt={`${data?.name} - Imagen ${index + 1}`}
                           style={{
                             maxWidth: "100%",
-                            maxHeight: "75vh",
                             objectFit: "contain",
                             transition: "transform 0.2s ease-out",
                             transform:
