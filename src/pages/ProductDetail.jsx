@@ -6,6 +6,117 @@ import { ControlProduct } from "../components/products/ControlProduct";
 import { ContainerMov } from "../components/home/StyledComponents";
 import { useState } from "react";
 import { CustomLoader } from "../components/common/CustomLoader";
+import { ProductDetailCurva2 } from "./ProductDetailCurva2";
+import { ProductDetailCurvawomen } from "./ProductDetailCurvawomen";
+
+// Función para verificar la curva de hombre (Curva2)
+// Requiere: 1x37, 2x38, 3x39, 2x40, 2x41, 1x42, 1x43
+const checkMenCurve = (stocks) => {
+  const requiredCurve = {
+    37: 1,
+    38: 2,
+    39: 3,
+    40: 2,
+    41: 2,
+    42: 1,
+    43: 1,
+  };
+  // const requiredSizeCount = Object.keys(requiredCurve).length;
+
+  if (!stocks || stocks.length === 0) {
+    // Solo verificar si hay stocks
+    console.log("Men curve check failed: Null or empty stocks array.");
+    return false;
+  }
+  // Eliminamos la comprobación estricta de longitud: stocks.length !== requiredSizeCount
+
+  const stockMap = stocks.reduce((acc, stock) => {
+    const size = Number(stock.size);
+    const quantity = Number(stock.quantity);
+    if (!isNaN(size) && !isNaN(quantity)) {
+      acc[size] = (acc[size] || 0) + quantity;
+    }
+    return acc;
+  }, {});
+
+  console.log("Men Stock Map (Relaxed Check):", stockMap);
+  console.log("Required Men Curve:", requiredCurve);
+
+  // Verificar si todas las tallas requeridas existen con la cantidad correcta
+  for (const size in requiredCurve) {
+    if (!(size in stockMap) || stockMap[size] < requiredCurve[size]) {
+      // Cambiado a >= para flexibilidad, o mantenemos === si debe ser exacto?
+      // Mantendremos la comprobación exacta !== por ahora, según la solicitud original.
+      if (stockMap[size] !== requiredCurve[size]) {
+        console.log(
+          `Men curve check failed: Mismatch for size ${size}. Expected ${
+            requiredCurve[size]
+          }, got ${stockMap[size] || 0}`
+        );
+        return false;
+      }
+    }
+  }
+
+  // Eliminamos la verificación de tallas extra: stockMapSizeCount !== requiredSizeCount
+
+  console.log("Men curve check passed (Relaxed Check).");
+  return true;
+};
+
+// Función para verificar la curva de mujer (Curvawomen)
+// Requiere: 2x35, 2x36, 3x37, 2x38, 2x39, 1x40
+const checkWomenCurve = (stocks) => {
+  const requiredCurve = {
+    35: 2,
+    36: 2,
+    37: 3,
+    38: 2,
+    39: 2,
+    40: 1,
+  };
+  // const requiredSizeCount = Object.keys(requiredCurve).length;
+
+  if (!stocks || stocks.length === 0) {
+    // Solo verificar si hay stocks
+    console.log("Women curve check failed: Null or empty stocks array.");
+    return false;
+  }
+  // Eliminamos la comprobación estricta de longitud: stocks.length !== requiredSizeCount
+
+  const stockMap = stocks.reduce((acc, stock) => {
+    const size = Number(stock.size);
+    const quantity = Number(stock.quantity);
+    if (!isNaN(size) && !isNaN(quantity)) {
+      acc[size] = (acc[size] || 0) + quantity;
+    }
+    return acc;
+  }, {});
+
+  console.log("Women Stock Map (Relaxed Check):", stockMap);
+  console.log("Required Women Curve:", requiredCurve);
+
+  // Verificar si todas las tallas requeridas existen con la cantidad correcta
+  for (const size in requiredCurve) {
+    if (!(size in stockMap) || stockMap[size] < requiredCurve[size]) {
+      // Cambiado a >= para flexibilidad, o mantenemos === si debe ser exacto?
+      // Mantendremos la comprobación exacta !== por ahora, según la solicitud original.
+      if (stockMap[size] !== requiredCurve[size]) {
+        console.log(
+          `Women curve check failed: Mismatch for size ${size}. Expected ${
+            requiredCurve[size]
+          }, got ${stockMap[size] || 0}`
+        );
+        return false;
+      }
+    }
+  }
+
+  // Eliminamos la verificación de tallas extra: stockMapSizeCount !== requiredSizeCount
+
+  console.log("Women curve check passed (Relaxed Check).");
+  return true;
+};
 
 export const ProductDetail = () => {
   const params = useParams();
@@ -20,6 +131,22 @@ export const ProductDetail = () => {
 
   const [zoomedIndexMain, setZoomedIndexMain] = useState(-1);
   const [zoomCoordsMain, setZoomCoordsMain] = useState({ x: 0, y: 0 });
+
+  // Determinar si las curvas están disponibles SOLO cuando data esté cargada
+  const isMenCurveAvailable =
+    data && data.stocks ? checkMenCurve(data.stocks) : false;
+  const isWomenCurveAvailable =
+    data && data.stocks ? checkWomenCurve(data.stocks) : false;
+
+  // Log para depuración
+  // useEffect(() => {
+  //   if (data) {
+  //     console.log("Data loaded:", data);
+  //     console.log("Stocks:", data.stocks);
+  //     console.log("Is Men Curve Available?", isMenCurveAvailable);
+  //     console.log("Is Women Curve Available?", isWomenCurveAvailable);
+  //   }
+  // }, [data, isMenCurveAvailable, isWomenCurveAvailable]);
 
   const handleImageClick = (index) => {
     setSelectedImageIndex(index);
@@ -196,6 +323,41 @@ export const ProductDetail = () => {
               )}
             </Modal.Body>
           </Modal>
+
+          <hr className=" mt-8 mb-4" />
+          <div className="d-flex flex-column align-items-center text-center mb-4">
+            <h5 className="mb-3">
+              <i className="bi bi-images"></i> Curvas disponibles
+            </h5>
+            <p
+              className="text-muted small fst-italic"
+              style={{ maxWidth: "600px" }}
+            >
+              ¡Exclusivo para mayoristas! Nuestras curvas predefinidas optimizan
+              tu inventario con las tallas de mayor rotación. Ahorra tiempo,
+              maximiza ganancias y asegura disponibilidad con estos paquetes
+              listos para vender. ¡La compra inteligente para tu negocio!
+            </p>
+          </div>
+
+          {isMenCurveAvailable ? (
+            <ProductDetailCurva2 data={data} />
+          ) : (
+            <Alert variant="light" className="text-center text-muted border-0">
+              {" "}
+              <i className="bi bi-emoji-frown"></i> No hay curvas de hombre
+              disponibles para este modelo.
+            </Alert>
+          )}
+
+          {isWomenCurveAvailable ? (
+            <ProductDetailCurvawomen data={data} />
+          ) : (
+            <Alert variant="light" className="text-center text-muted border-0">
+              <i className="bi bi-emoji-frown"></i> No hay curvas de mujer
+              disponibles para este modelo.
+            </Alert>
+          )}
         </ContainerMov>
       )}
     </>

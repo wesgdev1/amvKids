@@ -379,7 +379,7 @@ export const AlertStyled = styled(Alert)(({ theme, variant }) => ({
 // Botón Primario Estilizado (basado en tu ButtonStyled)
 export const ButtonPrimaryStyled = styled(ButtonStyled)(({ theme }) => ({
   background: theme.colors?.primary || theme.colors?.buttonColor || "#007bff", // Usar primario o el color de botón existente
-  color: theme.colors?.white || "#ffffff",
+  color: theme.colors?.white || "black",
   padding: "0.6rem 1.8rem",
   borderRadius: theme.borderRadius?.pill || "50px",
   fontSize: "1rem",
