@@ -262,7 +262,7 @@ export const FooterContainer = styled.div`
   }
 `;
 
-export const FormStyled = styled.form(({ theme }) => ({
+export const FormStyled = styled.form(() => ({
   height: "50%",
   marginTop: "80px",
   paddingRight: "2rem",
@@ -280,6 +280,33 @@ export const FormStyled = styled.form(({ theme }) => ({
   },
 }));
 
+// Nuevo contenedor para la página de Login
+export const LoginContainerStyled = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 4rem 1rem; /* Aumentar padding vertical, quitar min-height y position/z-index */
+  position: relative; /* Mantenemos relative para posible posicionamiento absoluto del fondo si es necesario */
+  overflow: hidden; /* Para contener el fondo */
+`;
+
+// Nuevo estilo específico para el formulario de Login, sin posición absoluta
+export const LoginFormStyled = styled.form(() => ({
+  background: "rgba(0, 0, 0, 0.7)", // Fondo semi-transparente para mejorar legibilidad sobre Zenitho
+  padding: "2rem", // Aumentar padding
+  borderRadius: "10px",
+  boxShadow: "0 0 15px 0 rgba(255, 255, 255, 0.2)", // Sombra más sutil
+  color: "white", // Asegurar texto blanco por defecto
+  maxWidth: "450px", // Ancho máximo para el formulario
+  width: "90%", // Ancho relativo para pantallas pequeñas
+  zIndex: 2, // Asegura que el formulario esté sobre el contenedor (y el fondo)
+  // Eliminar height, marginTop, position, top, left, transform
+  // '@media (max-width: 576px)': { // Ajustes específicos para móviles si son necesarios después
+  //   width: '95%',
+  // },
+}));
+
 // Contenedor Principal de Página
 export const PageContainerStyled = styled(Container)(({ theme }) => ({
   paddingTop: theme.spacing?.large || "2rem",
@@ -292,7 +319,7 @@ export const GridRowStyled = styled(Row)(({ theme }) => ({
 }));
 
 // Columna de Grid (opcional, si necesitas estilos específicos)
-export const GridColStyled = styled(Col)(({ theme }) => ({
+export const GridColStyled = styled(Col)(() => ({
   // Estilos adicionales si son necesarios
 }));
 

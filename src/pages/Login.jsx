@@ -1,7 +1,7 @@
 import { Form, Image, Spinner } from "react-bootstrap";
 import { Zenitho } from "uvcanvas";
 
-import { Formik, ErrorMessage, replace } from "formik";
+import { Formik, ErrorMessage } from "formik";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { z } from "zod";
 
@@ -24,8 +24,8 @@ const loginSchema = z.object({
 
 import {
   ButtonStyled,
-  FormStyled,
-  NavLinkStyled,
+  LoginContainerStyled,
+  LoginFormStyled,
 } from "../components/StyledComponents";
 import { signIn } from "../api/auth/auth";
 import { useNavigate } from "react-router-dom";
@@ -33,7 +33,6 @@ import Swal from "sweetalert2";
 import { useContext } from "react";
 import { AuthContext } from "../auth/context/AuthContext";
 import { setSession } from "../api/sessions";
-import { CustomLoader } from "../components/common/CustomLoader";
 
 export const Login = () => {
   const { login } = useContext(AuthContext);
@@ -79,8 +78,20 @@ export const Login = () => {
   };
 
   return (
-    <div>
-      <Zenitho />
+    <LoginContainerStyled>
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          zIndex: -1,
+          overflow: "hidden",
+        }}
+      >
+        <Zenitho />
+      </div>
 
       <Formik
         initialValues={initialValues}
@@ -96,7 +107,7 @@ export const Login = () => {
           handleSubmit,
           isSubmitting,
         }) => (
-          <FormStyled onSubmit={handleSubmit}>
+          <LoginFormStyled onSubmit={handleSubmit}>
             <div className="d-flex justify-center pb-3">
               <Image
                 src="https://res.cloudinary.com/dppqkypts/image/upload/v1709156443/AMV_LOGO_1_nx3ofa.png"
@@ -118,7 +129,7 @@ export const Login = () => {
               <ErrorMessage
                 name="email"
                 component="div"
-                className="text-white"
+                className="text-danger"
               />
               <Form.Text className="text-muted">
                 Nunca compartiremos tu correo con nadie mas.
@@ -141,7 +152,7 @@ export const Login = () => {
               <ErrorMessage
                 name="password"
                 component="div"
-                className="text-white"
+                className="text-danger"
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="formBasicCheckbox">
@@ -153,30 +164,19 @@ export const Login = () => {
                 type="submit"
                 disabled={isSubmitting}
               >
-                {
-                  /*Si esta cargando, muestro el spinner */
-                  !isSubmitting ? (
-                    "Iniciar sesion"
-                  ) : (
-                    <>
-                      <Spinner animation="border" size="sm" />
-                      <CustomLoader />
-                    </>
-                  )
-                }
+                {!isSubmitting ? (
+                  "Iniciar sesion"
+                ) : (
+                  <>
+                    <Spinner animation="border" size="sm" />
+                    <span className="ms-2">Cargando...</span>
+                  </>
+                )}
               </ButtonStyled>
             </div>
-            {/* <div>
-              <p className="text-center pt-4">¿No tienes cuenta?</p>
-              <div className="d-flex justify-center">
-                <NavLinkStyled to={"/signup"}>
-                  <p className="text-center">Registrate Aqui</p>
-                </NavLinkStyled>
-              </div>
-            </div> */}
-          </FormStyled>
+          </LoginFormStyled>
         )}
       </Formik>
-    </div>
+    </LoginContainerStyled>
   );
 };
