@@ -1,12 +1,11 @@
 import { useParams } from "react-router-dom";
 import { useModel } from "../domain/models/useModel";
-import { Alert, Carousel, Image, Spinner, Modal } from "react-bootstrap";
+import { Alert, Carousel, Image, Modal } from "react-bootstrap";
 import {} from "../components/products/StyledComponents";
 import { ControlProduct } from "../components/products/ControlProduct";
 import { ContainerMov } from "../components/home/StyledComponents";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { CustomLoader } from "../components/common/CustomLoader";
-import { AuthContext } from "../auth/context/AuthContext";
 
 export const ProductDetail = () => {
   const params = useParams();
@@ -15,35 +14,56 @@ export const ProductDetail = () => {
   const { data, loading, error } = useModel(id);
 
   const [showModal, setShowModal] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [zoomedIndex, setZoomedIndex] = useState(-1);
-  const [zoomCoords, setZoomCoords] = useState({ x: 0, y: 0 });
+  const [selectedImageIndex, setSelectedImageIndex] = useState(null);
+  const [zoomedIndexModal, setZoomedIndexModal] = useState(-1);
+  const [zoomCoordsModal, setZoomCoordsModal] = useState({ x: 0, y: 0 });
 
-  const handleImageClick = (image) => {
-    setSelectedImage(image);
+  const [zoomedIndexMain, setZoomedIndexMain] = useState(-1);
+  const [zoomCoordsMain, setZoomCoordsMain] = useState({ x: 0, y: 0 });
+
+  const handleImageClick = (index) => {
+    setSelectedImageIndex(index);
     setShowModal(true);
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
-    setSelectedImage(null);
+    setSelectedImageIndex(null);
+    setZoomedIndexModal(-1);
   };
 
-  const handleMouseMove = (e, index) => {
-    if (zoomedIndex === index) {
+  const handleMouseMoveMain = (e, index) => {
+    if (zoomedIndexMain === index) {
       const { left, top, width, height } = e.target.getBoundingClientRect();
       const x = ((e.clientX - left) / width) * 100;
       const y = ((e.clientY - top) / height) * 100;
-      setZoomCoords({ x, y });
+      setZoomCoordsMain({ x, y });
     }
   };
 
-  const handleMouseEnter = (index) => {
-    setZoomedIndex(index);
+  const handleMouseEnterMain = (index) => {
+    setZoomedIndexMain(index);
   };
 
-  const handleMouseLeave = () => {
-    setZoomedIndex(-1);
+  const handleMouseLeaveMain = () => {
+    setZoomedIndexMain(-1);
+  };
+
+  const handleMouseMoveModal = (e, index) => {
+    if (zoomedIndexModal === index) {
+      const { left, top, width, height } = e.target.getBoundingClientRect();
+      const x = ((e.clientX - left) / width) * 100;
+      const y = ((e.clientY - top) / height) * 100;
+      setZoomCoordsModal({ x, y });
+    }
+  };
+
+  const handleMouseEnterModal = (index) => {
+    setZoomedIndexModal(index);
+  };
+
+  const handleMouseLeaveModal = () => {
+    setZoomedIndexModal(-1);
   };
 
   return (
@@ -59,6 +79,7 @@ export const ProductDetail = () => {
 
           <div className="flex gap-5 flex-row flex-wrap justify-center pt-3 ">
             <Carousel
+              interval={null}
               style={{
                 width: "320px",
                 height: "320px",
@@ -74,12 +95,12 @@ export const ProductDetail = () => {
                       height: "320px",
                       borderRadius: "60px",
                       overflow: "hidden",
-                      cursor: "zoom-in",
+                      cursor: "pointer",
                     }}
-                    onMouseEnter={() => handleMouseEnter(index)}
-                    onMouseLeave={handleMouseLeave}
-                    onMouseMove={(e) => handleMouseMove(e, index)}
-                    onClick={() => handleImageClick(image.url)}
+                    onMouseEnter={() => handleMouseEnterMain(index)}
+                    onMouseLeave={handleMouseLeaveMain}
+                    onMouseMove={(e) => handleMouseMoveMain(e, index)}
+                    onClick={() => handleImageClick(index)}
                   >
                     <Image
                       src={image.url}
@@ -91,10 +112,12 @@ export const ProductDetail = () => {
                         borderRadius: "60px",
                         transition: "transform 0.2s ease-out",
                         transform:
-                          zoomedIndex === index ? "scale(1.75)" : "scale(1)",
+                          zoomedIndexMain === index
+                            ? "scale(1.75)"
+                            : "scale(1)",
                         transformOrigin:
-                          zoomedIndex === index
-                            ? `${zoomCoords.x}% ${zoomCoords.y}%`
+                          zoomedIndexMain === index
+                            ? `${zoomCoordsMain.x}% ${zoomCoordsMain.y}%`
                             : "center center",
                       }}
                     />
@@ -119,17 +142,56 @@ export const ProductDetail = () => {
             <Modal.Header closeButton>
               <Modal.Title>{data?.name}</Modal.Title>
             </Modal.Header>
-            <Modal.Body className="text-center">
-              {selectedImage && (
-                <Image
-                  src={selectedImage}
-                  alt={data?.name}
-                  style={{
-                    width: "100%",
-                    height: "auto",
-                    cursor: "zoom-in",
-                  }}
-                />
+            <Modal.Body>
+              {selectedImageIndex !== null && (
+                <Carousel
+                  activeIndex={selectedImageIndex}
+                  onSelect={(selectedIndex) =>
+                    setSelectedImageIndex(selectedIndex)
+                  }
+                  interval={null}
+                  indicators={false}
+                  fade
+                >
+                  {data?.images.map((image, index) => (
+                    <Carousel.Item key={index}>
+                      <div
+                        style={{
+                          width: "100%",
+                          maxHeight: "75vh",
+                          overflow: "hidden",
+                          cursor: "zoom-in",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          background: "#f8f9fa",
+                        }}
+                        onMouseEnter={() => handleMouseEnterModal(index)}
+                        onMouseLeave={handleMouseLeaveModal}
+                        onMouseMove={(e) => handleMouseMoveModal(e, index)}
+                      >
+                        <Image
+                          src={image.url}
+                          alt={`${data?.name} - Imagen ${index + 1}`}
+                          style={{
+                            maxWidth: "100%",
+                            maxHeight: "75vh",
+                            objectFit: "contain",
+                            transition: "transform 0.2s ease-out",
+                            transform:
+                              zoomedIndexModal === index
+                                ? "scale(1.75)"
+                                : "scale(1)",
+                            transformOrigin:
+                              zoomedIndexModal === index
+                                ? `${zoomCoordsModal.x}% ${zoomCoordsModal.y}%`
+                                : "center center",
+                          }}
+                        />
+                      </div>
+                    </Carousel.Item>
+                  ))}
+                </Carousel>
               )}
             </Modal.Body>
           </Modal>
