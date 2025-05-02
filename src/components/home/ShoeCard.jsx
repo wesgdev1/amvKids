@@ -107,15 +107,17 @@ export const ShoeCard = ({ model }) => {
   }, []);
 
   const handleClick = () => {
-    if (user) {
-      if (location.pathname === "/curvas") {
-        navigate(`/productosCurvos/${model.id}`);
-      } else {
-        navigate(`/productos/${model.id}`);
-      }
-    } else {
-      navigate(`/login`);
-    }
+    // if (user) {
+    //   if (location.pathname === "/curvas") {
+    //     navigate(`/productosCurvos/${model.id}`);
+    //   } else {
+    //     navigate(`/productos/${model.id}`);
+    //   }
+    // } else {
+    //   navigate(`/login`);
+    // }
+
+    navigate(`/productos/${model.id}`);
   };
 
   const capitalizeWords = (str) => {

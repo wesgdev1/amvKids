@@ -134,9 +134,25 @@ export const ControlProduct = ({ data }) => {
       </Card.Body>
 
       <div className="d-flex gap-3 ">
-        <BtnSubmitStyled onClick={hanldeClickSuccess} width="100%">
+        {user ? (
+          user.tipoUsuario === "Admin" ? null : (
+            <BtnSubmitStyled onClick={hanldeClickSuccess} width="100%">
+              Agregar al carrito
+            </BtnSubmitStyled>
+          )
+        ) : (
+          <BtnSubmitStyled
+            onClick={() => {
+              navigate("/login");
+            }}
+            width="100%"
+          >
+            Iniciar sesion para comprar
+          </BtnSubmitStyled>
+        )}
+        {/* <BtnSubmitStyled onClick={hanldeClickSuccess} width="100%">
           Agregar al carrito
-        </BtnSubmitStyled>
+        </BtnSubmitStyled> */}
 
         <BtnDangerSubmitStyled onClick={handleReturn} width="100%">
           Volver

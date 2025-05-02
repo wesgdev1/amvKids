@@ -8,7 +8,8 @@ export const ProtectedRoute = ({ children }) => {
 
   // Verifica si el usuario existe y tiene el rol restringido
   const isForbidden =
-    user && (user.tipoUsuario === "Admin" || user.tipoUsuario === "Preparador");
+    // user && (user.tipoUsuario === "Admin" || user.tipoUsuario === "Preparador");
+    user && user.tipoUsuario === "Preparador";
 
   if (isForbidden) {
     // Redirige a la página de acceso denegado si el rol está restringido

@@ -4,8 +4,9 @@ import { Alert, Carousel, Image, Spinner, Modal } from "react-bootstrap";
 import {} from "../components/products/StyledComponents";
 import { ControlProduct } from "../components/products/ControlProduct";
 import { ContainerMov } from "../components/home/StyledComponents";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { CustomLoader } from "../components/common/CustomLoader";
+import { AuthContext } from "../auth/context/AuthContext";
 
 export const ProductDetail = () => {
   const params = useParams();

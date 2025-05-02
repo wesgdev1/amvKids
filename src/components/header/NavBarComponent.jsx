@@ -92,7 +92,7 @@ export const NavBarComponent = () => {
     Reventa: [
       { path: "/profile", icon: "bi bi-person-circle", label: "Mi perfil" },
       { path: "/productos", icon: "bi bi-person-circle", label: "Productos" },
-      { path: "/curvas", icon: "bi bi-diagram-2", label: "Curvas" },
+      // { path: "/curvas", icon: "bi bi-diagram-2", label: "Curvas" },
       { path: "/profile/myOrders", icon: "bi bi-search", label: "Mis pedidos" },
       {
         path: "/profile/scan",
@@ -104,7 +104,7 @@ export const NavBarComponent = () => {
     "Tienda Aliada": [
       { path: "/profile", icon: "bi bi-person-circle", label: "Mi perfil" },
       { path: "/productos", icon: "bi bi-person-circle", label: "Productos" },
-      { path: "/curvas", icon: "bi bi-diagram-2", label: "Curvas" },
+      // { path: "/curvas", icon: "bi bi-diagram-2", label: "Curvas" },
       { path: "/profile/myOrders", icon: "bi bi-search", label: "Mis pedidos" },
       {
         path: "/profile/scan",
@@ -131,7 +131,7 @@ export const NavBarComponent = () => {
     Cliente: [
       { path: "/profile", icon: "bi bi-person-circle", label: "Mi perfil" },
       { path: "/productos", icon: "bi bi-person-circle", label: "Productos" },
-      { path: "/curvas", icon: "bi bi-diagram-2", label: "Curvas" },
+      // { path: "/curvas", icon: "bi bi-diagram-2", label: "Curvas" },
       { path: "/profile/myOrders", icon: "bi bi-search", label: "Mis pedidos" },
     ],
   };
