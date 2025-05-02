@@ -11,7 +11,7 @@ const Asesors = () => {
   const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
 
   return (
-    <div className="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-6 md:p-10 rounded-lg shadow-lg my-8 mx-auto max-w-6xl overflow-hidden">
+    <div className="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-6 md:p-10 rounded-lg shadow-lg my-8 overflow-hidden">
       <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
         {/* Imagen */}
         <div className="w-full md:w-5/12 flex-shrink-0 transform transition duration-500 hover:scale-105">

@@ -33,13 +33,24 @@ export const Products = () => {
           Aqui encontrararas todos los productos de nuestra tienda
         </div> */}
         {/* <hr /> */}
-        <div className="relative w-full h-[20px] mb-1 bg-gray-800 overflow-hidden">
-          <div className="absolute whitespace-nowrap animate-marquee text-white text-sm">
-            <span className="mx-4">🔥 Pagos por todo los medios - 🔥</span>
-            <span className="mx-4">
-              🔥 Revisa la disponibilidad del calzado 🔥
-            </span>
-            <span className="mx-4">🔥 ¡Todo con el 5%! de descuento🔥</span>
+        <div className="relative w-full h-10 mb-4 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 overflow-hidden flex items-center">
+          <div className="absolute whitespace-nowrap animate-marquee text-white text-base font-medium">
+            <span className="mx-6">Pagos con Addi ✨</span>
+            <span className="mx-6">•</span>
+            <span className="mx-6">Transferencias (Nequi/Bancolombia) 🏦</span>
+            <span className="mx-6">•</span>
+            <span className="mx-6">Efectivo (Efecty/Baloto) 💵</span>
+            <span className="mx-6">•</span>
+            <span className="mx-6">Tarjetas Débito/Crédito 💳</span>
+            <span className="mx-6">•</span>
+            <span className="mx-6">Pagos con Addi ✨</span>
+            <span className="mx-6">•</span>
+            <span className="mx-6">Transferencias (Nequi/Bancolombia) 🏦</span>
+            <span className="mx-6">•</span>
+            <span className="mx-6">Efectivo (Efecty/Baloto) 💵</span>
+            <span className="mx-6">•</span>
+            <span className="mx-6">Tarjetas Débito/Crédito 💳</span>
+            <span className="mx-6">•</span>
           </div>
         </div>
         {/* si la location contiene /productos/search/ tengo boton de borrar busqueda que me redirige a products  */}

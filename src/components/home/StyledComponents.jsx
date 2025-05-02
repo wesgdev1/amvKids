@@ -105,20 +105,35 @@ export const ContainerMov = styled("div")(() => ({
 
 export const ButtonAction = styled(Button)(({ theme }) => ({
   position: "absolute",
-  top: "70%",
-  //centrar horizontalmente
   left: "50%",
-  transform: "translate(-50%, -50%)",
-
-  backgroundColor: theme.colors.buttonColor,
-  width: "30%",
-
+  bottom: "2rem",
+  transform: "translateX(-50%)",
+  width: "auto",
+  minWidth: "150px",
+  maxWidth: "calc(100% - 2rem)",
+  padding: "0.75rem 1.5rem",
+  fontSize: "1rem",
+  fontWeight: "bold",
   color: theme.colors.mainColor,
+  backgroundColor: theme.colors.buttonColor,
   border: "none",
-  padding: "10px 20px",
-  borderRadius: "5px",
+  borderRadius: "8px",
   cursor: "pointer",
+  textAlign: "center",
+  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+  transition:
+    "background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease",
+
   "&:hover": {
     backgroundColor: theme.colors.secondaryColor,
+    boxShadow: "0 6px 12px rgba(0, 0, 0, 0.3)",
+    transform: "translateX(-50%) scale(1.03)",
+  },
+
+  "@media (max-width: 576px)": {
+    minWidth: "120px",
+    fontSize: "0.9rem",
+    padding: "0.6rem 1.2rem",
+    bottom: "2rem",
   },
 }));
