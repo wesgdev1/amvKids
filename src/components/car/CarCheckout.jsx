@@ -6,6 +6,7 @@ import { AuthContext } from "../../auth/context/AuthContext";
 import { createOrder } from "../../api/orders/orders";
 import { set } from "zod";
 import AddiWidget from "../payments/AddiWidget";
+import BoldCheckout from "../checkout/BoldCheckout";
 
 export const CarCheckout = ({ calcularTotal, dispatch, state }) => {
   const { user } = useContext(AuthContext);
@@ -93,6 +94,7 @@ export const CarCheckout = ({ calcularTotal, dispatch, state }) => {
           allySlug="amvstoreboutique-social"
         />
         {/* <AddiWidget price={"100000"} allySlug="sandbox" /> */}
+        {/* <BoldCheckout total={calcularTotal()} orderId={1} /> */}
         {/* <addi-widget
           price="100000"
           ally-slug="amvstoreboutique-ecommerce"
