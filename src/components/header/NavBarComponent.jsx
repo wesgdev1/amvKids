@@ -95,10 +95,12 @@ export const NavBarComponent = () => {
     if (selected.length > 0) {
       // Extraer el 'name' (o 'displayLabel' si prefieres) del objeto seleccionado para la búsqueda
       const selectedObject = selected[0];
-      const searchTerm = selectedObject.name; // Usamos el nombre base para la búsqueda
+      // Reemplazar '/' en el color por un espacio antes de formar el término de búsqueda
+      const formattedColor = selectedObject.color.replace(/\//g, " "); // Reemplaza todas las '/' globalmente
+      const searchTerm = `${selectedObject.name} ${formattedColor}`; // Usar plantilla de string para claridad
 
       // 1. Actualizar estado (opcional, podrías limpiar directamente)
-      setSearchValue(searchTerm); // Opcional: setSearchValue(selectedObject.displayLabel)
+      setSearchValue(searchTerm); // Actualizar con el término formateado
 
       // 2. Navegar a la página de búsqueda con el término extraído
       navigate(`/productos/search/${searchTerm.trim()}`);
