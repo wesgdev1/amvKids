@@ -1,14 +1,4 @@
-import {
-  Badge,
-  Button,
-  Container,
-  Form,
-  Image,
-  Nav,
-  NavDropdown,
-  Navbar,
-  Row,
-} from "react-bootstrap";
+import { Badge, Image, Nav, Row } from "react-bootstrap";
 import {
   ButtonStyled,
   ConteinerNavStyled,
@@ -18,7 +8,6 @@ import { useNavigate } from "react-router-dom";
 import { NavLogo } from "./NavLogo";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../auth/context/AuthContext";
-import { SideMeny } from "./SideMeny";
 import {
   ContainerIcon,
   OffcanvasBS,
@@ -27,19 +16,43 @@ import {
   OffcanvasTitleS,
 } from "./StyledComponents";
 import { useCart } from "../../store";
-import Offcanvas from "react-bootstrap/Offcanvas";
-import { useProfile } from "../../domain/auth/useProfile";
+import { Typeahead } from "react-bootstrap-typeahead";
+import "react-bootstrap-typeahead/css/Typeahead.css";
+import { useModelWithColors } from "../../domain/models/useModels";
+
+// Función de filtrado personalizado para búsqueda por palabras en cualquier orden
+const filterByCallback = (option, props) => {
+  // Ahora 'option' será un objeto { id, name, color, displayLabel }
+  const label = option.displayLabel;
+  if (!label || !props.text) {
+    return false;
+  }
+
+  const text = props.text.toLowerCase().trim();
+  const labelLower = label.toLowerCase();
+
+  // Dividir el texto de búsqueda en palabras, ignorando espacios extra
+  const searchWords = text.split(/\s+/).filter(Boolean);
+
+  // Si no hay palabras de búsqueda, no filtrar (o podrías decidir devolver false)
+  if (searchWords.length === 0) {
+    return true; // Muestra todo si no hay texto
+  }
+
+  // Verificar que TODAS las palabras de búsqueda estén contenidas en la etiqueta de la opción
+  return searchWords.every((word) => labelLower.includes(word));
+};
 
 export const NavBarComponent = () => {
   const { state } = useCart();
   const { user, logout } = useContext(AuthContext);
-  // const { data, loading, error } = useProfile(user?.id);
+  // Obtener los datos de modelos con colores
+  const { data: modelsData, loading, error } = useModelWithColors();
 
   const cerrarsesion = () => {
     logout();
   };
 
-  const [modalProfile, setModalProfile] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [show, setShow] = useState(false);
 
@@ -53,17 +66,48 @@ export const NavBarComponent = () => {
     navigate("/login");
   };
 
+  // Transformar los datos del hook para Typeahead
+  const typeaheadOptions = modelsData
+    ? modelsData.map((model) => ({
+        id: model.id, // Conservar id si es útil
+        name: model.name,
+        color: model.color,
+        // Crear una etiqueta combinada para mostrar y buscar
+        displayLabel: `${model.name} (${model.color})`,
+      }))
+    : []; // Array vacío si no hay datos
+
   const handleKeyPress = (event) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      navigate(`/productos/search/${searchValue}`);
-      setSearchValue("");
-      window.location.reload();
+    // Navegar al presionar Enter directamente en el input
+    if (event.key === "Enter" && searchValue.trim() !== "") {
+      event.preventDefault(); // Prevenir cualquier comportamiento por defecto
+      navigate(`/productos/search/${searchValue.trim()}`);
+      setSearchValue(""); // Limpiar después de buscar
+      //  window.location.reload();
     }
   };
 
-  const handleInputChange = (event) => {
-    setSearchValue(event.target.value);
+  const handleInputChange = (text) => {
+    setSearchValue(text);
+  };
+
+  const handleSelection = (selected) => {
+    if (selected.length > 0) {
+      // Extraer el 'name' (o 'displayLabel' si prefieres) del objeto seleccionado para la búsqueda
+      const selectedObject = selected[0];
+      const searchTerm = selectedObject.name; // Usamos el nombre base para la búsqueda
+
+      // 1. Actualizar estado (opcional, podrías limpiar directamente)
+      setSearchValue(searchTerm); // Opcional: setSearchValue(selectedObject.displayLabel)
+
+      // 2. Navegar a la página de búsqueda con el término extraído
+      navigate(`/productos/search/${searchTerm.trim()}`);
+
+      // 3. Limpiar después de navegar (si aún es necesario)
+      setSearchValue("");
+
+      // 4. Recarga eliminada, asumiendo que el componente de resultados maneja los cambios
+    }
   };
 
   const routesConfig = {
@@ -145,13 +189,27 @@ export const NavBarComponent = () => {
           <div className="d-flex justify-around items-center gap-2">
             <NavLogo />
             <div className="d-flex flex-col  " style={{ width: "65%" }}>
-              <Form.Control
-                type="search"
-                placeholder="Que calzado estas buscando?"
-                value={searchValue}
-                onChange={handleInputChange}
-                onKeyUp={handleKeyPress}
+              <Typeahead
+                id="product-search-typeahead"
+                options={typeaheadOptions}
+                labelKey="displayLabel"
+                minLength={1}
+                maxResults={10}
+                filterBy={filterByCallback}
+                placeholder={
+                  loading
+                    ? "Cargando modelos..."
+                    : "Qué calzado estás buscando?"
+                }
+                disabled={loading || !!error}
+                onInputChange={handleInputChange}
+                onChange={handleSelection}
+                onKeyDown={handleKeyPress}
+                inputValue={searchValue}
               />
+              {error && (
+                <small className="text-danger">Error al cargar modelos</small>
+              )}
             </div>
 
             <Nav className="d-flex  gap-3 items-center ">
@@ -183,7 +241,6 @@ export const NavBarComponent = () => {
                       }
                       alt="Nombre de usuario"
                       className=" w-10 h-10 md:w-16 md:h-16 rounded-full border-2 border-gray-300 hover:border-gray-500 cursor-pointer"
-                      // onClick={() => setModalProfile(!modalProfile)}
                       onClick={handleShow}
                     />
                   </div>
@@ -196,7 +253,6 @@ export const NavBarComponent = () => {
               )}
             </Nav>
 
-            {/* {modalProfile && <SideMeny />} */}
             <OffcanvasS
               show={show}
               onHide={handleClose}
@@ -224,19 +280,8 @@ export const NavBarComponent = () => {
                         className=" w-16 h-16 rounded-full border-2 border-gray-300 hover:border-gray-500 cursor-pointer"
                       />
                       <span className="text-2xl text-center">{user.name}</span>
-
-                      {/* <ButtonCardStyled>Gestionar Perfil </ButtonCardStyled> */}
                     </div>
                     <hr />
-                    {/* <span
-                      onClick={() => {
-                        navigate("/profile");
-                      }}
-                      className="cursor-pointer hover:text-blue-800 hover:text-xl"
-                    >
-                      Mi perfil
-                    </span>
-                    <hr /> */}
 
                     <ul className="w-80 p-0 items-start flex flex-column   gap-4 ">
                       {routes.map((route, index) => (
@@ -247,101 +292,6 @@ export const NavBarComponent = () => {
                           </NavLinkStyled>
                         </li>
                       ))}
-
-                      {/* {user?.tipoUsuario === "Admin" ? (
-                        <>
-                          <li className="">
-                            <NavLinkStyled to={"/profile/"}>
-                              <i className="bi bi-person-circle"></i>
-                              <span> Mi perfil</span>
-                            </NavLinkStyled>
-                          </li>
-                          <li className="">
-                            <NavLinkStyled to={"/profile/reports"}>
-                              <i className="bi bi-info-circle"></i>
-                              <span> Informes</span>
-                            </NavLinkStyled>
-                          </li>
-                          <li className="">
-                            <NavLinkStyled to={"/profile/orders"}>
-                              <i className="bi bi-border-width"></i>
-                              <span> Ordenes</span>
-                            </NavLinkStyled>
-                          </li>
-                          <li>
-                            <NavLinkStyled to={"/profile/products"}>
-                              <i className="bi bi-box"></i>
-                              <span> Calzados</span>
-                            </NavLinkStyled>
-                          </li>
-                          <li>
-                            <NavLinkStyled to={"/profile/products"}>
-                              <i className="bi bi-box"></i>
-                              <span> Curvas</span>
-                            </NavLinkStyled>
-                          </li>
-                          <li>
-                            <NavLinkStyled to={"/profile/users"}>
-                              <i className="bi bi-person-circle"></i>
-                              <span> Usuarios</span>
-                            </NavLinkStyled>
-                          </li>
-                          <li>
-                            <NavLinkStyled to={"/profile/scan"}>
-                              <i className="bi bi-upc-scan"></i>
-                              <span> Escanear Codigo</span>
-                            </NavLinkStyled>
-                          </li>
-
-                          <li>
-                            <NavLinkStyled to={"/login"}>
-                              <i className="bi bi-box-arrow-left"></i>
-                              <span> Cerrar sesion</span>
-                            </NavLinkStyled>
-                          </li>
-                        </>
-                      ) : (
-                        <>
-                          <li>
-                            <NavLinkStyled to={"/profile"}>
-                              <i className="bi bi-person-circle"></i>
-                              <span> Mis perfil</span>
-                            </NavLinkStyled>
-                          </li>
-                          <li>
-                            <NavLinkStyled to={"/productos"}>
-                              <i className="bi bi-person-circle"></i>
-                              <span> Productos</span>
-                            </NavLinkStyled>
-                          </li>
-                          <li>
-                            <NavLinkStyled to={"/curvas"}>
-                              <i className="bi bi-box"></i>
-                              <span> Calzados</span>
-                            </NavLinkStyled>
-                          </li>
-
-                          <li>
-                            <NavLinkStyled to={"/profile/myOrders"}>
-                              <i className="bi bi-search"></i>
-                              <span> Mis pedidos</span>
-                            </NavLinkStyled>
-                          </li>
-                          <li>
-                            <NavLinkStyled to={"/profile/scan"}>
-                              <i className="bi bi-upc-scan"></i>
-                              <span> Escanear Codigo</span>
-                            </NavLinkStyled>
-                          </li>
-
-                          <li>
-                            <NavLinkStyled>
-                              <i className="bi bi-binoculars"></i>
-                              <span> Cerrar sesion</span>
-                            </NavLinkStyled>
-                          </li>
-                        </>
-                      )} */}
                     </ul>
                     <hr />
 

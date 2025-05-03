@@ -3,6 +3,7 @@ import {
   getAllModelBySearch,
   getAllModels,
   getAllModelWithFilters,
+  getModelNamesWithColors,
   getRecommendedModels,
 } from "../../api/model/model";
 import { generateFilterFormat } from "./utils";
@@ -52,7 +53,7 @@ export const useModels = (filtrosSeleccionadosAgrupados, searchValue = "") => {
 
   useEffect(() => {
     cargarModel();
-  }, []);
+  }, [searchValue]);
 
   return { data, loading, error, cargarModel };
 };
@@ -108,4 +109,31 @@ export const useModelRecommended = () => {
   }, []);
 
   return { data, loading, error, cargarRecomendados };
+};
+
+export const useModelWithColors = () => {
+  const [data, setData] = useState();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const cargarModelsColor = async () => {
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await getModelNamesWithColors();
+
+      setData(response.data);
+    } catch (error) {
+      setError(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    cargarModelsColor();
+  }, []);
+
+  return { data, loading, error };
 };

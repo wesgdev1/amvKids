@@ -107,3 +107,12 @@ export const getRecommendedModels = async () => {
     return Promise.reject(error);
   }
 };
+
+export const getModelNamesWithColors = async () => {
+  try {
+    const { data: response } = await http.get(`/models/search`);
+    return { data: response.data };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
