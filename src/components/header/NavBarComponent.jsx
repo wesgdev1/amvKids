@@ -19,6 +19,29 @@ import { useCart } from "../../store";
 import { Typeahead } from "react-bootstrap-typeahead";
 import "react-bootstrap-typeahead/css/Typeahead.css";
 import { useModelWithColors } from "../../domain/models/useModels";
+import styled from "@emotion/styled";
+import { keyframes, css } from "@emotion/react";
+
+// Definir la animación de "shake"
+const shakeAnimation = keyframes`
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+  20%, 40%, 60%, 80% { transform: translateX(2px); }
+`;
+
+// Crear un componente Badge estilizado
+const AnimatedBadge = styled(Badge)`
+  /* Aplicar la animación solo cuando el badge NO está oculto */
+  ${(props) =>
+    !props.hidden &&
+    css`
+      animation: ${shakeAnimation} 2s ease-in-out infinite;
+    `}
+  /* Ajustes de posición (pueden variar según tu diseño exacto) */
+  position: absolute;
+  margin-left: 26px; /* Mantener tu estilo original */
+  margin-top: -30px; /* Mantener tu estilo original */
+`;
 
 // Función de filtrado personalizado para búsqueda por palabras en cualquier orden
 const filterByCallback = (option, props) => {
@@ -220,19 +243,16 @@ export const NavBarComponent = () => {
                   {user?.tipoUsuario === "Cliente" ||
                   user?.tipoUsuario == "Reventa" ||
                   user?.tipoUsuario == "Tienda Aliada" ? (
-                    <ContainerIcon
-                      onClick={() => navigate("/verCarritoDeCompras")}
-                    >
-                      <i className="bi bi-cart4"></i>
-                      <Badge
-                        bg="danger"
-                        className="position-absolute"
-                        style={{ marginLeft: "26px", marginTop: "-30px" }}
-                        hidden={total === 0}
+                    <>
+                      <ContainerIcon
+                        onClick={() => navigate("/verCarritoDeCompras")}
                       >
-                        {total}
-                      </Badge>
-                    </ContainerIcon>
+                        <i className="bi bi-cart4"></i>
+                        <AnimatedBadge bg="danger" hidden={total === 0}>
+                          {total}
+                        </AnimatedBadge>
+                      </ContainerIcon>
+                    </>
                   ) : null}
 
                   <div className="flex items-center justify-center flex-col gap-2">
