@@ -21,6 +21,7 @@ import "react-bootstrap-typeahead/css/Typeahead.css";
 import { useModelWithColors } from "../../domain/models/useModels";
 import styled from "@emotion/styled";
 import { keyframes, css } from "@emotion/react";
+import { useCartCurvas } from "../../store/curvas";
 
 // Definir la animación de "shake"
 const shakeAnimation = keyframes`
@@ -68,6 +69,7 @@ const filterByCallback = (option, props) => {
 
 export const NavBarComponent = () => {
   const { state } = useCart();
+  const { state: stateCartCruvas } = useCartCurvas();
   const { user, logout } = useContext(AuthContext);
   // Obtener los datos de modelos con colores
   const { data: modelsData, loading, error } = useModelWithColors();
@@ -83,6 +85,10 @@ export const NavBarComponent = () => {
   const handleShow = () => setShow(true);
 
   const total = state.reduce((acc, item) => acc + item.quantity, 0);
+  const totalCurvas = stateCartCruvas.reduce(
+    (acc, item) => acc + item.quantity,
+    0
+  );
 
   const navigate = useNavigate();
   const onHandleClick = () => {
@@ -275,6 +281,9 @@ export const NavBarComponent = () => {
                       className=" w-10 h-10 md:w-16 md:h-16 rounded-full border-2 border-gray-300 hover:border-gray-500 cursor-pointer"
                       onClick={handleShow}
                     />
+                    <AnimatedBadge bg="danger" hidden={totalCurvas === 0}>
+                      {totalCurvas}
+                    </AnimatedBadge>
                   </div>
                 </div>
               ) : (
@@ -320,7 +329,28 @@ export const NavBarComponent = () => {
                         <li key={index}>
                           <NavLinkStyled to={route.path} onClick={handleClose}>
                             <i className={route.icon}></i>
-                            <span> {route.label}</span>
+                            <span style={{ position: "relative" }}>
+                              {" "}
+                              {route.label}
+                              {route.path === "/verCarritoDeComprasCurvas" &&
+                                totalCurvas > 0 && (
+                                  <AnimatedBadge
+                                    bg="danger"
+                                    hidden={false}
+                                    style={{
+                                      position: "absolute",
+                                      top: "0",
+                                      left: "100%",
+                                      marginTop: "0",
+                                      marginLeft: "0.3rem",
+                                      fontSize: "0.65rem",
+                                      padding: "0.1rem 0.3rem",
+                                    }}
+                                  >
+                                    {totalCurvas}
+                                  </AnimatedBadge>
+                                )}
+                            </span>
                           </NavLinkStyled>
                         </li>
                       ))}
