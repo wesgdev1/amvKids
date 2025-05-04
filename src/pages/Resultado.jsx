@@ -48,7 +48,15 @@ export const Resultado = () => {
             <Card.Title as="h2">¡Pago Exitoso!</Card.Title>
             <Card.Text className="mb-4">
               Gracias por tu compra. Tu pago para la orden{" "}
-              <strong>#{data.codigoOrder}</strong> fue confirmado correctamente.
+              <strong>#{data.codigoOrder}</strong> fue gestionado correctamente.
+              <br />
+              En algunos minutos tu orden se actualizara y podras ver el estado
+              de tu pedido.
+              <br />
+              <strong>
+                Si no te salen aun paga, espera un momento mientras se actualiza
+                la informacion
+              </strong>
             </Card.Text>
             <Button
               as={Link}

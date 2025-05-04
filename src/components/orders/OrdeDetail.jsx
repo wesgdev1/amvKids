@@ -188,6 +188,24 @@ export const OrdeDetail = () => {
                 </span>
               )}
             </div>
+            {data.pagoBold && (
+              <div className="text-center mb-4">
+                {" "}
+                {/* Añadido margen inferior */}
+                {/* Indicador de Pago Bold */}
+                <span className="text-md font-semibold text-blue-700 bg-blue-100 px-3 py-1 rounded-full inline-flex items-center shadow-sm border border-blue-200">
+                  <i className="bi bi-credit-card-2-front-fill me-2"></i>{" "}
+                  {/* Icono sugerido para pago electrónico */}
+                  Pago realizado con Bold
+                </span>
+                {/* Mostrar ID de Transacción si existe */}
+                {data.idTransaction && (
+                  <p className="text-muted small mt-2 mb-0">
+                    ID Transacción Bold: {data.idTransaction}
+                  </p>
+                )}
+              </div>
+            )}
             <Card.Header>
               Total: {data.total.toLocaleString("es-CO")} COP
             </Card.Header>
@@ -249,7 +267,7 @@ export const OrdeDetail = () => {
               </Card.Body>
             )}
 
-            {data.paymentUrl ? (
+            {data.paymentUrl || data.pagoBold ? (
               <Card.Body>
                 <span>Genial, ya realizaste el pago </span>
                 <i className="bi bi-check-square-fill"></i>
