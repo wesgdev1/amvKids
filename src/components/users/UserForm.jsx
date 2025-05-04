@@ -8,7 +8,7 @@ import { toFormikValidationSchema } from "zod-formik-adapter";
 import { z } from "zod";
 
 import Swal from "sweetalert2";
-import { createProduct, updateProduct } from "../../api/products/products";
+import { updateProduct } from "../../api/products/products";
 import { ButtonCardStyled } from "../StyledComponents";
 import { createUsers } from "../../api/auth/auth";
 
@@ -38,7 +38,6 @@ export const UserForm = () => {
   const navigate = useNavigate();
 
   const [error, setError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
 
   const tiposdeUsuario = [
     "Admin",
@@ -109,7 +108,6 @@ export const UserForm = () => {
     try {
       setSubmitting(true);
       setError(false);
-      setErrorMessage("");
 
       if (actionEdit) {
         await onUpdateProduct(values);
@@ -133,8 +131,14 @@ export const UserForm = () => {
   return (
     <div className="pt-5 px-4">
       <h4 className="pb-3">
-        <i className="bi bi-box"></i> Usuarios
+        <i className="bi bi-box"></i> Crear Usuario
       </h4>
+      <p className="text-muted small mb-4">
+        Este formulario permite crear un nuevo usuario especificando su rol
+        (Tipo de Usuario). Una vez creado, se enviará un correo electrónico a la
+        dirección proporcionada con una contraseña temporal y los pasos
+        necesarios para iniciar sesión por primera vez.
+      </p>
       <Formik
         initialValues={initialValues}
         onSubmit={onSubmit}
@@ -260,7 +264,7 @@ export const UserForm = () => {
                     actionEdit ? (
                       "Actualizar"
                     ) : (
-                      "Crear Uusario"
+                      "Crear Usuario"
                     )
                   ) : (
                     <Spinner
