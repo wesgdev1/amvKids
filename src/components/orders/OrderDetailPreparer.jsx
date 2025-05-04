@@ -8,6 +8,7 @@ import { updateOrderState } from "../../api/orders/orders";
 
 import { ButtonCardStyled, ShoesCardStyledPayment } from "../StyledComponents";
 import styled from "@emotion/styled";
+import { ProgressBar } from "./ProgressBar";
 
 // Botón secundario con un estilo diferente
 const SecondaryButton = styled(ButtonCardStyled)`
@@ -266,6 +267,13 @@ export const OrdeDetailPreparer = () => {
     updateOrderStatus(false);
   };
 
+  const progresoEnvio = {
+    Creada: 1,
+    "Pago Enviado": 2,
+    "Pago Confirmado": 3,
+    "Pedido Entregado": 4,
+  };
+
   return (
     <div className="pt-5 px-4">
       <h4 className="pb-3">
@@ -278,6 +286,20 @@ export const OrdeDetailPreparer = () => {
         {error && <Alert variant="danger">{error}</Alert>}
         {data && (
           <ShoesCardStyledPayment>
+            <ProgressBar currentStep={progresoEnvio[data.state]} />
+            <div className="text-center my-4">
+              {data.areReady ? (
+                <span className="text-lg font-semibold text-green-700 bg-green-100 px-4 py-2 rounded-full inline-flex items-center shadow-sm border border-green-200">
+                  <i className="bi bi-check-circle-fill me-2"></i>
+                  Preparado
+                </span>
+              ) : (
+                <span className="text-lg font-semibold text-orange-700 bg-orange-100 px-4 py-2 rounded-full inline-flex items-center shadow-sm border border-orange-200">
+                  <i className="bi bi-clock-history me-1"></i>
+                  Alista el pedido!
+                </span>
+              )}
+            </div>
             <Card.Header>
               <strong> Total: {data.total.toLocaleString("es-CO")} COP</strong>
             </Card.Header>

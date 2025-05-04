@@ -152,16 +152,28 @@ export const OrdeDetailAdmin = () => {
 
       // Si el usuario confirma
       if (result.isConfirmed) {
+        // Mostrar Swal de carga
+        Swal.fire({
+          title: "Cancelando orden...",
+          text: "Por favor espera.",
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          },
+        });
+
         // Llamada a la API para eliminar la orden
         const response = await deleteOrder(id);
 
-        // Verificar que la respuesta sea 200 OK
-        if (response) {
+        Swal.close(); // Cerrar Swal de carga antes de mostrar el resultado
+
+        // Verificar que la respuesta sea 200 OK (o como sea que tu API indique éxito)
+        if (response !== undefined && response !== null) {
           // Mostrar mensaje de éxito
           await Swal.fire({
             icon: "success",
             title: "Orden Cancelada",
-            text: "La orden se actualizó correctamente",
+            text: "La orden se canceló correctamente.", // Mensaje ajustado
           });
 
           // Redirigir a la página de órdenes después de un pequeño retraso
@@ -173,11 +185,13 @@ export const OrdeDetailAdmin = () => {
         }
       }
     } catch (error) {
+      Swal.close(); // Asegurarse de cerrar el loading Swal si hay un error
       // Manejar errores de la API o del proceso
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: "Ocurrió un error inesperado al cancelar la orden",
+        text:
+          error.message || "Ocurrió un error inesperado al cancelar la orden", // Mostrar mensaje de error de la API si existe
       });
     }
   };

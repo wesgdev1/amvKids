@@ -12,6 +12,7 @@ import { updateOrder } from "../../api/orders/orders";
 import { da } from "date-fns/locale";
 import { ShoesCardStyledPayment } from "../StyledComponents";
 import { AuthContext } from "../../auth/context/AuthContext";
+import { ProgressBar } from "./ProgressBar";
 
 const imageRqd = z.any().optional();
 
@@ -104,6 +105,12 @@ export const OrdeDetail = () => {
       });
     }
   };
+  const progresoEnvio = {
+    Creada: 1,
+    "Pago Enviado": 2,
+    "Pago Confirmado": 3,
+    "Pedido Entregado": 4,
+  };
 
   return (
     <div className="pt-5 px-4">
@@ -117,6 +124,21 @@ export const OrdeDetail = () => {
         {error && <Alert variant="danger">{error}</Alert>}
         {data && (
           <ShoesCardStyledPayment>
+            <ProgressBar currentStep={progresoEnvio[data.state]} />
+
+            <div className="text-center my-4">
+              {data.areReady ? (
+                <span className="text-lg font-semibold text-green-700 bg-green-100 px-4 py-2 rounded-full inline-flex items-center shadow-sm border border-green-200">
+                  <i className="bi bi-check-circle-fill me-2"></i>
+                  Tu pedido ya fue alistado
+                </span>
+              ) : (
+                <span className="text-lg font-semibold text-orange-700 bg-orange-100 px-4 py-2 rounded-full inline-flex items-center shadow-sm border border-orange-200">
+                  <i className="bi bi-clock-history me-1"></i>
+                  En proceso de alistamiento
+                </span>
+              )}
+            </div>
             <Card.Header>
               Total: {data.total.toLocaleString("es-CO")} COP
             </Card.Header>
