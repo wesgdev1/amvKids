@@ -131,7 +131,7 @@ export const Login = () => {
                 component="div"
                 className="text-danger"
               />
-              <Form.Text className="text-muted">
+              <Form.Text className="text-white">
                 Nunca compartiremos tu correo con nadie mas.
               </Form.Text>
             </Form.Group>
@@ -165,7 +165,7 @@ export const Login = () => {
                 disabled={isSubmitting}
               >
                 {!isSubmitting ? (
-                  "Iniciar sesion"
+                  "Iniciar sesión"
                 ) : (
                   <>
                     <Spinner animation="border" size="sm" />
