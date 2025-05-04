@@ -1,35 +1,35 @@
 import { useEffect } from "react";
 
 const BoldCheckout = ({ total, orderId }) => {
+  console.log("bold");
   useEffect(() => {
     const script = document.createElement("script");
-    script.src = "https://cdn.bold.co/checkout.js"; // Asegúrate de usar la URL correcta
-    script.dataset.boldButton = "";
-    script.dataset.apiKey = "TU_LLAVE_API";
-    script.dataset.description = "Pago a través de Embedded Checkout";
-    script.dataset.redirectionUrl = "https://micomercio.com/pagos/resultado";
-    script.dataset.renderMode = "embedded";
+    script.src = "https://checkout.bold.co/bold.js"; // Script oficial de Bold
+    script.async = true;
 
-    // 👇 Aquí envías la información de la orden
-    script.dataset.checkoutData = JSON.stringify({
-      amount: total, // en centavos, por ejemplo 5000 = $50.00
-      currency: "COP",
-      external_id: orderId,
-      items: [
-        {
-          name: "Orden de compra",
-          price: total,
-          quantity: 1,
-        },
-      ],
-    });
+    script.setAttribute("data-bold-button", "");
+    script.setAttribute(
+      "data-api-key",
+      "i5N_992Eh1CoG8Vx6WSYZEn5Uj6g9O4Tno15zQzLWUo"
+    );
+    script.setAttribute(
+      "data-description",
+      "Pago a través de Embedded Checkout"
+    );
+    script.setAttribute(
+      "data-redirection-url",
+      "https://micomercio.com/pagos/resultado"
+    );
+    script.setAttribute("data-render-mode", "embedded");
 
-    const container = document.getElementById("bold-checkout");
-    container.innerHTML = ""; // Limpiar si ya existía
-    container.appendChild(script);
-  }, [total, orderId]);
+    document.getElementById("bold-container").appendChild(script);
+  }, []);
 
-  return <div id="bold-checkout"></div>;
+  return (
+    <div>
+      <div id="bold-container" />
+    </div>
+  );
 };
 
 export default BoldCheckout;

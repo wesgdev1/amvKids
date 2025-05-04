@@ -3,12 +3,13 @@ import { ButtonPayment, CardChekoutStyle } from "./StyledComponent";
 import { Card, Spinner } from "react-bootstrap";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../auth/context/AuthContext";
-import { createOrder } from "../../api/orders/orders";
+import { createOrder, linkPago } from "../../api/orders/orders";
 import { set } from "zod";
 import AddiWidget from "../payments/AddiWidget";
 import BoldCheckout from "../checkout/BoldCheckout";
 
 export const CarCheckout = ({ calcularTotal, dispatch, state }) => {
+  const [link, setLink] = useState(null);
   const { user } = useContext(AuthContext);
   const [comments, setComments] = useState("");
   const [loading, setLoading] = useState(false);
@@ -56,6 +57,7 @@ export const CarCheckout = ({ calcularTotal, dispatch, state }) => {
       setLoading(false);
     }
   };
+
   return (
     <CardChekoutStyle>
       <Card.Body>
@@ -94,7 +96,23 @@ export const CarCheckout = ({ calcularTotal, dispatch, state }) => {
           allySlug="amvstoreboutique-social"
         />
         {/* <AddiWidget price={"100000"} allySlug="sandbox" /> */}
-        {/* <BoldCheckout total={calcularTotal()} orderId={1} /> */}
+        {/* <div>
+          <h3>Generar Link de Pago con Bold</h3>
+          <button onClick={handleGenerarLink}>Pagar con Bold</button>
+          {link && (
+            <p>
+              Link generado:{" "}
+              <a href={link} target="_blank">
+                {link}
+              </a>
+            </p>
+          )}
+        </div> */}
+        {/* <div id="bold-container" className="mt-3">
+          realiza
+          <BoldCheckout total={5000} orderId={1} />
+        </div> */}
+
         {/* <addi-widget
           price="100000"
           ally-slug="amvstoreboutique-ecommerce"

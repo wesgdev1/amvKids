@@ -84,7 +84,18 @@ export const deleteOrder = async (id) => {
 export const updateOrderItems = async (payload) => {
   try {
     const { data: response } = await http.put(`/orders/deleteItems`, payload);
+
     return { data: response.data };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+export const linkPago = async (payload) => {
+  try {
+    const { data: response } = await http.post(`/orders/pagos`, payload);
+    console.log("response", response);
+    return { response };
   } catch (error) {
     return Promise.reject(error);
   }

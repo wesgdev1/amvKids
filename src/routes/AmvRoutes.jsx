@@ -14,6 +14,7 @@ import { ProtectedRoute } from "../auth/ProtectedRoute";
 import { ForbiddenPageAdmin } from "../pages/ForbiddenPageAdmin";
 import { ProductDetailCurva } from "../pages/ProductDetailCurva";
 import { CarListCurves } from "../pages/CarListCurves";
+import { Resultado } from "../pages/Resultado";
 
 export const AmvRoutes = () => {
   return (
@@ -50,6 +51,7 @@ export const AmvRoutes = () => {
 
         <Route path="/forbidden" element={<ForbiddenPage />} />
         <Route path="/forbiddenAdmin" element={<ForbiddenPageAdmin />} />
+        <Route path="/resultado" element={<Resultado />} />
       </Routes>
     </>
   );

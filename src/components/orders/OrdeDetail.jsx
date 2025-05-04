@@ -8,8 +8,7 @@ import { useContext, useState } from "react";
 import Swal from "sweetalert2";
 
 import { ButtonProfile, ControlButton } from "../products/StyledComponents";
-import { updateOrder } from "../../api/orders/orders";
-import { da } from "date-fns/locale";
+import { linkPago, updateOrder } from "../../api/orders/orders";
 import { ShoesCardStyledPayment } from "../StyledComponents";
 import { AuthContext } from "../../auth/context/AuthContext";
 import { ProgressBar } from "./ProgressBar";
@@ -40,6 +39,8 @@ export const OrdeDetail = () => {
   const { id } = params;
   const { data, loading, error, cargarOrder: refresh } = useOrder(id);
 
+  const [isGeneratingLink, setIsGeneratingLink] = useState(false);
+
   const initialValues = {
     images: "",
   };
@@ -47,8 +48,6 @@ export const OrdeDetail = () => {
   const modelSchema = z.object({
     images: imageRqd,
   });
-  const [error2, setError2] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
 
   const updateOrderPayment = async (values) => {
     try {
@@ -62,8 +61,6 @@ export const OrdeDetail = () => {
         refresh(id);
       }
     } catch (error) {
-      const message = "Error";
-      setError2(message);
       Swal.fire({
         icon: "error",
         title: "Orden no actualizada",
@@ -75,8 +72,6 @@ export const OrdeDetail = () => {
   const onSubmit = async (values, { setSubmitting }) => {
     try {
       setSubmitting(true);
-      setError2(false);
-      setErrorMessage("");
 
       const formData = new FormData();
 
@@ -95,14 +90,16 @@ export const OrdeDetail = () => {
       }
       console.log("formData", formData);
       await updateOrderPayment(formData);
+      setSubmitting(false);
     } catch (error) {
-      const message = "Error";
-      setError2(message);
       Swal.fire({
         icon: "error",
-        title: "Producto no creado",
-        text: "El Producto no se creo correctamente, intenta nuevamente",
+        title: "Error al subir pago",
+        text:
+          error.message ||
+          "No se pudo subir el comprobante. Intenta nuevamente",
       });
+      setSubmitting(false);
     }
   };
   const progresoEnvio = {
@@ -110,6 +107,58 @@ export const OrdeDetail = () => {
     "Pago Enviado": 2,
     "Pago Confirmado": 3,
     "Pedido Entregado": 4,
+  };
+
+  const handleGenerarLink = async () => {
+    if (!data || !data.user) {
+      Swal.fire(
+        "Error",
+        "No se pudieron cargar los datos de la orden o del usuario.",
+        "error"
+      );
+      return;
+    }
+
+    setIsGeneratingLink(true);
+    Swal.fire({
+      title: "Generando link de pago...",
+      text: "Por favor espera.",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
+    try {
+      const payload = {
+        orderId: data.id,
+        total: data.total,
+        descripcion: `Pago Orden #${data.codigoOrder} - AMV KIDS`,
+        email: data.user.email,
+      };
+
+      const res = await linkPago(payload);
+      console.log("respuesta de bold", res);
+
+      const url = res?.response?.payload?.url;
+
+      if (url) {
+        Swal.close();
+        window.location.href = url;
+      } else {
+        throw new Error("No se recibió una URL de pago válida.");
+      }
+    } catch (err) {
+      Swal.close();
+      console.error("Error generando link de pago:", err);
+      Swal.fire(
+        "Error",
+        err.message || "No se pudo generar el link de pago.",
+        "error"
+      );
+    } finally {
+      setIsGeneratingLink(false);
+    }
   };
 
   return (
@@ -214,11 +263,8 @@ export const OrdeDetail = () => {
                   validationSchema={toFormikValidationSchema(modelSchema)}
                 >
                   {({
-                    values,
                     errors,
                     touched,
-                    handleChange,
-                    handleBlur,
                     handleSubmit,
                     isSubmitting,
                     setFieldValue,
@@ -276,7 +322,7 @@ export const OrdeDetail = () => {
                           />
                         </Form.Group>
 
-                        <div className="d-flex justify-content-center">
+                        <div className="d-flex justify-content-center gap-3">
                           <ButtonProfile
                             variant="primary"
                             type="submit"
@@ -289,6 +335,29 @@ export const OrdeDetail = () => {
                               <Spinner
                                 as="span"
                                 animation="grow"
+                                size="sm"
+                                role="status"
+                                aria-hidden="true"
+                              />
+                            )}
+                          </ButtonProfile>
+                          <ButtonProfile
+                            variant="info"
+                            type="button"
+                            size="lg"
+                            onClick={handleGenerarLink}
+                            disabled={isGeneratingLink || !data}
+                          >
+                            {!isGeneratingLink ? (
+                              <span>
+                                <i className="bi bi-credit-card"></i> Pagar con
+                                Bold
+                              </span>
+                            ) : (
+                              <Spinner
+                                as="span"
+                                animation="border"
+                                size="sm"
                                 role="status"
                                 aria-hidden="true"
                               />
