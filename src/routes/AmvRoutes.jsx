@@ -13,6 +13,7 @@ import { ForbiddenPage } from "../pages/ForbiddenPage";
 import { ProtectedRoute } from "../auth/ProtectedRoute";
 import { ForbiddenPageAdmin } from "../pages/ForbiddenPageAdmin";
 import { ProductDetailCurva } from "../pages/ProductDetailCurva";
+import { CarListCurves } from "../pages/CarListCurves";
 
 export const AmvRoutes = () => {
   return (
@@ -41,6 +42,7 @@ export const AmvRoutes = () => {
         />
         <Route path="/profile/*" element={<Profile />} />
         <Route path="/verCarritoDeCompras" element={<CarList />} />
+        <Route path="/verCarritoDeComprasCurvas" element={<CarListCurves />} />
 
         <Route path="/login" element={<Login />} />
         <Route path="/chatTest" element={<Chatboot />} />

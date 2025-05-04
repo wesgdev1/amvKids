@@ -321,7 +321,7 @@ export const OrdeDetailAdmin = () => {
     <div className="pt-5 px-4">
       <h4 className="pb-3">
         <i className="bi bi-receipt-cutoff"></i> Detalle de la orden #{" "}
-        {data?.codigoOrder}
+        {data?.codigoOrder} - Tipo de orden: {data?.typeOrder}
       </h4>
 
       <div>
@@ -373,24 +373,29 @@ export const OrdeDetailAdmin = () => {
                     <span>
                       {item.quantity} x {item.model.name} - talla: {item.size}
                     </span>
-                    <OverlayTrigger
-                      placement="top"
-                      overlay={
-                        <Tooltip id={`tooltip-delete-item-${item.id}`}>
-                          Cuidado, esto eliminará el total de productos de esta
-                          referencia.
-                        </Tooltip>
-                      }
-                    >
-                      <span
-                        onClick={() => handleClickDeleteItem(data.id, item.id)}
-                        className="text-danger fw-bold cursor-pointer"
-                        style={{ fontSize: "1.1rem" }}
-                        aria-label="Eliminar item"
+
+                    {data?.typeOrder === "Curva" ? null : (
+                      <OverlayTrigger
+                        placement="top"
+                        overlay={
+                          <Tooltip id={`tooltip-delete-item-${item.id}`}>
+                            Cuidado, esto eliminará el total de productos de
+                            esta referencia.
+                          </Tooltip>
+                        }
                       >
-                        <i className="bi bi-x-circle-fill"></i>
-                      </span>
-                    </OverlayTrigger>
+                        <span
+                          onClick={() =>
+                            handleClickDeleteItem(data.id, item.id)
+                          }
+                          className="text-danger fw-bold cursor-pointer"
+                          style={{ fontSize: "1.1rem" }}
+                          aria-label="Eliminar item"
+                        >
+                          <i className="bi bi-x-circle-fill"></i>
+                        </span>
+                      </OverlayTrigger>
+                    )}
                   </div>
                 ))}
               </Card.Text>

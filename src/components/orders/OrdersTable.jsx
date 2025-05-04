@@ -6,7 +6,7 @@ import { Paginator } from "../paginator/Paginator";
 import { format } from "date-fns";
 
 export const OrdersTable = ({ orders }) => {
-  const [ordersBypage, setOrdersByPage] = useState(10);
+  const [ordersBypage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const totalOrders = orders.length;
   const lastIndex = currentPage * ordersBypage;
@@ -36,6 +36,7 @@ export const OrdersTable = ({ orders }) => {
         <thead>
           <tr>
             <th># Orden</th>
+            <th>Tipo</th>
             <th>Fecha</th>
             <th>Total</th>
             <th>Estado</th>
@@ -50,7 +51,17 @@ export const OrdersTable = ({ orders }) => {
             .map((order) => (
               <tr key={order.id}>
                 <td>{order.codigoOrder}</td>
-
+                <td>
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      order.typeOrder === "Curva"
+                        ? "bg-indigo-100 text-indigo-800"
+                        : "bg-gray-100 text-gray-800"
+                    }`}
+                  >
+                    {order.typeOrder || "Normal"}
+                  </span>
+                </td>
                 <td>{format(new Date(order.createdAt), "MM/dd/yyyy")}</td>
                 <td>$ {order.total.toLocaleString("es-CO")}</td>
                 <td>
@@ -99,7 +110,7 @@ export const OrdersTable = ({ orders }) => {
         </tbody>
         <tfoot>
           <tr>
-            <td colSpan="3">
+            <td colSpan="4">
               <strong>Total Producto: {orders.length}</strong>
             </td>
           </tr>

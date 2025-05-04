@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Image, Modal, Table } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import PropTypes from "prop-types";
 import { ControlButton } from "../products/StyledComponents";
 import { Paginator } from "../paginator/Paginator";
 import { format } from "date-fns";
@@ -50,6 +49,7 @@ export const OrdersTableAdmin = ({ orders }) => {
             <th># Orden</th>
             <th>codigo</th>
             <th>Nombre</th>
+            <th>Tipo</th>
             <th>Fecha</th>
             <th>Total</th>
             <th>Estado</th>
@@ -77,7 +77,17 @@ export const OrdersTableAdmin = ({ orders }) => {
                     {order.user.tipoUsuario}
                   </span>
                 </td>
-
+                <td>
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      order.typeOrder === "Curva"
+                        ? "bg-indigo-100 text-indigo-800"
+                        : "bg-gray-100 text-gray-800" // Estilo por defecto para 'Normal' u otros
+                    }`}
+                  >
+                    {order.typeOrder || "Normal"}
+                  </span>
+                </td>
                 <td>{format(new Date(order.createdAt), "MM/dd/yyyy")}</td>
                 <td>$ {order.total.toLocaleString("es-CO")}</td>
                 <td>
@@ -126,7 +136,7 @@ export const OrdersTableAdmin = ({ orders }) => {
         </tbody>
         <tfoot>
           <tr>
-            <td colSpan="3">
+            <td colSpan="4">
               <strong>Total de Ordenes: {orders.length}</strong>
             </td>
           </tr>

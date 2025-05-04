@@ -1,29 +1,24 @@
-import { useParams, useNavigate } from "react-router-dom";
-import { useModel } from "../domain/models/useModel";
+/* eslint-disable react/prop-types */
 import {
   PageContainerStyled,
   GridRowStyled,
   GridColStyled,
-  ImageStyled,
   TableStyled,
-  AlertStyled,
   ButtonPrimaryStyled,
-  ButtonSecondaryStyled,
   HeadingStyled,
   IconStyled,
 } from "../components/StyledComponents";
-import { CustomLoader } from "../components/common/CustomLoader";
+import { useCartCurvas } from "../store/curvas";
+import Swal from "sweetalert2";
 
 export const ProductDetailCurva2 = ({ data }) => {
   const totalPares = 12;
   const stockDetailsString = "1/37, 2/38, 3/39, 2/40, 2/41, 1/42, 1/43";
-  let descripcion = "Sin descripción.";
   let pricePerPair = 0; // Precio por par
   let finalCurvePrice = 0; // Precio final con descuento
+  const { dispatch } = useCartCurvas();
 
   if (data) {
-    descripcion = data.description || "Sin descripción.";
-    // Asumiendo que data.price es el precio por par para la curva
     pricePerPair = data.price || 0;
     if (pricePerPair > 0) {
       finalCurvePrice = pricePerPair * totalPares * 0.9; // Aplicar 10% descuento
@@ -31,7 +26,34 @@ export const ProductDetailCurva2 = ({ data }) => {
   }
 
   const handleAgregarClick = () => {
-    console.log(`Agregar curva ID: ${data?.id}, Nombre: ${data?.name}`);
+    if (!data) return;
+
+    const itemCurva = {
+      id: data.id,
+      name: data.name,
+      color: data.color,
+      tipoCurva: "Hombre",
+      precioCurva: finalCurvePrice,
+      detalleCurva: stockDetailsString,
+      imageUrl:
+        data.images && data.images.length > 0 ? data.images[0].url : null,
+    };
+
+    dispatch({
+      type: "ADD_TO_CART",
+      payload: {
+        item: itemCurva,
+        quantity: 1,
+      },
+    });
+
+    Swal.fire({
+      icon: "success",
+      title: "¡Curva Agregada!",
+      text: `Se agregó la curva ${itemCurva.name} (${itemCurva.color}) al carrito.`,
+      timer: 1500,
+      showConfirmButton: false,
+    });
   };
 
   return (
@@ -95,6 +117,7 @@ export const ProductDetailCurva2 = ({ data }) => {
               size="lg"
               onClick={handleAgregarClick}
               className="px-5 py-2 d-inline-flex align-items-center"
+              disabled={!data || finalCurvePrice <= 0}
             >
               <IconStyled className="bi bi-cart-plus-fill"></IconStyled> Agregar
               Curva Hombre
