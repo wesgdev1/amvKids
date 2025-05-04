@@ -1,16 +1,14 @@
+/* eslint-disable react/prop-types */ // Deshabilitar temporalmente validación de props
 import Swal from "sweetalert2";
 import { ButtonPayment, CardChekoutStyle } from "./StyledComponent";
-import { Card, Spinner } from "react-bootstrap";
-import { useContext, useState } from "react";
-import { AuthContext } from "../../auth/context/AuthContext";
-import { createOrder, linkPago } from "../../api/orders/orders";
-import { set } from "zod";
+import { Card, Spinner, Tooltip, OverlayTrigger, Alert } from "react-bootstrap";
+import { useState } from "react";
+import { createOrder } from "../../api/orders/orders";
 import AddiWidget from "../payments/AddiWidget";
-import BoldCheckout from "../checkout/BoldCheckout";
+import { useNavigate } from "react-router-dom";
 
 export const CarCheckout = ({ calcularTotal, dispatch, state }) => {
-  const [link, setLink] = useState(null);
-  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [comments, setComments] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -47,6 +45,7 @@ export const CarCheckout = ({ calcularTotal, dispatch, state }) => {
       dispatch({
         type: "DELETE_ALL",
       });
+      navigate("/profile/myOrders");
     } catch (error) {
       Swal.fire({
         icon: "error",
@@ -78,23 +77,70 @@ export const CarCheckout = ({ calcularTotal, dispatch, state }) => {
         </div>
         <Card.Text>Comentarios</Card.Text>
         <textarea
-          className="w-100 text-black px-2"
+          className="w-100 text-black px-2 form-control mb-3"
           rows="3"
+          placeholder="Instrucciones especiales, detalles de envío, etc."
           value={comments}
           onChange={(e) => setComments(e.target.value)}
         ></textarea>
-        <ButtonPayment onClick={handleCheckout}>
-          {loading ? (
-            <Spinner animation="border" size="sm" />
-          ) : (
-            "Realizar pedido"
-          )}
-        </ButtonPayment>
 
-        <AddiWidget
-          price={String(calcularTotal())}
-          allySlug="amvstoreboutique-social"
-        />
+        {/* Nota importante sobre el flujo */}
+        <Alert variant="info" className="text-center small p-2 mb-3">
+          <i className="bi bi-info-circle-fill me-2"></i>
+          <strong>Importante:</strong> Primero haz clic en{" "}
+          <strong>Realizar pedido</strong> para guardar tu orden. Luego podrás
+          elegir cómo pagar.
+        </Alert>
+
+        <OverlayTrigger
+          placement="top"
+          delay={{ show: 250, hide: 400 }}
+          overlay={
+            <Tooltip id="tooltip-realizar-pedido">
+              Haz clic para crear tu orden en el sistema. Podrás realizar el
+              pago electrónico más tarde desde la sección &apos;Mis
+              Pedidos&apos;.
+            </Tooltip>
+          }
+        >
+          <ButtonPayment onClick={handleCheckout} disabled={loading}>
+            {loading ? (
+              <Spinner animation="border" size="sm" />
+            ) : (
+              "Realizar pedido"
+            )}
+          </ButtonPayment>
+        </OverlayTrigger>
+
+        <AddiWidget price={String(calcularTotal())} allySlug="amv" />
+        <div className="mt-3 p-3 rounded-lg bg-light border text-center shadow-sm">
+          <p className="text-muted small mb-0">
+            <i className="bi bi-info-circle me-2"></i>
+            Para solicitudes de <strong>crédito Addi</strong>, visítanos
+            directamente en tienda o contáctanos vía{" "}
+            <i className="bi bi-whatsapp text-success"></i> WhatsApp.
+          </p>
+        </div>
+
+        {/* Nuevo: Información Pagos Bold */}
+        <div className="mt-3 p-3 rounded-lg bg-blue-50 border border-blue-200 text-center shadow-sm">
+          <p className="text-primary fw-semibold mb-2">
+            <i className="bi bi-shield-check me-2"></i>
+            Paga seguro con Bold
+          </p>
+          <p className="text-muted small mb-0 d-flex flex-wrap justify-content-center align-items-center gap-3">
+            <span>
+              <i className="bi bi-credit-card me-1"></i>Tarjetas
+            </span>
+            <span>
+              <i className="bi bi-bank me-1"></i>PSE
+            </span>
+            <span>Nequi</span> {/* No hay icono obvio */}
+            <span>Bancolombia</span> {/* No hay icono obvio */}
+            {/* Puedes añadir más si Bold los soporta */}
+          </p>
+        </div>
+
         {/* <AddiWidget price={"100000"} allySlug="sandbox" /> */}
         {/* <div>
           <h3>Generar Link de Pago con Bold</h3>

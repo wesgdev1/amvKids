@@ -1,4 +1,4 @@
-import { Card, Col, Row, Button, Image } from "react-bootstrap";
+import { Card, Col, Row, Button, Image, Alert } from "react-bootstrap";
 import { useCart } from "../store";
 import { CarCheckout } from "../components/car/CarCheckout";
 import { CardElements } from "../components/car/CardElements";
@@ -31,32 +31,48 @@ export const CarList = () => {
           <Card.Body className="p-4">
             <Continue />
 
+            <h3 className="text-center my-4 fw-light">
+              Tu Selección Exclusiva ✨
+            </h3>
+
             <hr className="pb-4" />
             {state.length > 0 ? (
-              <div className="flex justify-center flex-wrap gap-5">
-                <div className="">
-                  <p>
-                    Tienes ({calcularTotalCarrito()}) productos en tu carrito de
-                    compras
-                  </p>
-                  {state.map((model, index) => (
-                    <div key={index}>
-                      <Row className="align-items-center">
-                        <Col>
-                          <CardElements model={model} dispatch={dispatch} />
-                        </Col>
-                      </Row>
-                    </div>
-                  ))}
+              <>
+                <Alert
+                  variant="warning"
+                  className="text-center small p-2 mb-4 mx-lg-5"
+                >
+                  <i className="bi bi-exclamation-triangle-fill me-2"></i>
+                  <strong>¡Recuerda!</strong> Solo hacer clic en{" "}
+                  <strong>Realizar pedido</strong> reserva tu calzado. Tenerlo
+                  en el carrito no asegura disponibilidad.
+                </Alert>
+
+                <div className="flex justify-center flex-wrap gap-5">
+                  <div className="">
+                    <p>
+                      Tienes ({calcularTotalCarrito()}) productos en tu carrito
+                      de compras
+                    </p>
+                    {state.map((model, index) => (
+                      <div key={index}>
+                        <Row className="align-items-center">
+                          <Col>
+                            <CardElements model={model} dispatch={dispatch} />
+                          </Col>
+                        </Row>
+                      </div>
+                    ))}
+                  </div>
+                  <Col className="col-12 col-lg-4">
+                    <CarCheckout
+                      state={state}
+                      calcularTotal={calcularTotal}
+                      dispatch={dispatch}
+                    />
+                  </Col>
                 </div>
-                <Col className="col-12 col-lg-4">
-                  <CarCheckout
-                    state={state}
-                    calcularTotal={calcularTotal}
-                    dispatch={dispatch}
-                  />
-                </Col>
-              </div>
+              </>
             ) : (
               <div className="text-center py-5 d-flex flex-column align-items-center">
                 <Image

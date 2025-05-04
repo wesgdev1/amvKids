@@ -340,6 +340,41 @@ export const OrdeDetail = () => {
                           />
                         </Form.Group>
 
+                        {/* Contenedor para notas informativas (centrado y con ancho máx. en PC) */}
+                        <div className="d-flex flex-column gap-3 items-center justify-center w-full md:max-w-lg mx-auto">
+                          {/* Nota Addi */}
+                          <div className="p-3 rounded-lg bg-light border text-center shadow-sm w-full">
+                            <p className="text-muted small mb-0">
+                              <i className="bi bi-info-circle me-2"></i>
+                              Para solicitudes de <strong>crédito Addi</strong>,
+                              visítanos directamente en tienda o contáctanos vía{" "}
+                              <i className="bi bi-whatsapp text-success"></i>{" "}
+                              WhatsApp.
+                            </p>
+                          </div>
+
+                          {/* Información Pagos Bold */}
+                          <div className="p-3 rounded-lg bg-blue-50 border border-blue-200 text-center shadow-sm w-full">
+                            <p className="text-primary fw-semibold mb-2">
+                              <i className="bi bi-shield-check me-2"></i>
+                              Paga seguro con Bold
+                            </p>
+                            <p className="text-muted small mb-0 d-flex flex-wrap justify-content-center align-items-center gap-3">
+                              <span>
+                                <i className="bi bi-credit-card me-1"></i>
+                                Tarjetas
+                              </span>
+                              <span>
+                                <i className="bi bi-bank me-1"></i>PSE
+                              </span>
+                              <span>Nequi</span> {/* No hay icono obvio */}
+                              <span>Bancolombia</span>{" "}
+                              {/* No hay icono obvio */}
+                              {/* Puedes añadir más si Bold los soporta */}
+                            </p>
+                          </div>
+                        </div>
+
                         <div className="d-flex justify-content-center gap-3">
                           <ButtonProfile
                             variant="primary"

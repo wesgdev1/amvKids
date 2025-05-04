@@ -100,6 +100,9 @@ export const CarListCurves = () => {
         <Card className="mx-3">
           <Card.Body className="p-4">
             <Continue />
+            <h3 className="text-center my-4 fw-light">
+              Tu Pedido de Curvas Exclusivas 📦
+            </h3>
             <hr className="pb-4" />
 
             {state.length === 0 ? (
