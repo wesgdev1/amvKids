@@ -88,7 +88,9 @@ export const OrdersTableAdmin = ({ orders }) => {
                     {order.typeOrder || "Normal"}
                   </span>
                 </td>
-                <td>{format(new Date(order.createdAt), "MM/dd/yyyy")}</td>
+                <td>
+                  {format(new Date(order.createdAt), "MM/dd/yyyy HH:mm:ss")}
+                </td>
                 <td>$ {order.total.toLocaleString("es-CO")}</td>
                 <td>
                   <span className="me-2">

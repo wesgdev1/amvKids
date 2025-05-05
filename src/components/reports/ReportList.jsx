@@ -16,6 +16,15 @@ import {
   useCountProdcuts,
   useCountUsers,
 } from "../../domain/reports/useReports";
+import {
+  format,
+  startOfDay,
+  endOfDay,
+  startOfWeek,
+  endOfWeek,
+  startOfMonth,
+  endOfMonth,
+} from "date-fns";
 
 // Datos de prueba
 const salesData = [
@@ -53,8 +62,39 @@ export const ReportList = () => {
   const handlePeriodChange = (event) => {
     const newPeriod = event.target.value;
     setSelectedPeriod(newPeriod);
-    console.log(`Periodo seleccionado: ${newPeriod}. Fetching data...`);
-    // Aquí iría la llamada a la API para obtener datos reales
+
+    // Calcular fechas exactas
+    const now = new Date();
+    let startDate, endDate;
+
+    switch (newPeriod) {
+      case "day":
+        startDate = startOfDay(now);
+        endDate = endOfDay(now);
+        break;
+      case "week":
+        // Por defecto, la semana empieza el Domingo. Para Lunes: { weekStartsOn: 1 }
+        startDate = startOfWeek(now /*, { weekStartsOn: 1 }*/);
+        endDate = endOfWeek(now /*, { weekStartsOn: 1 }*/);
+        break;
+      case "month":
+        startDate = startOfMonth(now);
+        endDate = endOfMonth(now);
+        break;
+      default:
+        startDate = startOfDay(now); // Default a hoy si algo raro pasa
+        endDate = endOfDay(now);
+    }
+
+    // Formatear fechas (ej. YYYY-MM-DD)
+    const formattedStartDate = format(startDate, "yyyy-MM-dd");
+    const formattedEndDate = format(endDate, "yyyy-MM-dd");
+
+    console.log(
+      `Periodo seleccionado: ${newPeriod}. Fechas: ${formattedStartDate} a ${formattedEndDate}. Fetching data...`
+    );
+
+    // Aquí iría la llamada a la API para obtener datos reales usando startDate y endDate
   };
 
   // Obtener los datos a mostrar según el periodo seleccionado
