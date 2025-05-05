@@ -129,9 +129,11 @@ export const OrdeDetailPreparer = () => {
       .map(
         (item) => `
       <tr>
-        <td>${item.quantity} x ${item.model.name}</td>
-        <td>Talla: ${item.size}</td>
-        <td>${item.model.color ? `Color: ${item.model.color}` : ""}</td>
+        <td><strong>${item.quantity} x ${item.model.name}</strong></td>
+        <td><strong>Talla: ${item.size}</strong></td>
+        <td><strong>${
+          item.model.color ? `Color: ${item.model.color}` : ""
+        }</strong></td>
       </tr>
     `
       )
@@ -139,20 +141,20 @@ export const OrdeDetailPreparer = () => {
 
     return `
       <div class="header">
-        AMV KIDS<br>
-        RECIBO DE PREPARACIÓN
+        <strong>AMV KIDS</strong><br>
+        <strong>RECIBO DE PREPARACIÓN</strong>
       </div>
       <div class="divider"></div>
       <div class="order-info">
-        <strong>Orden #:</strong> ${orderData.codigoOrder}<br>
-        <strong>Fecha:</strong> ${fecha}<br>
-        <strong>Estado:</strong> Alistado
+        <strong>Orden #: ${orderData.codigoOrder}</strong><br>
+        <strong>Fecha: ${fecha}</strong><br>
+        <strong>Estado: Alistado</strong>
       </div>
       <div class="divider"></div>
       <div class="client-info">
-        <strong>Cliente:</strong> ${orderData.user.name}<br>
-        <strong>Tipo:</strong> ${orderData.user.tipoUsuario}<br>
-        <strong>Código:</strong> ${orderData.user.codigo}<br>
+        <strong>Cliente: ${orderData.user.name}</strong><br>
+        <strong>Tipo: ${orderData.user.tipoUsuario}</strong><br>
+        <strong>Código: ${orderData.user.codigo}</strong><br>
       </div>
       <div class="divider"></div>
       <strong>Productos:</strong><br>
@@ -163,7 +165,7 @@ export const OrdeDetailPreparer = () => {
       </table>
       <div class="divider"></div>
       <div class="total">
-        TOTAL: ${orderData.total.toLocaleString("es-CO")} COP
+        <strong>TOTAL: ${orderData.total.toLocaleString("es-CO")} COP</strong>
       </div>
       ${
         orderData.comments
@@ -171,15 +173,15 @@ export const OrdeDetailPreparer = () => {
       <div class="divider"></div>
       <div>
         <strong>Comentarios:</strong><br>
-        ${orderData.comments}
+        <strong>${orderData.comments}</strong>
       </div>
       `
           : ""
       }
       <div class="divider"></div>
       <div class="footer">
-        Este recibo certifica que la orden ha sido preparada.<br>
-        Gracias por su preferencia!
+        <strong>Este recibo certifica que la orden ha sido preparada.</strong><br>
+        <strong>Gracias por su preferencia!</strong>
       </div>
     `;
   };
