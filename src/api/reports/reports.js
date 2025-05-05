@@ -33,3 +33,39 @@ export const getCountCategories = async () => {
     return Promise.reject(error);
   }
 };
+
+export const getCountOrders = async (payload) => {
+  try {
+    const { data: response } = await http.post(
+      `/orders/countOrderByDate`,
+      payload
+    );
+    return { data: response.data };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+export const getSumaTotalesOrdenes = async (payload) => {
+  try {
+    const { data: response } = await http.post(
+      `/orders/sumarTotalOrdenesByDate`,
+      payload
+    );
+    return { data: response.data };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+export const getParesVendidos = async (payload) => {
+  try {
+    const { data: response } = await http.post(
+      `/orders/sumarParesVendidosPorFecha`,
+      payload
+    );
+    return { data: response.data };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};

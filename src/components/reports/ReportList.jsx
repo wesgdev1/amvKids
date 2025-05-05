@@ -1,5 +1,5 @@
 import { Card, Form, Spinner } from "react-bootstrap";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   BarChart,
   Bar,
@@ -15,6 +15,9 @@ import {
   useCountPairs,
   useCountProdcuts,
   useCountUsers,
+  useCountOrders,
+  useSumaTotalesOrdenes,
+  useParesVendidos,
 } from "../../domain/reports/useReports";
 import {
   format,
@@ -48,15 +51,31 @@ const topProduct = {
   sales: 120,
 };
 
-// Datos estáticos para el reporte por periodo
-const periodStatsData = {
-  day: { orders: 15, pairs: 45, revenue: 1250000 },
-  week: { orders: 80, pairs: 280, revenue: 7800000 },
-  month: { orders: 350, pairs: 1100, revenue: 31000000 },
-};
-
 export const ReportList = () => {
   const [selectedPeriod, setSelectedPeriod] = useState("day"); // Estado para el periodo
+
+  // Estados para las fechas del periodo seleccionado
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+
+  // Hook para obtener los datos de órdenes del periodo
+  const {
+    data: periodOrderStats, // Renombrar data a periodOrderStats para claridad
+    loading: isLoadingPeriodReport, // Renombrar loading
+    error: periodReportError, // Renombrar error
+  } = useCountOrders(startDate, endDate);
+
+  const {
+    data: sumaTotalesOrdenes,
+    loading: isLoadingSumaTotalesOrdenes,
+    error: sumaTotalesOrdenesError,
+  } = useSumaTotalesOrdenes(startDate, endDate);
+
+  const {
+    data: paresVendidos,
+    loading: isLoadingParesVendidos,
+    error: paresVendidosError,
+  } = useParesVendidos(startDate, endDate);
 
   // Handler para el cambio de selección
   const handlePeriodChange = (event) => {
@@ -65,40 +84,53 @@ export const ReportList = () => {
 
     // Calcular fechas exactas
     const now = new Date();
-    let startDate, endDate;
+    let newStartDate, newEndDate;
 
     switch (newPeriod) {
       case "day":
-        startDate = startOfDay(now);
-        endDate = endOfDay(now);
+        newStartDate = startOfDay(now);
+        newEndDate = endOfDay(now);
         break;
       case "week":
-        // Por defecto, la semana empieza el Domingo. Para Lunes: { weekStartsOn: 1 }
-        startDate = startOfWeek(now /*, { weekStartsOn: 1 }*/);
-        endDate = endOfWeek(now /*, { weekStartsOn: 1 }*/);
+        newStartDate = startOfWeek(now, { weekStartsOn: 1 });
+        newEndDate = endOfWeek(now, { weekStartsOn: 1 });
         break;
       case "month":
-        startDate = startOfMonth(now);
-        endDate = endOfMonth(now);
+        newStartDate = startOfMonth(now);
+        newEndDate = endOfMonth(now);
         break;
       default:
-        startDate = startOfDay(now); // Default a hoy si algo raro pasa
-        endDate = endOfDay(now);
+        newStartDate = startOfDay(now); // Default a hoy si algo raro pasa
+        newEndDate = endOfDay(now);
     }
 
-    // Formatear fechas (ej. YYYY-MM-DD)
-    const formattedStartDate = format(startDate, "yyyy-MM-dd");
-    const formattedEndDate = format(endDate, "yyyy-MM-dd");
+    // Actualizar los estados de fecha, lo que activará el hook useCountOrders
+    setStartDate(newStartDate);
+    setEndDate(newEndDate);
+
+    // Formatear fechas al estilo timestamp(3) - Log opcional
+    const timestampFormat = "yyyy-MM-dd HH:mm:ss.SSS";
+    const formattedStartDate = format(newStartDate, timestampFormat);
+    const formattedEndDate = format(newEndDate, timestampFormat);
 
     console.log(
       `Periodo seleccionado: ${newPeriod}. Fechas: ${formattedStartDate} a ${formattedEndDate}. Fetching data...`
     );
 
-    // Aquí iría la llamada a la API para obtener datos reales usando startDate y endDate
+    // Aquí iría la llamada a la API para obtener datos reales
+    // Es recomendable enviar los objetos Date (startDate, endDate) directamente
+    // si tu API/backend puede manejarlos, o las cadenas formateadas si es necesario.
+    // Ejemplo: fetchDataForPeriod({ startDate, endDate });
   };
 
-  // Obtener los datos a mostrar según el periodo seleccionado
-  const currentPeriodData = periodStatsData[selectedPeriod];
+  // useEffect para la carga inicial al montar el componente
+  useEffect(() => {
+    // Calcular fechas para el periodo inicial ('day')
+    const now = new Date();
+    setStartDate(startOfDay(now));
+    setEndDate(endOfDay(now));
+    // El array vacío [] asegura que esto se ejecute solo una vez al montar
+  }, []);
 
   const {
     data: countpairs,
@@ -123,6 +155,19 @@ export const ReportList = () => {
     loading: loadingCategories,
     error: errorCategories,
   } = useCountProdcuts();
+
+  // Log para depurar el estado recibido del hook
+  useEffect(() => {
+    if (!isLoadingPeriodReport) {
+      // Loguear solo cuando no está cargando
+      console.log(
+        "ReportList: periodOrderStats recibido del hook:",
+        periodOrderStats
+      );
+      console.log("ReportList: isLoadingPeriodReport:", isLoadingPeriodReport);
+      console.log("ReportList: periodReportError:", periodReportError);
+    }
+  }, [periodOrderStats, isLoadingPeriodReport, periodReportError]);
 
   return (
     <div className="container mt-5">
@@ -236,6 +281,7 @@ export const ReportList = () => {
           value={selectedPeriod}
           onChange={handlePeriodChange}
           style={{ maxWidth: "250px" }}
+          disabled={isLoadingPeriodReport}
         >
           <option value="day">Hoy</option>
           <option value="week">Esta Semana</option>
@@ -244,44 +290,86 @@ export const ReportList = () => {
       </div>
       {/* Sección de Estadísticas por Periodo */}
       <StatsContainerStyled>
+        {/* Tarjeta Órdenes Creadas */}
         <StatCardStyled
           style={{
             background: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
           }}
         >
-          <i className="bi bi-cart-check-fill stat-icon"></i>
-          <div className="stat-value">
-            {currentPeriodData.orders.toLocaleString()}
-          </div>
-          <div className="stat-label">Órdenes Creadas</div>
+          {isLoadingPeriodReport ? (
+            <Spinner animation="border" size="sm" variant="light" />
+          ) : periodReportError ? (
+            <i
+              className="bi bi-exclamation-triangle-fill text-danger stat-icon"
+              title={periodReportError.message || "Error"}
+            ></i>
+          ) : (
+            <>
+              <i className="bi bi-cart-check-fill stat-icon"></i>
+              <div className="stat-value">
+                {periodOrderStats?.toLocaleString() ?? "-"}
+              </div>
+              <div className="stat-label">
+                Órdenes Creadas - Todos los estados
+              </div>
+            </>
+          )}
         </StatCardStyled>
 
+        {/* Tarjeta Pares Vendidos */}
         <StatCardStyled
           style={{
             background: "linear-gradient(135deg, #ff8c42 0%, #ffcc6b 100%)",
           }}
         >
-          <i className="bi bi-tag-fill stat-icon"></i>
-          <div className="stat-value">
-            {currentPeriodData.pairs.toLocaleString()}
-          </div>
-          <div className="stat-label">Pares Vendidos</div>
+          {isLoadingParesVendidos ? (
+            <Spinner animation="border" size="sm" variant="light" />
+          ) : paresVendidosError ? (
+            <i
+              className="bi bi-exclamation-triangle-fill text-danger stat-icon"
+              title={paresVendidosError.message || "Error"}
+            ></i>
+          ) : (
+            <>
+              <i className="bi bi-tag-fill stat-icon"></i>
+              <div className="stat-value">
+                {paresVendidos?.toLocaleString() ?? "-"}
+              </div>
+              <div className="stat-label">
+                Pares Vendidos - Pedidos entregados
+              </div>
+            </>
+          )}
         </StatCardStyled>
 
+        {/* Tarjeta Total Recaudado */}
         <StatCardStyled
           style={{
             background: "linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)",
           }}
         >
-          <i className="bi bi-cash-coin stat-icon"></i>
-          <div className="stat-value">
-            {currentPeriodData.revenue.toLocaleString("es-CO", {
-              style: "currency",
-              currency: "COP",
-              minimumFractionDigits: 0,
-            })}
-          </div>
-          <div className="stat-label">Total Recaudado</div>
+          {isLoadingSumaTotalesOrdenes ? (
+            <Spinner animation="border" size="sm" variant="light" />
+          ) : periodReportError ? (
+            <i
+              className="bi bi-exclamation-triangle-fill text-danger stat-icon"
+              title={sumaTotalesOrdenesError.message || "Error"}
+            ></i>
+          ) : (
+            <>
+              <i className="bi bi-cash-coin stat-icon"></i>
+              <div className="stat-value">
+                {sumaTotalesOrdenes?.toLocaleString("es-CO", {
+                  style: "currency",
+                  currency: "COP",
+                  minimumFractionDigits: 0,
+                }) ?? "-"}
+              </div>
+              <div className="stat-label">
+                Total Recaudado - pedidos entregados
+              </div>
+            </>
+          )}
         </StatCardStyled>
         {/* Se puede añadir una 4ta tarjeta vacía o con otra métrica si es necesario para el grid */}
         {/* <StatCardStyled style={{ background: 'transparent', boxShadow: 'none'}}></StatCardStyled> */}
