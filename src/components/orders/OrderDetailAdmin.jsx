@@ -333,6 +333,188 @@ export const OrdeDetailAdmin = () => {
     }
   };
 
+  // recibos
+  const printReceipt = (orderData) => {
+    return new Promise((resolve, reject) => {
+      try {
+        // Crear el contenido del recibo
+        const receiptContent = generateReceiptContent(orderData);
+
+        // Usar la API de impresión del navegador
+        const printWindow = window.open("", "_blank", "width=300,height=600");
+
+        printWindow.document.write(`
+          <html>
+            <head>
+              <title>Recibo #${orderData.codigoOrder}</title>
+              <style>
+                body {
+                  font-family: 'Courier New', monospace;
+                  width: 80mm;
+                  margin: 0;
+                  padding: 5mm;
+                  font-size: 12px;
+                }
+                .header {
+                  text-align: center;
+                  margin-bottom: 10px;
+                  font-weight: bold;
+                }
+                .divider {
+                  border-top: 1px dashed #000;
+                  margin: 10px 0;
+                }
+                .order-info {
+                  margin-bottom: 10px;
+                }
+                .items {
+                  width: 100%;
+                }
+                .items th {
+                  text-align: left;
+                }
+                .total {
+                  text-align: right;
+                  font-weight: bold;
+                  margin-top: 10px;
+                }
+                .footer {
+                  text-align: center;
+                  margin-top: 20px;
+                  font-size: 10px;
+                }
+                @media print {
+                  body {
+                    width: 80mm;
+                  }
+                  @page {
+                    margin: 0;
+                    size: 80mm auto;
+                  }
+                }
+              </style>
+            </head>
+            <body>
+              ${receiptContent}
+              <script>
+                window.onload = function() {
+                  window.print();
+                  setTimeout(function() {
+                    window.close();
+                    window.opener.postMessage('print-completed', '*');
+                  }, 500);
+                };
+              </script>
+            </body>
+          </html>
+        `);
+
+        printWindow.document.close();
+
+        // Escuchar el mensaje de que la impresión ha sido completada
+        window.addEventListener("message", function messageHandler(event) {
+          if (event.data === "print-completed") {
+            window.removeEventListener("message", messageHandler);
+            resolve();
+          }
+        });
+
+        // Por si acaso el mensaje falla, resolver después de un tiempo razonable
+        setTimeout(() => {
+          resolve();
+        }, 3000);
+      } catch (error) {
+        console.error("Error al imprimir recibo:", error);
+        reject(error);
+      }
+    });
+  };
+  const generateReceiptContent = (orderData) => {
+    const fecha = new Date().toLocaleString("es-CO");
+    const items = orderData.orderItems
+      .map(
+        (item) => `
+      <tr>
+        <td><strong>${item.quantity} x ${item.model.name}</strong></td>
+        <td><strong>Talla: ${item.size}</strong></td>
+        <td><strong>${
+          item.model.color ? `Color: ${item.model.color}` : ""
+        }</strong></td>
+      </tr>
+    `
+      )
+      .join("");
+
+    return `
+      <div class="header">
+        <strong>AMV KIDS</strong><br>
+        <strong>RECIBO DE PREPARACIÓN</strong>
+      </div>
+      <div class="divider"></div>
+      <div class="order-info">
+        <strong>Orden #: ${orderData.codigoOrder}</strong><br>
+        <strong>Fecha: ${fecha}</strong><br>
+        <strong>Estado: Alistado</strong>
+      </div>
+      <div class="divider"></div>
+      <div class="client-info">
+        <strong>Cliente: ${orderData.user.name}</strong><br>
+        <strong>Tipo: ${orderData.user.tipoUsuario}</strong><br>
+        <strong>Código: ${orderData.user.codigo}</strong><br>
+      </div>
+      <div class="divider"></div>
+      <strong>Productos:</strong><br>
+      <table class="items">
+        <tbody>
+          ${items}
+        </tbody>
+      </table>
+      <div class="divider"></div>
+      <div class="total">
+        <strong>TOTAL: ${orderData.total.toLocaleString("es-CO")} COP</strong>
+      </div>
+      ${
+        orderData.comments
+          ? `
+      <div class="divider"></div>
+      <div>
+        <strong>Comentarios:</strong><br>
+        <strong>${orderData.comments}</strong>
+      </div>
+      `
+          : ""
+      }
+      <div class="divider"></div>
+      <div class="footer">
+        <strong>Este recibo certifica que la orden ha sido preparada.</strong><br>
+        <strong>Gracias por su preferencia!</strong>
+      </div>
+    `;
+  };
+
+  const handlePrint = async () => {
+    Swal.fire({
+      title: "Imprimiendo recibo...",
+      text: "Por favor espere",
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
+    // Esperar a que se complete la impresión
+    await printReceipt(data);
+    // Cerrar el Swal de carga
+    Swal.close();
+    // Mostrar mensaje de éxito
+    Swal.fire({
+      icon: "success",
+      title: "Recibo Impreso",
+      text: "El recibo se ha impreso correctamente.",
+    });
+  };
+
   return (
     <div className="pt-5 px-4">
       <h4 className="pb-3">
@@ -470,6 +652,13 @@ export const OrdeDetailAdmin = () => {
             <div className="flex flex-wrap gap-4 justify-center">
               {data.state === "Pedido Entregado" ? null : (
                 <>
+                  <ButtonCardStyled
+                    onClick={() => {
+                      handlePaymentConfirm();
+                    }}
+                  >
+                    Admin Confirma Pago
+                  </ButtonCardStyled>
                   {data.state === "Creada" ||
                   data.state === "Pago Confirmado" ? null : (
                     <>
@@ -485,7 +674,7 @@ export const OrdeDetailAdmin = () => {
                           handlePaymentConfirm();
                         }}
                       >
-                        Pago Confirmado
+                        Pago Confirmado del cliente
                       </ButtonCardStyled>
                     </>
                   )}
@@ -506,6 +695,16 @@ export const OrdeDetailAdmin = () => {
                   </ButtonCardStyled>
                 </>
               )}
+
+              <ButtonCardStyled
+                onClick={() => {
+                  handlePrint();
+                }}
+                className="bg-white text-black border border-gray-300 hover:bg-gray-100"
+              >
+                <i className="bi bi-printer me-2"></i>
+                Re-imprimir
+              </ButtonCardStyled>
             </div>
           </ShoesCardStyledPayment>
         )}
