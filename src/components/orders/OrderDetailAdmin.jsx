@@ -590,6 +590,7 @@ export const OrdeDetailAdmin = () => {
                   >
                     <span>
                       {item.quantity} x {item.model.name} - talla: {item.size}
+                      {item.model.color && ` - color: ${item.model.color}`}
                     </span>
 
                     {data?.typeOrder === "Curva" ? null : (
