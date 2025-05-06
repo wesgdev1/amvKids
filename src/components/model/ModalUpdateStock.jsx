@@ -29,41 +29,72 @@ export const ModalUpdateStock = ({
 }) => {
   const initialValues = {
     size: stock.size,
-    quantity: stock.quantity,
+    quantity: 0,
   };
   const [error2, setError] = useState(false);
 
   const onSubmit = async (values, { setSubmitting }) => {
-    try {
-      console.log("ingres por el submit");
-      setSubmitting(true);
-      const response = await updateStock({ ...values, id: stock.id });
-      console.log(response, "jeje");
+    // Mostrar alerta de confirmación primero
+    const result = await Swal.fire({
+      title: "¿Estás seguro?",
+      text: `Vas a añadir ${values.quantity} unidades a la talla ${values.size}. ¿Deseas continuar?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí, actualizar",
+      cancelButtonText: "No, cancelar",
+    });
 
-      if (response) {
-        Swal.fire({
-          icon: "success",
-          title: "Stock Actualizado",
-          text: "El stock se actualizo correctamente",
-        });
+    // Si el usuario confirma, proceder con la actualización
+    if (result.isConfirmed) {
+      try {
+        setSubmitting(true);
 
-        handleClose();
-        refresh(idModel);
-      } else {
+        // console.log(values, "values"); // Log opcional
+        const response = await updateStock({ ...values, id: stock.id }); // Usar la llamada real a la API
+        // console.log(response, "API response"); // Log opcional
+
+        if (response) {
+          // Asumiendo que la respuesta es exitosa si 'response' es truthy
+          Swal.fire({
+            icon: "success",
+            title: "Stock Actualizado",
+            text: "El stock se actualizó correctamente",
+          });
+
+          handleClose();
+          if (typeof refresh === "function") {
+            // Verificar si refresh es una función
+            refresh(idModel);
+          }
+        } else {
+          // Esto podría necesitar un manejo más específico si la API devuelve errores de forma distinta
+          Swal.fire({
+            icon: "error",
+            title: "Stock no actualizado",
+            text: "El stock no se actualizó correctamente, intenta nuevamente",
+          });
+        }
+      } catch (error) {
+        console.error("Error al actualizar stock:", error); // Es bueno loguear el error real
+        const message =
+          error?.response?.data?.message ||
+          error?.message ||
+          "Ocurrió un error desconocido";
+        setError(true); // Establecer el estado de error local si es necesario
         Swal.fire({
           icon: "error",
-          title: "Stock no actualizado",
-          text: "Stock no se actualizo correctamente, intenta nuevamente",
+          title: "Error al actualizar",
+          text: message, // Mostrar mensaje de error más específico si es posible
         });
+      } finally {
+        setSubmitting(false); // Asegurarse de que isSubmitting se ponga en false
       }
-    } catch (error) {
-      const message = "Error";
-      setError(message);
-      Swal.fire({
-        icon: "error",
-        title: "Producto no creado",
-        text: "El Producto no se creo correctamente, intenta nuevamente",
-      });
+    } else {
+      // Si el usuario cancela, no hacer nada o mostrar un mensaje opcional
+      setSubmitting(false); // Asegurar que el botón se reactive
+      // Swal.fire("Cancelado", "La actualización del stock ha sido cancelada.", "info"); // Opcional
     }
   };
   return (
@@ -117,6 +148,7 @@ export const ModalUpdateStock = ({
                 <Form.Group className="" controlId="formBasicNombreCompleto">
                   <Form.Label>Talla</Form.Label>
                   <Form.Control
+                    disabled
                     type="number"
                     placeholder="Escibe aqui el talla del modelo"
                     name="size"
@@ -132,7 +164,7 @@ export const ModalUpdateStock = ({
                   />
                 </Form.Group>
                 <Form.Group className="" controlId="formBasicNombreCompleto">
-                  <Form.Label>Cantidad</Form.Label>
+                  <Form.Label>Cantidad a Sumar</Form.Label>
                   <Form.Control
                     type="number"
                     placeholder="Escibe aqui la cantidad de unidades de esa talla"
