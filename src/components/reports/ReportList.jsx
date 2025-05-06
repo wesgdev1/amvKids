@@ -18,6 +18,7 @@ import {
   useCountOrders,
   useSumaTotalesOrdenes,
   useParesVendidos,
+  useModelosMasVendidos,
 } from "../../domain/reports/useReports";
 import {
   format,
@@ -29,26 +30,32 @@ import {
   endOfMonth,
 } from "date-fns";
 
-// Datos de prueba
-const salesData = [
-  { day: "Lun", ventas: 120 },
-  { day: "Mar", ventas: 180 },
-  { day: "Mié", ventas: 150 },
-  { day: "Jue", ventas: 200 },
-  { day: "Vie", ventas: 220 },
-  { day: "Sáb", ventas: 250 },
-  { day: "Dom", ventas: 190 },
-];
-
-const bestSellers = [
-  { name: "Juan Pérez", sales: 55 },
-  { name: "María Gómez", sales: 48 },
-  { name: "Carlos Ruiz", sales: 45 },
-];
-
-const topProduct = {
-  name: "Nike Air Max 90",
-  sales: 120,
+// DATOS ESTÁTICOS ADICIONALES PARA LAS NUEVAS TARJETAS DEL PERIODO
+const periodExtraStatsData = {
+  day: {
+    topSellers: [
+      { name: "Vendedor Ágil", sales: 10 },
+      { name: "Vendedor Rápido", sales: 8 },
+      { name: "Vendedor Veloz", sales: 7 },
+    ],
+    sellersIcon: "bi-people-fill",
+  },
+  week: {
+    topSellers: [
+      { name: "Líder Semanal", sales: 50 },
+      { name: "Campeón Semanal", sales: 40 },
+      { name: "Finalista Semanal", sales: 30 },
+    ],
+    sellersIcon: "bi-trophy",
+  },
+  month: {
+    topSellers: [
+      { name: "Emperador del Mes", sales: 200 },
+      { name: "Rey del Mes", sales: 150 },
+      { name: "Príncipe del Mes", sales: 100 },
+    ],
+    sellersIcon: "bi-shield-check",
+  },
 };
 
 export const ReportList = () => {
@@ -156,6 +163,12 @@ export const ReportList = () => {
     error: errorCategories,
   } = useCountProdcuts();
 
+  const {
+    data: modelosMasVendidos,
+    loading: loadingModelosMasVendidos,
+    error: errorModelosMasVendidos,
+  } = useModelosMasVendidos(startDate, endDate);
+
   // Log para depurar el estado recibido del hook
   useEffect(() => {
     if (!isLoadingPeriodReport) {
@@ -168,6 +181,9 @@ export const ReportList = () => {
       console.log("ReportList: periodReportError:", periodReportError);
     }
   }, [periodOrderStats, isLoadingPeriodReport, periodReportError]);
+
+  // Obtener los datos extra para el periodo seleccionado
+  const currentPeriodExtraData = periodExtraStatsData[selectedPeriod];
 
   return (
     <div className="container mt-5">
@@ -281,7 +297,12 @@ export const ReportList = () => {
           value={selectedPeriod}
           onChange={handlePeriodChange}
           style={{ maxWidth: "250px" }}
-          disabled={isLoadingPeriodReport}
+          disabled={
+            isLoadingPeriodReport ||
+            isLoadingSumaTotalesOrdenes ||
+            isLoadingParesVendidos ||
+            loadingModelosMasVendidos
+          }
         >
           <option value="day">Hoy</option>
           <option value="week">Esta Semana</option>
@@ -350,10 +371,10 @@ export const ReportList = () => {
         >
           {isLoadingSumaTotalesOrdenes ? (
             <Spinner animation="border" size="sm" variant="light" />
-          ) : periodReportError ? (
+          ) : sumaTotalesOrdenesError ? (
             <i
               className="bi bi-exclamation-triangle-fill text-danger stat-icon"
-              title={sumaTotalesOrdenesError.message || "Error"}
+              title={sumaTotalesOrdenesError.message || "Error"} // Corregido para usar sumaTotalesOrdenesError
             ></i>
           ) : (
             <>
@@ -371,87 +392,110 @@ export const ReportList = () => {
             </>
           )}
         </StatCardStyled>
+
+        {/* Tarjeta Zapato Más Vendido (AHORA CON DATOS REALES) */}
+        <StatCardStyled
+          style={{
+            background: "linear-gradient(135deg, #28a745 0%, #218838 100%)", // Tono verde
+          }}
+        >
+          {loadingModelosMasVendidos ? (
+            <Spinner animation="border" size="sm" variant="light" />
+          ) : errorModelosMasVendidos ? (
+            <i
+              className="bi bi-exclamation-triangle-fill text-danger stat-icon"
+              title={
+                errorModelosMasVendidos.message ||
+                "Error al cargar modelo más vendido"
+              }
+            ></i>
+          ) : modelosMasVendidos && modelosMasVendidos.name ? (
+            <>
+              <div
+                className="stat-label fw-bold"
+                style={{ fontSize: "1.0rem", marginBottom: "2px" }}
+              >
+                Zapato Más Vendido
+              </div>
+              <i className="bi bi-star-fill stat-icon"></i>{" "}
+              {/* Icono genérico de estrella/premio */}
+              <div
+                className="stat-value"
+                style={{ fontSize: "1.1rem", lineHeight: "1.3" }}
+              >
+                {modelosMasVendidos.name}
+                {modelosMasVendidos.color && (
+                  <span
+                    style={{
+                      display: "block",
+                      fontSize: "0.85rem",
+                      opacity: 0.8,
+                    }}
+                  >
+                    Color: {modelosMasVendidos.color}
+                  </span>
+                )}
+              </div>
+              <div className="stat-label" style={{ fontSize: "0.9rem" }}>
+                {modelosMasVendidos.totalQuantitySold?.toLocaleString()} uds
+                vendidas
+              </div>
+            </>
+          ) : (
+            <>
+              <div
+                className="stat-label fw-bold"
+                style={{ fontSize: "1.0rem", marginBottom: "2px" }}
+              >
+                Zapato Más Vendido
+              </div>
+              <i className="bi bi-question-circle stat-icon"></i>
+              <div className="stat-value" style={{ fontSize: "1rem" }}>
+                No hay datos
+              </div>
+            </>
+          )}
+        </StatCardStyled>
+
+        {/* Tarjeta Mejores 3 Vendedores (CON DATOS FICTICIOS AÚN) */}
+        {/* <StatCardStyled
+          style={{
+            background: "linear-gradient(135deg, #17a2b8 0%, #138496 100%)", // Tono azul verdoso/info
+            paddingTop: "12px",
+            paddingBottom: "12px",
+          }}
+        >
+          <>
+            <i
+              className={`bi ${currentPeriodExtraData.sellersIcon} stat-icon mb-2`}
+            ></i>
+            <div
+              className="stat-label fw-bold"
+              style={{ fontSize: "1.1rem", marginBottom: "5px" }}
+            >
+              Top 3 Vendedores
+            </div>
+            <ul
+              className="list-unstyled text-start w-100 px-2"
+              style={{ fontSize: "0.8rem" }}
+            >
+              {currentPeriodExtraData.topSellers.map((seller, index) => (
+                <li key={index} className="d-flex justify-content-between py-1">
+                  <span>
+                    {index + 1}. {seller.name}
+                  </span>
+                  <span className="fw-bold">
+                    {seller.sales.toLocaleString()}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </>
+        </StatCardStyled> */}
+
         {/* Se puede añadir una 4ta tarjeta vacía o con otra métrica si es necesario para el grid */}
         {/* <StatCardStyled style={{ background: 'transparent', boxShadow: 'none'}}></StatCardStyled> */}
       </StatsContainerStyled>
-      <hr className="mt-5" /> {/* Separador antes de la siguiente sección */}
-      {/* Título para la sección de detalles */}
-      <h2 className="text-center mb-4 fw-bold text-info">
-        <i className="bi bi-graph-up-arrow me-2"></i> Análisis Detallado
-      </h2>
-      <div className="row g-4">
-        {/* Mejores vendedores */}
-        <div className="col-md-4">
-          <Card className="shadow-lg border-0 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 text-white">
-            <Card.Body>
-              <div className="d-flex align-items-center gap-2">
-                <Trophy size={28} />
-                <Card.Title className="fs-4 fw-bold">
-                  Mejores Vendedores
-                </Card.Title>
-              </div>
-
-              {/* usar una tabla */}
-              <table className="table table-striped table-hover">
-                <thead>
-                  <tr>
-                    <th>Nombre</th>
-                    <th>Ventas</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {bestSellers.map((seller, index) => (
-                    <tr key={index}>
-                      <td>{seller.name}</td>
-                      <td>{seller.sales}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </Card.Body>
-          </Card>
-        </div>
-
-        {/* Producto más vendido */}
-        <div className="col-md-4">
-          <Card className="shadow-lg border-0 rounded-xl bg-gradient-to-r from-green-500 to-teal-500 text-white">
-            <Card.Body>
-              <div className="d-flex align-items-center gap-2">
-                <ShoppingBag size={28} />
-                <Card.Title className="fs-4 fw-bold">Más Vendido</Card.Title>
-              </div>
-              <p className="mt-3 fs-3 fw-bold">{topProduct.name}</p>
-              <p className="fs-5">Ventas: {topProduct.sales}</p>
-            </Card.Body>
-          </Card>
-        </div>
-
-        {/* Ventas diarias */}
-        <div className="col-md-4">
-          <Card className="shadow-lg border-0 rounded-xl">
-            <Card.Body>
-              <div className="d-flex align-items-center text-primary gap-2">
-                <LineChart size={28} />
-                <Card.Title className="fs-4 fw-bold">Ventas Diarias</Card.Title>
-              </div>
-              <div className="mt-4">
-                <ResponsiveContainer width="100%" height={200}>
-                  <BarChart data={salesData}>
-                    <XAxis dataKey="day" stroke="#888" />
-                    <YAxis />
-                    <Tooltip />
-                    <Bar
-                      dataKey="ventas"
-                      fill="#3b82f6"
-                      radius={[5, 5, 0, 0]}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </Card.Body>
-          </Card>
-        </div>
-      </div>
     </div>
   );
 };

@@ -7,6 +7,7 @@ import {
   getCountUsers,
   getSumaTotalesOrdenes,
   getParesVendidos,
+  getModelosMasVendidos,
 } from "../../api/reports/reports";
 
 export const useCountPairs = () => {
@@ -222,6 +223,43 @@ export const useParesVendidos = (startDate, endDate) => {
   useEffect(() => {
     if (startDate && endDate) {
       loadParesVendidos(startDate, endDate);
+    }
+  }, [startDate, endDate]);
+
+  return { data, loading, error };
+};
+
+export const useModelosMasVendidos = (startDate, endDate) => {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const loadModelosMasVendidos = async (start, end) => {
+    if (!start || !end) {
+      setData(null);
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const payload = { startDate: start, endDate: end };
+      const response = await getModelosMasVendidos(payload);
+
+      setData(response.data);
+    } catch (error) {
+      console.error("Hook: Error fetching period orders:", error);
+      setError(error);
+      setData(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (startDate && endDate) {
+      loadModelosMasVendidos(startDate, endDate);
     }
   }, [startDate, endDate]);
 
