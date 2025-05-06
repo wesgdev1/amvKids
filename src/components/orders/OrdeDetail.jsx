@@ -225,6 +225,7 @@ export const OrdeDetail = () => {
                         "COP - Talla:"}
                     {/* {item.model.price.toLocaleString("es-CO")} COP - talla:{" "} */}
                     {item.size}
+                    {item.model.color && ` - color: ${item.model.color}`}
                   </p>
                 ))}
               </Card.Text>
