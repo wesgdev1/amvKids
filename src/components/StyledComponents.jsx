@@ -61,8 +61,9 @@ export const ShoesCardStyled = styled(Card)(({ theme }) => ({
     left: 0,
     width: "100%",
     height: "100%",
-    backgroundImage:
-      "url(https://res.cloudinary.com/du6lyyqjh/image/upload/e_improve,w_300,h_600,c_thumb,g_auto/v1724337163/found_mgp2uc.png)",
+    // backgroundImage:
+    //   "url(https://res.cloudinary.com/du6lyyqjh/image/upload/e_improve,w_300,h_600,c_thumb,g_auto/v1724337163/found_mgp2uc.png)",
+    backgroundImage: 'url("/images/card.png")',
     backgroundSize: "cover",
     backgroundPosition: "center",
     opacity: 0.2, // Ajusta la opacidad según sea necesario
