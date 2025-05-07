@@ -53,7 +53,8 @@ export const StockTable = ({ stocks, refresh, idModel }) => {
                       <i className="bi bi-eye-fill"></i>
                     </ControlButton> */}
                     <ControlButton onClick={() => editProduct(stock)}>
-                      <i className="bi bi-pencil-fill"></i>
+                      <i className="bi bi-plus-square-fill"></i>
+                      Adicionar cantidad
                     </ControlButton>
                   </div>
                 </td>
