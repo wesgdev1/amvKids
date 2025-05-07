@@ -1,6 +1,17 @@
 import { useNavigate, useParams } from "react-router-dom";
+import { useState } from "react";
 import { useOrder } from "../../domain/orders/useOrder";
-import { Alert, Card, Spinner, OverlayTrigger, Tooltip } from "react-bootstrap";
+import {
+  Alert,
+  Card,
+  Spinner,
+  OverlayTrigger,
+  Tooltip,
+  Modal,
+  Form,
+  Button,
+  Badge,
+} from "react-bootstrap";
 
 import Swal from "sweetalert2";
 
@@ -8,6 +19,7 @@ import {
   deleteOrder,
   updateOrderItems,
   updateOrderState,
+  updateTotalDiscount,
 } from "../../api/orders/orders";
 
 import { ButtonCardStyled, ShoesCardStyledPayment } from "../StyledComponents";
@@ -19,6 +31,87 @@ export const OrdeDetailAdmin = () => {
   const { data, loading, error, cargarOrder: refresh } = useOrder(id);
 
   const navigate = useNavigate();
+
+  // Estados para el modal de descuento
+  const [showDiscountModal, setShowDiscountModal] = useState(false);
+  const [montoDescuento, setMontoDescuento] = useState("");
+  const [discountError, setDiscountError] = useState("");
+
+  const handleCloseDiscountModal = () => {
+    setShowDiscountModal(false);
+    setMontoDescuento("");
+    setDiscountError("");
+  };
+  const handleShowDiscountModal = () => setShowDiscountModal(true);
+
+  const handleApplyDiscount = async () => {
+    const discountAmount = parseFloat(montoDescuento);
+
+    if (isNaN(discountAmount) || discountAmount <= 0) {
+      setDiscountError("Por favor, ingresa un monto válido mayor a cero.");
+      return;
+    }
+    if (data && discountAmount > data.total) {
+      setDiscountError(
+        `El descuento no puede ser mayor al total de la orden: ${data.total.toLocaleString(
+          "es-CO"
+        )} COP.`
+      );
+      return;
+    }
+    setDiscountError("");
+
+    Swal.fire({
+      title: "Aplicando descuento...",
+      text: "Por favor espera.",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
+    try {
+      console.log("Aplicando descuento...");
+      console.log("Order ID:", id);
+      console.log("Monto de Descuento:", discountAmount);
+
+      const result = await updateTotalDiscount({
+        orderId: id,
+        porcentajeDescuento: discountAmount,
+      });
+
+      Swal.close();
+
+      if (result) {
+        await Swal.fire({
+          icon: "success",
+          title: "Descuento Aplicado",
+          text: `El descuento de ${discountAmount.toLocaleString(
+            "es-CO"
+          )} COP se aplicó correctamente a la orden.`,
+        });
+        refresh(id);
+        handleCloseDiscountModal();
+      } else {
+        await Swal.fire({
+          icon: "error",
+          title: "Error al Aplicar Descuento",
+          text: "No se pudo aplicar el descuento. La respuesta de la API no fue la esperada o indicó un fallo.",
+        });
+        handleCloseDiscountModal();
+      }
+    } catch (error) {
+      Swal.close();
+      await Swal.fire({
+        icon: "error",
+        title: "Error",
+        text:
+          error.message ||
+          "Ocurrió un error inesperado al aplicar el descuento.",
+      });
+      handleCloseDiscountModal();
+    }
+  };
 
   const handlePaymentConfirm = () => {
     try {
@@ -140,7 +233,6 @@ export const OrdeDetailAdmin = () => {
 
   const handlePaymentCancelAll = async () => {
     try {
-      // Mostrar alerta de confirmación
       const result = await Swal.fire({
         title: "Cancelar Orden",
         text: "¿Estás seguro de cancelar la orden?",
@@ -152,9 +244,7 @@ export const OrdeDetailAdmin = () => {
         cancelButtonText: "No",
       });
 
-      // Si el usuario confirma
       if (result.isConfirmed) {
-        // Mostrar Swal de carga
         Swal.fire({
           title: "Cancelando orden...",
           text: "Por favor espera.",
@@ -164,45 +254,39 @@ export const OrdeDetailAdmin = () => {
           },
         });
 
-        // Llamada a la API para eliminar la orden
         const response = await deleteOrder(id);
 
-        Swal.close(); // Cerrar Swal de carga antes de mostrar el resultado
+        Swal.close();
 
-        // Verificar que la respuesta sea 200 OK (o como sea que tu API indique éxito)
         if (response !== undefined && response !== null) {
-          // Mostrar mensaje de éxito
           await Swal.fire({
             icon: "success",
             title: "Orden Cancelada",
-            text: "La orden se canceló correctamente.", // Mensaje ajustado
+            text: "La orden se canceló correctamente.",
           });
 
-          // Redirigir a la página de órdenes después de un pequeño retraso
           setTimeout(() => {
             navigate("/profile/orders", {
               replace: true,
             });
-          }, 1000); // Espera 1 segundo antes de redirigir
+          }, 1000);
         }
       }
     } catch (error) {
-      Swal.close(); // Asegurarse de cerrar el loading Swal si hay un error
-      // Manejar errores de la API o del proceso
+      Swal.close();
       Swal.fire({
         icon: "error",
         title: "Error",
         text:
-          error.message || "Ocurrió un error inesperado al cancelar la orden", // Mostrar mensaje de error de la API si existe
+          error.message || "Ocurrió un error inesperado al cancelar la orden",
       });
     }
   };
 
-  // Función para calcular el nuevo total si se elimina un item
   const calculateNewTotalAfterItemRemoval = (order, itemIdToRemove) => {
     if (!order || !order.orderItems || !order.user) {
       console.error("Datos de orden incompletos para calcular nuevo total.");
-      return order?.total; // Devolver el total actual si hay error
+      return order?.total;
     }
 
     const itemToRemove = order.orderItems.find(
@@ -211,7 +295,7 @@ export const OrdeDetailAdmin = () => {
 
     if (!itemToRemove || !itemToRemove.model) {
       console.error("Item a eliminar no encontrado o modelo inválido.");
-      return order.total; // Devolver el total actual si hay error
+      return order.total;
     }
 
     const userType = order.user.tipoUsuario;
@@ -228,7 +312,6 @@ export const OrdeDetailAdmin = () => {
         priceField = "alliancePrice";
         break;
       default:
-        // Asumir un precio por defecto o manejar como error si es necesario
         console.warn(
           `Tipo de usuario desconocido: ${userType}. Usando 'price' por defecto.`
         );
@@ -241,63 +324,48 @@ export const OrdeDetailAdmin = () => {
       console.error(
         `Precio inválido o no encontrado para el campo ${priceField}`
       );
-      // Decide cómo manejar esto: devolver total actual, 0, o lanzar error?
-      // Por ahora, devolvemos el total actual para evitar romper el flujo.
       return order.total;
     }
 
     const itemValue = price * itemToRemove.quantity;
     const newTotal = order.total - itemValue;
 
-    // Asegurarse de que el total no sea negativo
     return Math.max(0, newTotal);
   };
 
   const handleClickDeleteItem = async (orderId, ItemId) => {
-    // Verificar si es el último item
     if (data && data.orderItems.length === 1) {
-      // Si es el último item, confirmar la cancelación de la ORDEN COMPLETA
       const result = await Swal.fire({
         title: "Último Item en la Orden",
         text: "Al eliminar el último item, se cancelará la orden completa. ¿Deseas continuar?",
         icon: "warning",
-        showCancelButton: true, // Para permitir al usuario arrepentirse
-        confirmButtonColor: "#d33", // Rojo para acción destructiva
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
         cancelButtonColor: "#3085d6",
         confirmButtonText: "Sí, cancelar orden",
-        cancelButtonText: "No, mantener orden", // Cambiado para claridad
+        cancelButtonText: "No, mantener orden",
       });
 
-      // Si confirma cancelar la orden completa
       if (result.isConfirmed) {
         await handlePaymentCancelAll();
       }
-      // Si presiona "No, mantener orden", no se hace nada.
-      return; // Salir, ya que se manejó el caso del último item
+      return;
     } else {
-      // Si hay más de un item, proceder con la lógica de eliminar solo el item
-
-      // --- Inicio: Calcular el nuevo total potencial ---
       const potentialNewTotal = calculateNewTotalAfterItemRemoval(data, ItemId);
       console.log(
         "El nuevo total si se elimina el item sería:",
         potentialNewTotal
       );
-      // Nota: Este es solo el cálculo. El total real de la orden
-      // se actualizará en el backend al confirmar la eliminación.
-      // Puedes usar 'potentialNewTotal' si quieres mostrarlo en el Swal de confirmación.
-      // --- Fin: Calcular el nuevo total potencial ---
 
       await proceedToDeleteItem(orderId, ItemId, potentialNewTotal);
     }
   };
 
-  // Extraer la lógica de eliminación de item a una función separada para reutilizarla
   const proceedToDeleteItem = async (orderId, ItemId, potentialNewTotal) => {
     try {
       const result = await Swal.fire({
         title: "Eliminar Item",
-        text: "¿Estás seguro que deseas eliminar este item específico de la orden?", // Texto ajustado para claridad
+        text: "¿Estás seguro que deseas eliminar este item específico de la orden?",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
@@ -333,14 +401,11 @@ export const OrdeDetailAdmin = () => {
     }
   };
 
-  // recibos
   const printReceipt = (orderData) => {
     return new Promise((resolve, reject) => {
       try {
-        // Crear el contenido del recibo
         const receiptContent = generateReceiptContent(orderData);
 
-        // Usar la API de impresión del navegador
         const printWindow = window.open("", "_blank", "width=300,height=600");
 
         printWindow.document.write(`
@@ -411,7 +476,6 @@ export const OrdeDetailAdmin = () => {
 
         printWindow.document.close();
 
-        // Escuchar el mensaje de que la impresión ha sido completada
         window.addEventListener("message", function messageHandler(event) {
           if (event.data === "print-completed") {
             window.removeEventListener("message", messageHandler);
@@ -419,7 +483,6 @@ export const OrdeDetailAdmin = () => {
           }
         });
 
-        // Por si acaso el mensaje falla, resolver después de un tiempo razonable
         setTimeout(() => {
           resolve();
         }, 3000);
@@ -503,11 +566,8 @@ export const OrdeDetailAdmin = () => {
       },
     });
 
-    // Esperar a que se complete la impresión
     await printReceipt(data);
-    // Cerrar el Swal de carga
     Swal.close();
-    // Mostrar mensaje de éxito
     Swal.fire({
       icon: "success",
       title: "Recibo Impreso",
@@ -529,7 +589,6 @@ export const OrdeDetailAdmin = () => {
           <ShoesCardStyledPayment>
             <ProgressBar currentStep={progresoEnvio[data.state]} />
 
-            {/* Indicador de Estado "areReady" */}
             <div className="text-center my-4">
               {data.areReady ? (
                 <span className="text-lg font-semibold text-green-700 bg-green-100 px-4 py-2 rounded-full inline-flex items-center shadow-sm border border-green-200">
@@ -544,18 +603,12 @@ export const OrdeDetailAdmin = () => {
               )}
             </div>
 
-            {/* Nuevo: Indicador de Pago Bold y ID Transacción */}
             {data.pagoBold && (
               <div className="text-center mb-4">
-                {" "}
-                {/* Añadido margen inferior */}
-                {/* Indicador de Pago Bold */}
                 <span className="text-md font-semibold text-blue-700 bg-blue-100 px-3 py-1 rounded-full inline-flex items-center shadow-sm border border-blue-200">
-                  <i className="bi bi-credit-card-2-front-fill me-2"></i>{" "}
-                  {/* Icono sugerido para pago electrónico */}
-                  Pago realizado con Bold
+                  <i className="bi bi-credit-card-2-front-fill me-2"></i> Pago
+                  realizado con Bold
                 </span>
-                {/* Mostrar ID de Transacción si existe */}
                 {data.idTransaction && (
                   <p className="text-muted small mt-2 mb-0">
                     ID Transacción Bold: {data.idTransaction}
@@ -567,6 +620,12 @@ export const OrdeDetailAdmin = () => {
             <Card.Header>
               <strong> Total: {data.total.toLocaleString("es-CO")} COP</strong>
             </Card.Header>
+            <Badge>
+              <strong>
+                Descuento aplicado:{" "}
+                {data.discount?.toLocaleString("es-CO") || 0} COP
+              </strong>
+            </Badge>
             <Card.Body>
               <Card.Title className="fw-bold">
                 Informacion del usuario
@@ -706,10 +765,52 @@ export const OrdeDetailAdmin = () => {
                 <i className="bi bi-printer me-2"></i>
                 Re-imprimir
               </ButtonCardStyled>
+              <ButtonCardStyled
+                onClick={handleShowDiscountModal}
+                className="bg-white text-black border border-gray-300 hover:bg-gray-100"
+              >
+                <i className="bi bi-tag-fill me-2"></i>
+                Aplicar Descuento
+              </ButtonCardStyled>
             </div>
           </ShoesCardStyledPayment>
         )}
       </div>
+
+      <Modal
+        show={showDiscountModal}
+        onHide={handleCloseDiscountModal}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Aplicar Descuento a la Orden</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group className="mb-3" controlId="formPorcentajeDescuento">
+              <Form.Label>Cantidad a descontar</Form.Label>
+              <Form.Control
+                type="number"
+                placeholder="Ingresa un valor en pesos sin puntos ni comas"
+                value={montoDescuento}
+                onChange={(e) => setMontoDescuento(e.target.value)}
+                isInvalid={!!discountError}
+              />
+              <Form.Control.Feedback type="invalid">
+                {discountError}
+              </Form.Control.Feedback>
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseDiscountModal}>
+            Cerrar
+          </Button>
+          <Button variant="primary" onClick={handleApplyDiscount}>
+            Aplicar Descuento
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

@@ -100,3 +100,13 @@ export const linkPago = async (payload) => {
     return Promise.reject(error);
   }
 };
+
+export const updateTotalDiscount = async (payload) => {
+  try {
+    const { data: response } = await http.put(`/orders/applyDiscount`, payload);
+
+    return { data: response.data };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
