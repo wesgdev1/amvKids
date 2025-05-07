@@ -91,6 +91,19 @@ export const updateOrderItems = async (payload) => {
   }
 };
 
+export const updateOrderItemsUnity = async (payload) => {
+  try {
+    const { data: response } = await http.put(
+      `/orders/deleteItemsUnity`,
+      payload
+    );
+
+    return { data: response.data };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 export const linkPago = async (payload) => {
   try {
     const { data: response } = await http.post(`/orders/pagos`, payload);

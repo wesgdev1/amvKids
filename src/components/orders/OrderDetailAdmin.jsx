@@ -18,6 +18,7 @@ import Swal from "sweetalert2";
 import {
   deleteOrder,
   updateOrderItems,
+  updateOrderItemsUnity,
   updateOrderState,
   updateTotalDiscount,
 } from "../../api/orders/orders";
@@ -333,6 +334,56 @@ export const OrdeDetailAdmin = () => {
     return Math.max(0, newTotal);
   };
 
+  const calculateNewTotalAfterItemRemovalUnity = (order, itemIdToRemove) => {
+    if (!order || !order.orderItems || !order.user) {
+      console.error("Datos de orden incompletos para calcular nuevo total.");
+      return order?.total;
+    }
+
+    const itemToRemove = order.orderItems.find(
+      (item) => item.id === itemIdToRemove
+    );
+
+    if (!itemToRemove || !itemToRemove.model) {
+      console.error("Item a eliminar no encontrado o modelo inválido.");
+      return order.total;
+    }
+
+    const userType = order.user.tipoUsuario;
+    let priceField;
+
+    switch (userType) {
+      case "Reventa":
+        priceField = "price";
+        break;
+      case "Cliente":
+        priceField = "NormalPrice";
+        break;
+      case "Tienda Aliada":
+        priceField = "alliancePrice";
+        break;
+      default:
+        console.warn(
+          `Tipo de usuario desconocido: ${userType}. Usando 'price' por defecto.`
+        );
+        priceField = "price";
+    }
+
+    const price = itemToRemove.model[priceField];
+
+    if (typeof price !== "number") {
+      console.error(
+        `Precio inválido o no encontrado para el campo ${priceField}`
+      );
+      return order.total;
+    }
+
+    const itemValue = price;
+    const newTotal = order.total - itemValue;
+
+    return Math.max(0, newTotal);
+  };
+
   const handleClickDeleteItem = async (orderId, ItemId) => {
     if (data && data.orderItems.length === 1) {
       const result = await Swal.fire({
@@ -378,6 +429,52 @@ export const OrdeDetailAdmin = () => {
         const response = await updateOrderItems({
           orderId: orderId,
           itemId: ItemId,
+          potentialNewTotal,
+        });
+
+        if (response) {
+          await Swal.fire({
+            icon: "success",
+            title: "Item Eliminado",
+            text: "La orden se actualizó correctamente",
+          });
+          setTimeout(() => {
+            refresh(id);
+          }, 1000);
+        }
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Ocurrió un error inesperado al eliminar el item",
+      });
+    }
+  };
+
+  const handleClickDeleteItemUnity = async (orderId, ItemId) => {
+    try {
+      const result = await Swal.fire({
+        title: "Eliminar Item",
+        text: "¿Estás seguro que deseas eliminar 1 unidad de este item?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Sí, eliminar item",
+        cancelButtonText: "No",
+      });
+
+      const potentialNewTotal = calculateNewTotalAfterItemRemovalUnity(
+        data,
+        ItemId
+      );
+
+      if (result.isConfirmed) {
+        const response = await updateOrderItemsUnity({
+          orderId: orderId,
+          itemId: ItemId,
+
           potentialNewTotal,
         });
 
@@ -670,10 +767,40 @@ export const OrdeDetailAdmin = () => {
                           style={{ fontSize: "1.1rem" }}
                           aria-label="Eliminar item"
                         >
-                          <i className="bi bi-x-circle-fill"></i>
+                          <i className="bi bi-x-circle-fill">
+                            Eliminar todas las unidades
+                          </i>
                         </span>
                       </OverlayTrigger>
                     )}
+
+                    {data?.typeOrder === "Curva"
+                      ? null
+                      : item.quantity > 1 && (
+                          <OverlayTrigger
+                            placement="top"
+                            overlay={
+                              <Tooltip id={`tooltip-delete-item-${item.id}`}>
+                                Cuidado, esto eliminará solo 1 unidad de este
+                                Item
+                              </Tooltip>
+                            }
+                          >
+                            <span
+                              onClick={() =>
+                                handleClickDeleteItemUnity(data.id, item.id)
+                              }
+                              className="text-danger fw-bold cursor-pointer"
+                              style={{ fontSize: "1.1rem" }}
+                              aria-label="Eliminar item"
+                            >
+                              <i className="bi bi-dash-circle-fill ">
+                                {" "}
+                                Eliminar solo 1 unidad
+                              </i>
+                            </span>
+                          </OverlayTrigger>
+                        )}
                   </div>
                 ))}
               </Card.Text>
