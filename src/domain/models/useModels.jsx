@@ -3,6 +3,7 @@ import {
   getAllModelBySearch,
   getAllModels,
   getAllModelWithFilters,
+  getAllModelWithFiltersSearch,
   getModelNamesWithColors,
   getRecommendedModels,
 } from "../../api/model/model";
@@ -29,6 +30,16 @@ export const useModels = (filtrosSeleccionadosAgrupados, searchValue = "") => {
         console.log("por el search-", searchValue);
         const response = await getAllModelBySearch(searchValue);
 
+        setData(response.data);
+      } else if (
+        searchValue.length > 0 &&
+        isSearchRoute &&
+        Object.keys(filtrosSeleccionadosAgrupados).length > 0
+      ) {
+        const response = await getAllModelWithFiltersSearch(
+          generateFilterFormat(filtrosSeleccionadosAgrupados),
+          searchValue
+        );
         setData(response.data);
       } else if (Object.keys(filtrosSeleccionadosAgrupados).length > 0) {
         console.log("por el if", filtrosSeleccionadosAgrupados);

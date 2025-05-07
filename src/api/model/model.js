@@ -36,6 +36,17 @@ export const getAllModelBySearch = async (search) => {
   }
 };
 
+export const getAllModelWithFiltersSearch = async (query, search) => {
+  try {
+    const { data: response } = await http.get(
+      `/models/search/${search}/filter?${query}`
+    );
+    return { data: response.data };
+  } catch (error) {
+    return Promise.reject(error.message);
+  }
+};
+
 export const createModel = async (payload) => {
   try {
     const { data: response } = await http.post("/models", payload);
