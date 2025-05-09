@@ -2,15 +2,17 @@
 import Swal from "sweetalert2";
 import { ButtonPayment, CardChekoutStyle } from "./StyledComponent";
 import { Card, Spinner, Tooltip, OverlayTrigger, Alert } from "react-bootstrap";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { createOrder } from "../../api/orders/orders";
 import AddiWidget from "../payments/AddiWidget";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../auth/context/AuthContext";
 
 export const CarCheckout = ({ calcularTotal, dispatch, state }) => {
   const navigate = useNavigate();
   const [comments, setComments] = useState("");
   const [loading, setLoading] = useState(false);
+  const { user } = useContext(AuthContext);
 
   const handleCheckout = async () => {
     try {
@@ -111,35 +113,39 @@ export const CarCheckout = ({ calcularTotal, dispatch, state }) => {
             )}
           </ButtonPayment>
         </OverlayTrigger>
+        {user?.tipoUsuario !== "Reventa" &&
+        user?.tipoUsuario !== "Tienda Aliada" ? (
+          <>
+            <AddiWidget price={String(calcularTotal())} allySlug="amv" />
+            <div className="mt-3 p-3 rounded-lg bg-light border text-center shadow-sm">
+              <p className="text-muted small mb-0">
+                <i className="bi bi-info-circle me-2"></i>
+                Para solicitudes de <strong>crédito Addi</strong>, visítanos
+                directamente en tienda o contáctanos vía{" "}
+                <i className="bi bi-whatsapp text-success"></i> WhatsApp.
+              </p>
+            </div>
 
-        <AddiWidget price={String(calcularTotal())} allySlug="amv" />
-        <div className="mt-3 p-3 rounded-lg bg-light border text-center shadow-sm">
-          <p className="text-muted small mb-0">
-            <i className="bi bi-info-circle me-2"></i>
-            Para solicitudes de <strong>crédito Addi</strong>, visítanos
-            directamente en tienda o contáctanos vía{" "}
-            <i className="bi bi-whatsapp text-success"></i> WhatsApp.
-          </p>
-        </div>
-
-        {/* Nuevo: Información Pagos Bold */}
-        <div className="mt-3 p-3 rounded-lg bg-blue-50 border border-blue-200 text-center shadow-sm">
-          <p className="text-primary fw-semibold mb-2">
-            <i className="bi bi-shield-check me-2"></i>
-            Paga seguro con Bold
-          </p>
-          <p className="text-muted small mb-0 d-flex flex-wrap justify-content-center align-items-center gap-3">
-            <span>
-              <i className="bi bi-credit-card me-1"></i>Tarjetas
-            </span>
-            <span>
-              <i className="bi bi-bank me-1"></i>PSE
-            </span>
-            <span>Nequi</span> {/* No hay icono obvio */}
-            <span>Bancolombia</span> {/* No hay icono obvio */}
-            {/* Puedes añadir más si Bold los soporta */}
-          </p>
-        </div>
+            {/* Nuevo: Información Pagos Bold */}
+            <div className="mt-3 p-3 rounded-lg bg-blue-50 border border-blue-200 text-center shadow-sm">
+              <p className="text-primary fw-semibold mb-2">
+                <i className="bi bi-shield-check me-2"></i>
+                Paga seguro con Bold
+              </p>
+              <p className="text-muted small mb-0 d-flex flex-wrap justify-content-center align-items-center gap-3">
+                <span>
+                  <i className="bi bi-credit-card me-1"></i>Tarjetas
+                </span>
+                <span>
+                  <i className="bi bi-bank me-1"></i>PSE
+                </span>
+                <span>Nequi</span> {/* No hay icono obvio */}
+                <span>Bancolombia</span> {/* No hay icono obvio */}
+                {/* Puedes añadir más si Bold los soporta */}
+              </p>
+            </div>
+          </>
+        ) : null}
 
         {/* <AddiWidget price={"100000"} allySlug="sandbox" /> */}
         {/* <div>
