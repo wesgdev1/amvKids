@@ -13,23 +13,41 @@ import {
   FormWrapper,
   ImagePreviewContainer,
   ImagePreview,
+  SectionTitle,
 } from "./StyledComponents";
 
 const nameRqd = z.string({
   required_error: "El nombre del modelo es requerido",
 });
 
-const normalPrice = z.number({
-  required_error: "El precio del modelo es requerido",
-});
+const normalPrice = z
+  .number({
+    required_error: "El precio del modelo es requerido",
+    invalid_type_error: "El precio debe ser un número",
+  })
+  .positive({ message: "El precio debe ser un número positivo" });
 
-const priceRqd = z.number({
-  required_error: "El precio del modelo es requerido",
-});
+const priceRqd = z
+  .number({
+    required_error: "El precio del modelo es requerido",
+    invalid_type_error: "El precio de reventa debe ser un número",
+  })
+  .positive({ message: "El precio de reventa debe ser un número positivo" });
 
-const alliancePrice = z.number({
-  required_error: "El precio del modelo es requerido",
-});
+const basePrice = z
+  .number({
+    required_error: "El precio del modelo a nivel de fabricante es requerido",
+    invalid_type_error: "El precio fabricante debe ser un número",
+  })
+  .positive({ message: "El precio de reventa debe ser un número positivo" });
+
+const alliancePrice = z
+  .number({
+    required_error: "El precio del modelo es requerido",
+    invalid_type_error: "El precio para aliado debe ser un número",
+  })
+  .positive({ message: "El precio para aliado debe ser un número positivo" });
+
 const imageRqd = z.any().optional();
 const descriptionRqd = z.string({
   required_error: "La descripcion del modelo es requerida",
@@ -39,15 +57,41 @@ const colorRqd = z.string({
   required_error: "El color del modelo es requerido",
 });
 
-const modelSchema = z.object({
-  name: nameRqd,
-  normalPrice: normalPrice,
-  price: priceRqd,
-  alliancePrice: alliancePrice,
-  image: imageRqd,
-  description: descriptionRqd,
-  color: colorRqd,
-});
+const modelSchema = z
+  .object({
+    name: nameRqd,
+    normalPrice: normalPrice,
+    price: priceRqd,
+    alliancePrice: alliancePrice,
+    image: imageRqd,
+    description: descriptionRqd,
+    color: colorRqd,
+    isPromoted: z.boolean().optional().default(false),
+    pricePromoted: z
+      .number({
+        invalid_type_error: "El precio de promoción debe ser un número",
+      })
+      .positive({ message: "El precio de promoción debe ser mayor a cero" })
+      .optional(),
+    basePrice: basePrice,
+  })
+  .superRefine((data, ctx) => {
+    if (
+      data.isPromoted &&
+      (data.pricePromoted === undefined ||
+        data.pricePromoted === null ||
+        data.pricePromoted <= 0)
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message:
+          "El precio de promoción es requerido y debe ser mayor a cero si el modelo está promocionado.",
+        path: ["pricePromoted"],
+      });
+    }
+    // Opcional: si no está promocionado y hay un precio, se podría limpiar,
+    // pero Zod ya lo marca como opcional, y la lógica de UI lo oculta.
+  });
 
 export const ModelForm = () => {
   const params = useParams();
@@ -57,13 +101,16 @@ export const ModelForm = () => {
 
   const navigate = useNavigate();
   const initialValues = {
-    name: "" || actionEdit?.name,
-    normalPrice: "" || actionEdit?.normalPrice,
-    price: "" || actionEdit?.price,
-    alliancePrice: "" || actionEdit?.alliancePrice,
-    image: "" || actionEdit?.image,
-    description: "" || actionEdit?.description,
-    color: "" || actionEdit?.color,
+    name: actionEdit?.name || "",
+    normalPrice: actionEdit?.normalPrice || "",
+    price: actionEdit?.price || "",
+    alliancePrice: actionEdit?.alliancePrice || "",
+    images: [],
+    description: actionEdit?.description || "",
+    color: actionEdit?.color || "",
+    isPromoted: actionEdit?.isPromoted || false,
+    pricePromoted: actionEdit?.pricePromoted || "",
+    basePrice: actionEdit?.basePrice || "",
   };
 
   const [error, setError] = useState(false);
@@ -139,7 +186,16 @@ export const ModelForm = () => {
       formData.append("alliancePrice", values.alliancePrice);
       formData.append("description", values.description);
       formData.append("color", values.color);
-      // formData.append("reference", values.reference);
+      formData.append("basePrice", values.basePrice);
+
+      // Manejo de isPromoted y pricePromoted
+      formData.append("isPromoted", String(values.isPromoted)); // Enviar como string "true" o "false"
+      if (values.isPromoted && values.pricePromoted) {
+        formData.append("pricePromoted", values.pricePromoted);
+      } else if (!values.isPromoted) {
+        // Opcional: Si no está promocionado, explícitamente no enviar pricePromoted o enviar null
+        // Actualmente, si no está en el if, simplemente no se añade, lo cual es usualmente correcto.
+      }
 
       if (values.images && values.images.length > 0) {
         values.images.forEach((file) => {
@@ -147,22 +203,23 @@ export const ModelForm = () => {
         });
       }
 
-      // await addModel(formData);
       if (actionEdit) {
         await editModel(formData);
-        console.log("formData", formData);
       } else {
         await addModel(formData);
       }
-      console.log("formData", formData);
     } catch (error) {
-      const message = "Error";
-      setError(message);
+      const message =
+        error.message || "Ocurrió un error al procesar el modelo.";
+      setError(true); // Marcar que hubo un error para mostrar la alerta genérica
+      setErrorMessage(message); // Guardar mensaje específico si se quiere mostrar
       Swal.fire({
         icon: "error",
-        title: "Producto no creado",
-        text: "El Producto no se creo correctamente, intenta nuevamente",
+        title: actionEdit ? "Modelo no editado" : "Modelo no creado",
+        text: message, // Mostrar mensaje más específico del error si es posible
       });
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -171,16 +228,20 @@ export const ModelForm = () => {
       <div className="w-100 d-flex flex-column align-items-center">
         <div className="w-100 d-flex justify-content-start mb-4">
           <Button
-            variant="light"
+            variant="outline-secondary"
             onClick={() => {
               navigate(`/profile/products/${idProduct}/models`);
             }}
           >
-            Volver
+            <i className="bi bi-arrow-left me-2"></i>Volver
           </Button>
         </div>
         <h4 className="pb-3 text-center">
-          <i className="bi bi-box2-fill"> </i>
+          <i
+            className={`bi ${
+              actionEdit ? "bi-pencil-square" : "bi-box2-fill"
+            } me-2`}
+          ></i>
           {actionEdit ? "Editar Modelo" : "Agregar Modelo"}
         </h4>
 
@@ -188,6 +249,7 @@ export const ModelForm = () => {
           initialValues={initialValues}
           onSubmit={onSubmit}
           validationSchema={toFormikValidationSchema(modelSchema)}
+          enableReinitialize
         >
           {({
             values,
@@ -210,7 +272,8 @@ export const ModelForm = () => {
                     className="mb-4 w-100 mx-auto"
                     style={{ maxWidth: "800px" }}
                   >
-                    Hubo un error, intentalo nuevamente
+                    {errorMessage ||
+                      "Hubo un error, por favor inténtalo nuevamente."}
                   </Alert>
                 )}
                 <FormGroup controlId="formBasicNombreCompleto">
@@ -273,11 +336,31 @@ export const ModelForm = () => {
                     className="invalid-feedback"
                   />
                 </FormGroup>
-                <FormGroup controlId="formBasicPrecioNormal">
-                  <Form.Label>Precio del modelo</Form.Label>
+
+                <FormGroup controlId="formBasicPrecioFabricante">
+                  <Form.Label>Precio fabricante</Form.Label>
                   <Form.Control
                     type="number"
-                    placeholder="Escibe aqui el precio del modelo"
+                    placeholder="Ej: 50000"
+                    name="basePrice"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.basePrice}
+                    className={
+                      touched.basePrice && errors.basePrice ? "is-invalid" : ""
+                    }
+                  />
+                  <ErrorMessage
+                    name="basePrice"
+                    component="div"
+                    className="invalid-feedback"
+                  />
+                </FormGroup>
+                <FormGroup controlId="formBasicPrecioNormal">
+                  <Form.Label>Precio del modelo (Minorista)</Form.Label>
+                  <Form.Control
+                    type="number"
+                    placeholder="Ej: 70000"
                     name="normalPrice"
                     onChange={handleChange}
                     onBlur={handleBlur}
@@ -299,7 +382,7 @@ export const ModelForm = () => {
                   <Form.Label>Precio de reventa</Form.Label>
                   <Form.Control
                     type="number"
-                    placeholder="Escibe aqui el precio del modelo"
+                    placeholder="Ej: 65000"
                     name="price"
                     onChange={handleChange}
                     onBlur={handleBlur}
@@ -318,7 +401,7 @@ export const ModelForm = () => {
                   <Form.Label>Precio para aliado</Form.Label>
                   <Form.Control
                     type="number"
-                    placeholder="Escibe aqui el precio del modelo"
+                    placeholder="Ej: 60000"
                     name="alliancePrice"
                     onChange={handleChange}
                     onBlur={handleBlur}
@@ -336,29 +419,85 @@ export const ModelForm = () => {
                   />
                 </FormGroup>
 
+                {actionEdit && (
+                  <>
+                    <hr className="my-4 w-100" />
+                    <SectionTitle>Configuración de Promoción</SectionTitle>
+                    <FormGroup controlId="formIsPromoted" className="mb-3">
+                      <Form.Check
+                        type="switch"
+                        id="isPromoted-switch"
+                        label="¿Modelo en promoción?"
+                        name="isPromoted"
+                        checked={values.isPromoted}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        className={
+                          touched.isPromoted && errors.isPromoted
+                            ? "is-invalid"
+                            : ""
+                        }
+                      />
+                      <ErrorMessage
+                        name="isPromoted"
+                        component="div"
+                        className="invalid-feedback"
+                      />
+                    </FormGroup>
+
+                    {values.isPromoted && (
+                      <FormGroup controlId="formPricePromoted">
+                        <Form.Label>Precio de Promoción</Form.Label>
+                        <Form.Control
+                          type="number"
+                          placeholder="Ej: 55000"
+                          name="pricePromoted"
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          value={values.pricePromoted}
+                          className={
+                            touched.pricePromoted && errors.pricePromoted
+                              ? "is-invalid"
+                              : ""
+                          }
+                        />
+                        <ErrorMessage
+                          name="pricePromoted"
+                          component="div"
+                          className="invalid-feedback"
+                        />
+                      </FormGroup>
+                    )}
+                    <hr className="my-4 w-100" />
+                  </>
+                )}
+
+                <SectionTitle>Imágenes del Modelo</SectionTitle>
                 <FormGroup controlId="formProdFileIMG">
-                  <Form.Label>Imagenes del modelo</Form.Label>
                   {actionEdit?.images?.length > 0 && (
                     <ImagePreviewContainer>
                       {actionEdit.images.map((image) => (
                         <ImagePreview key={image.id}>
-                          <img src={image.url} alt={image.name} />
+                          <img src={image.url} alt={image.name || image.id} />
                         </ImagePreview>
                       ))}
                     </ImagePreviewContainer>
                   )}
-                  <p className="font-semibold text-purple-500 mt-3">
-                    Adjunta (3) o mas imagenes del modelo{" "}
+
+                  <p className="text-muted mt-3 mb-2 small">
+                    {actionEdit
+                      ? "Reemplazar o añadir imágenes (3 o más recomendadas)."
+                      : "Adjunta (3) o más imagenes del modelo."}
                   </p>
                   <Form.Control
                     type="file"
                     multiple
                     size="sm"
                     name="images"
-                    accept=".jpg, .jpeg, .png"
+                    accept=".jpg, .jpeg, .png, .webp"
                     onChange={(e) => {
-                      const file = Array.from(e.currentTarget.files);
-                      setFieldValue("images", file);
+                      const files = Array.from(e.currentTarget.files);
+                      setFieldValue("images", files);
                     }}
                     className={
                       touched.images && errors.images ? "is-invalid" : ""
@@ -371,18 +510,24 @@ export const ModelForm = () => {
                   />
                 </FormGroup>
 
-                <div className="d-flex justify-content-center mt-4">
+                <div className="d-flex justify-content-center mt-5 mb-3">
                   <ButtonStyled
                     variant="primary"
                     type="submit"
                     size="lg"
                     disabled={isSubmitting}
+                    className="px-5 py-2"
                   >
                     {!isSubmitting ? (
                       actionEdit ? (
-                        "Actualizar"
+                        <>
+                          <i className="bi bi-check-lg me-2"></i>Actualizar
+                          Modelo
+                        </>
                       ) : (
-                        "Crear Modelo"
+                        <>
+                          <i className="bi bi-plus-lg me-2"></i>Crear Modelo
+                        </>
                       )
                     ) : (
                       <Spinner
@@ -390,6 +535,7 @@ export const ModelForm = () => {
                         animation="grow"
                         role="status"
                         aria-hidden="true"
+                        size="sm"
                       />
                     )}
                   </ButtonStyled>

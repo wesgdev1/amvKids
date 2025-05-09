@@ -15,6 +15,13 @@ export const ContainerImages = styled("div")({
   width: "100%",
 });
 
+export const SectionTitle = styled.h2({
+  fontSize: "1.5rem",
+  fontWeight: "bold",
+  marginBottom: "1rem",
+  color: "#333",
+});
+
 export const FormContainer = styled.div({
   padding: "2rem 1rem",
   display: "flex",
