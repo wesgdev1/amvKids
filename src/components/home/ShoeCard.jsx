@@ -2,7 +2,7 @@
 import { Card } from "react-bootstrap";
 import { ShoesCardStyled } from "../StyledComponents";
 import { CardDescroptionStyle } from "./StyledComponents";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useContext, useState, useRef, useEffect } from "react";
 import { AuthContext } from "../../auth/context/AuthContext";
 import styled from "@emotion/styled";
@@ -73,10 +73,38 @@ const ProductTag = styled.span`
   font-weight: 500;
 `;
 
+// Nuevo componente estilizado para la etiqueta "AGOTADO"
+const SoldOutSash = styled.div`
+  position: absolute;
+  top: 0px; // Ajusta según el borde/padding de ImageContainer
+  left: 0px;
+  width: 150px;
+  height: 150px;
+  overflow: hidden;
+  pointer-events: none; // Para no interferir con clics en la tarjeta
+  z-index: 3; // Para estar sobre la imagen
+
+  span {
+    position: absolute;
+    display: block;
+    width: 200px; // Ancho de la cinta
+    padding: 8px 0;
+    background-color: rgba(220, 53, 69, 0.85); // Rojo con algo de transparencia
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    transform: rotate(-45deg);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    // Ajuste de posición para la esquina superior izquierda
+    left: -60px;
+    top: 35px;
+  }
+`;
+
 export const ShoeCard = ({ model }) => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
-  const location = useLocation();
   const [imageLoaded, setImageLoaded] = useState(false);
   const containerRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -107,18 +135,29 @@ export const ShoeCard = ({ model }) => {
   }, []);
 
   const handleClick = () => {
-    // if (user) {
-    //   if (location.pathname === "/curvas") {
-    //     navigate(`/productosCurvos/${model.id}`);
-    //   } else {
-    //     navigate(`/productos/${model.id}`);
-    //   }
-    // } else {
-    //   navigate(`/login`);
-    // }
-
     navigate(`/productos/${model.id}`);
   };
+
+  const getEffectiveStock = (productModel) => {
+    if (!productModel) return 0;
+    // Escenario 1: model.stock es un valor numérico directo
+    if (typeof productModel.stocks === "number") {
+      return productModel.stocks;
+    }
+    // Escenario 2: model.stock es un array de objetos de stock
+    if (Array.isArray(productModel.stocks)) {
+      if (productModel.stocks.length === 0) return 0; // Array vacío significa sin stock
+      return productModel.stocks.reduce(
+        (sum, item) => sum + (Number(item.quantity) || 0),
+        0
+      );
+    }
+    // Fallback: si model.stock no está en el formato esperado, asumir 0 stock
+    return 0;
+  };
+
+  const totalStock = getEffectiveStock(model);
+  const isSoldOut = totalStock === 0;
 
   const capitalizeWords = (str) => {
     if (!str) return "";
@@ -146,6 +185,11 @@ export const ShoeCard = ({ model }) => {
             loaded={imageLoaded}
             onLoad={() => setImageLoaded(true)}
           />
+          {isSoldOut && (
+            <SoldOutSash>
+              <span>AGOTADO</span>
+            </SoldOutSash>
+          )}
         </ImageContainer>
         <Card.Body>
           <CardTitleStyled>{model.name}</CardTitleStyled>

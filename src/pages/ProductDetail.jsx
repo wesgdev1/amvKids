@@ -5,6 +5,7 @@ import {} from "../components/products/StyledComponents";
 import { ControlProduct } from "../components/products/ControlProduct";
 import { ContainerMov } from "../components/home/StyledComponents";
 import { useState } from "react";
+import styled from "@emotion/styled";
 import { CustomLoader } from "../components/common/CustomLoader";
 import { ProductDetailCurva2 } from "./ProductDetailCurva2";
 import { ProductDetailCurvawomen } from "./ProductDetailCurvawomen";
@@ -118,6 +119,52 @@ const checkWomenCurve = (stocks) => {
   return true;
 };
 
+// Definición de SoldOutSash (copiada de ShoeCard.jsx)
+const SoldOutSash = styled.div`
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 150px;
+  height: 150px;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 3;
+
+  span {
+    position: absolute;
+    display: block;
+    width: 200px;
+    padding: 8px 0;
+    background-color: rgba(220, 53, 69, 0.85);
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    transform: rotate(-45deg);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    left: -60px;
+    top: 35px;
+  }
+`;
+
+// Función para calcular el stock efectivo
+const getEffectiveStock = (productData) => {
+  if (!productData || !productData.stocks) return 0;
+
+  if (typeof productData.stocks === "number") {
+    return productData.stocks;
+  }
+
+  if (Array.isArray(productData.stocks)) {
+    if (productData.stocks.length === 0) return 0;
+    return productData.stocks.reduce(
+      (sum, item) => sum + (Number(item.quantity) || 0),
+      0
+    );
+  }
+  return 0;
+};
+
 export const ProductDetail = () => {
   const params = useParams();
   const { id } = params;
@@ -138,15 +185,9 @@ export const ProductDetail = () => {
   const isWomenCurveAvailable =
     data && data.stocks ? checkWomenCurve(data.stocks) : false;
 
-  // Log para depuración
-  // useEffect(() => {
-  //   if (data) {
-  //     console.log("Data loaded:", data);
-  //     console.log("Stocks:", data.stocks);
-  //     console.log("Is Men Curve Available?", isMenCurveAvailable);
-  //     console.log("Is Women Curve Available?", isWomenCurveAvailable);
-  //   }
-  // }, [data, isMenCurveAvailable, isWomenCurveAvailable]);
+  // Calcular si el producto está agotado
+  const totalStock = data ? getEffectiveStock(data) : 0;
+  const isSoldOut = data ? totalStock === 0 : false; // Solo marcar como agotado si hay datos y stock es 0
 
   const handleImageClick = (index) => {
     setSelectedImageIndex(index);
@@ -248,6 +289,11 @@ export const ProductDetail = () => {
                             : "center center",
                       }}
                     />
+                    {isSoldOut && (
+                      <SoldOutSash>
+                        <span>AGOTADO</span>
+                      </SoldOutSash>
+                    )}
                   </div>
                 </Carousel.Item>
               ))}
@@ -325,7 +371,7 @@ export const ProductDetail = () => {
           </Modal>
 
           <hr className=" mt-8 mb-4" />
-          <div className="d-flex flex-column align-items-center text-center mb-4">
+          {/* <div className="d-flex flex-column align-items-center text-center mb-4">
             <h5 className="mb-3">
               <i className="bi bi-images"></i> Curvas disponibles
             </h5>
@@ -338,9 +384,9 @@ export const ProductDetail = () => {
               maximiza ganancias y asegura disponibilidad con estos paquetes
               listos para vender. ¡La compra inteligente para tu negocio!
             </p>
-          </div>
+          </div> */}
 
-          {isMenCurveAvailable ? (
+          {/* {isMenCurveAvailable ? (
             <ProductDetailCurva2 data={data} />
           ) : (
             <Alert variant="light" className="text-center text-muted border-0">
@@ -348,16 +394,16 @@ export const ProductDetail = () => {
               <i className="bi bi-emoji-frown"></i> No hay curvas de hombre
               disponibles para este modelo.
             </Alert>
-          )}
+          )} */}
 
-          {isWomenCurveAvailable ? (
+          {/* {isWomenCurveAvailable ? (
             <ProductDetailCurvawomen data={data} />
           ) : (
             <Alert variant="light" className="text-center text-muted border-0">
               <i className="bi bi-emoji-frown"></i> No hay curvas de mujer
               disponibles para este modelo.
             </Alert>
-          )}
+          )} */}
         </ContainerMov>
       )}
     </>
