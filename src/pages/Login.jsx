@@ -19,7 +19,7 @@ const loginSchema = z.object({
     .string({
       required_error: "La contraseña es requerida",
     })
-    .min(8, "La contraseña debe tener al menos 8 caracteres"),
+    .min(6, "La contraseña debe tener al menos 8 caracteres"),
 });
 
 import {
