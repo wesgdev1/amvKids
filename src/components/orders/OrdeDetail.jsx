@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useOrder } from "../../domain/orders/useOrder";
-import { Alert, Card, Form, Spinner } from "react-bootstrap";
+import { Alert, Badge, Card, Form, Spinner } from "react-bootstrap";
 import { z } from "zod";
 import { ErrorMessage, Formik } from "formik";
 import { toFormikValidationSchema } from "zod-formik-adapter";
@@ -225,7 +225,17 @@ export const OrdeDetail = () => {
                         "COP - Talla:"}
                     {/* {item.model.price.toLocaleString("es-CO")} COP - talla:{" "} */}
                     {item.size}
-                    {item.model.color && ` - color: ${item.model.color}`}
+                    {item.model.color && ` - Color: ${item.model.color}`}
+                    {item.isPromoted && (
+                      <Badge
+                        className="ms-2"
+                        bg="warning"
+                        pill
+                        style={{ fontSize: "0.8rem" }}
+                      >
+                        En Promo
+                      </Badge>
+                    )}
                   </p>
                 ))}
               </Card.Text>

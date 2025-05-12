@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useOrder } from "../../domain/orders/useOrder";
-import { Alert, Card, Spinner } from "react-bootstrap";
+import { Alert, Badge, Card, Spinner } from "react-bootstrap";
 
 import Swal from "sweetalert2";
 
@@ -326,6 +326,16 @@ export const OrdeDetailPreparer = () => {
                     <p>
                       {item.quantity} x {item.model.name} - talla: {item.size}
                       {item.model.color && ` - color: ${item.model.color}`}
+                      {item.isPromoted && (
+                        <Badge
+                          className="ms-2"
+                          bg="warning"
+                          pill
+                          style={{ fontSize: "0.8rem" }}
+                        >
+                          En Promo
+                        </Badge>
+                      )}
                     </p>
                   </div>
                 ))}
