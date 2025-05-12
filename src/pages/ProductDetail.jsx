@@ -146,7 +146,30 @@ const SoldOutSash = styled.div`
     top: 35px;
   }
 `;
+const PromotionSash = styled.div`
+  position: absolute;
+  top: 8px; // Ajuste para no superponerse completamente con la esquina
+  right: -35px; // Ligeramente fuera para efecto de cinta
+  width: 120px; // Más pequeña
+  height: auto;
+  overflow: visible; // Permitir que la cinta exceda un poco si es necesario
+  pointer-events: none;
+  z-index: 2; // Debajo de SoldOutSash si ambas estuvieran (caso raro)
+  transform: rotate(45deg);
 
+  span {
+    display: block;
+    width: 100%;
+    padding: 4px 0; // Menos padding vertical
+    background-color: rgba(255, 193, 7, 0.9); // Amarillo con transparencia
+    color: #333; // Texto oscuro para contraste
+    font-size: 10px; // Más pequeño
+    font-weight: bold;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+`;
 // Función para calcular el stock efectivo
 const getEffectiveStock = (productData) => {
   if (!productData || !productData.stocks) return 0;
@@ -188,7 +211,10 @@ export const ProductDetail = () => {
   // Calcular si el producto está agotado
   const totalStock = data ? getEffectiveStock(data) : 0;
   const isSoldOut = data ? totalStock === 0 : false; // Solo marcar como agotado si hay datos y stock es 0
-
+  const isInPromotion =
+    data?.isPromoted === true &&
+    typeof data?.pricePromoted === "number" &&
+    data.pricePromoted > 0;
   const handleImageClick = (index) => {
     setSelectedImageIndex(index);
     setShowModal(true);
@@ -297,6 +323,11 @@ export const ProductDetail = () => {
                   </div>
                 </Carousel.Item>
               ))}
+              {!isSoldOut && isInPromotion && (
+                <PromotionSash>
+                  <span>PROMO</span>
+                </PromotionSash>
+              )}
             </Carousel>
             <div className="flex flex-col items-center px-4 gap-2 ">
               <ControlProduct data={data} />

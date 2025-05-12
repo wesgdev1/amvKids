@@ -27,6 +27,12 @@ export const CarCheckout = ({ calcularTotal, dispatch, state }) => {
             size: Number(element.size),
 
             quantity: element.quantity,
+            price: element.price, // Asumiendo que 'price' es un campo en el item
+            normalPrice: element.normalPrice, // Asumiendo que 'normalPrice' es un campo en el item
+            alliancePrice: element.alliancePrice, // Asumiendo que 'alliancePrice' es un campo en el item
+            basePrice: element.basePrice || 0, // Asumiendo que 'basePrice' es un campo en el item
+            isPromoted: element.isPromoted, // Asumiendo que 'isPromoted' es un campo en el item
+            pricePromoted: element.pricePromoted || 0,
           };
         }),
       };

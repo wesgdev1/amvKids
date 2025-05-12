@@ -37,7 +37,11 @@ export const ControlProduct = ({ data }) => {
     }
     dispatch({
       type: "ADD_TO_CART",
-      payload: { item: data, quantity: counter, size: size },
+      payload: {
+        item: data,
+        quantity: counter,
+        size: size,
+      },
     });
 
     Swal.fire({
@@ -74,7 +78,11 @@ export const ControlProduct = ({ data }) => {
               <div>
                 <div>Precio</div>
                 <div className="fs-4">
-                  ${data.price.toLocaleString("es-CO")}
+                  {data.isPromoted && data.pricePromoted > 0 ? (
+                    <>${data.pricePromoted.toLocaleString("es-CO")}</>
+                  ) : (
+                    <>${data.price.toLocaleString("es-CO")}</>
+                  )}
                 </div>
               </div>
               <Form.Select

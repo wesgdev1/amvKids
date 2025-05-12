@@ -319,7 +319,21 @@ export const OrdeDetailAdmin = () => {
         priceField = "price";
     }
 
-    const price = itemToRemove.model[priceField];
+    let price = 0;
+    // si esta en decuento
+    if (itemToRemove.isPromoted) {
+      price = itemToRemove.pricePromoted;
+    } else {
+      // si no esta en descuento, y no tiene precio historico
+      if (itemToRemove.price === null) {
+        price = itemToRemove.model[priceField];
+      } else {
+        // si hay historico
+        price = itemToRemove[priceField];
+      }
+    }
+
+    //const price = itemToRemove.model[priceField];
 
     if (typeof price !== "number") {
       console.error(
@@ -369,7 +383,24 @@ export const OrdeDetailAdmin = () => {
         priceField = "price";
     }
 
-    const price = itemToRemove.model[priceField];
+    // voy a preguntar si hay datos precio historico en el item si no que tome el precio del modelo segun type
+    let price = 0;
+    // si esta en decuento
+    if (itemToRemove.isPromoted) {
+      price = itemToRemove.pricePromoted;
+    } else {
+      // si no esta en descuento, y no tiene precio historico
+      if (itemToRemove.price === null) {
+        price = itemToRemove.model[priceField];
+      } else {
+        // si hay historico
+        price = itemToRemove[priceField];
+      }
+    }
+
+    // si no esta en descuento, pero no tiene precio historico
+
+    //price = itemToRemove.model[priceField];
 
     if (typeof price !== "number") {
       console.error(
@@ -747,6 +778,16 @@ export const OrdeDetailAdmin = () => {
                     <span>
                       {item.quantity} x {item.model.name} - talla: {item.size}
                       {item.model.color && ` - color: ${item.model.color}`}
+                      {item.isPromoted && (
+                        <Badge
+                          className="ms-2"
+                          bg="warning"
+                          pill
+                          style={{ fontSize: "0.8rem" }}
+                        >
+                          En Promo
+                        </Badge>
+                      )}
                     </span>
 
                     {data?.typeOrder === "Curva" ? null : (

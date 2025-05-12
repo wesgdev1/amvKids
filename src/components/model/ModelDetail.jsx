@@ -1,6 +1,14 @@
 import { useParams } from "react-router-dom";
 import { useModel } from "../../domain/models/useModel";
-import { Alert, Button, Form, Image, Modal, Spinner } from "react-bootstrap";
+import {
+  Alert,
+  Badge,
+  Button,
+  Form,
+  Image,
+  Modal,
+  Spinner,
+} from "react-bootstrap";
 import { StockTable } from "./StockTable";
 import { ContainerImages, ImageWrapper } from "./StyledComponents";
 import { ButtonProfile } from "../products/StyledComponents";
@@ -241,7 +249,26 @@ export const ModelDetail = () => {
         Volver
       </Button>
       <h4 className="pb-3">
-        <i className="bi bi-box"></i> Informacion del Modelo {data?.name}
+        <i className="bi bi-box"></i> Informacion del Modelo {data?.name} -
+        {data?.isPromoted && (
+          <Badge
+            bg="warning"
+            className="ms-2"
+            style={{
+              fontSize: "0.8em",
+              fontWeight: "bold",
+              color: "black",
+              padding: "0.2em 0.5em",
+              borderRadius: "0.5em",
+              textTransform: "uppercase",
+              letterSpacing: "0.1em",
+              boxShadow: "0 0 5px rgba(0, 0, 0, 0.2)",
+              transition: "all 0.3s ease",
+            }}
+          >
+            En promocion
+          </Badge>
+        )}
       </h4>
       {loading && <Spinner animation="border" variant="info" />}
       {error && <Alert variant="danger">{error}</Alert>}
@@ -267,6 +294,10 @@ export const ModelDetail = () => {
             <p>
               <strong>Precio Aliado: </strong>
               <span>${data.alliancePrice}</span>
+            </p>
+            <p>
+              <strong>Precio Promocion: </strong>
+              <span>{data.pricePromoted || "No aplica"}</span>
             </p>
             <p>
               <strong>Descripcion: </strong>

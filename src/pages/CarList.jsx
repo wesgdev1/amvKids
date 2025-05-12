@@ -20,7 +20,9 @@ export const CarList = () => {
   const calcularTotal = () => {
     let total = 0;
     state.forEach((element) => {
-      total += element.price * element.quantity;
+      total +=
+        (element.isPromoted ? element.pricePromoted : element.price) *
+        element.quantity;
     });
     return total;
   };

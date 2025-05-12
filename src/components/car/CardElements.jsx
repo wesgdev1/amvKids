@@ -41,7 +41,13 @@ export const CardElements = ({ model, dispatch }) => {
             </ButtonCrash>
           </Col>
           <Col>Talla: {model.size}</Col>
-          <Col>${model.price.toLocaleString("es-CO")} </Col>
+          <Col>
+            {model.isPromoted && model.pricePromoted > 0 ? (
+              <>${model.pricePromoted.toLocaleString("es-CO")}</>
+            ) : (
+              <>${model.price.toLocaleString("es-CO")}</>
+            )}
+          </Col>
           <Col>
             <ButtonCrash
               onClick={() => {

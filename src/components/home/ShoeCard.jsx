@@ -102,6 +102,47 @@ const SoldOutSash = styled.div`
   }
 `;
 
+// Nuevo componente estilizado para la etiqueta "EN PROMOCIÓN"
+const PromotionSash = styled.div`
+  position: absolute;
+  top: 8px; // Ajuste para no superponerse completamente con la esquina
+  right: -35px; // Ligeramente fuera para efecto de cinta
+  width: 120px; // Más pequeña
+  height: auto;
+  overflow: visible; // Permitir que la cinta exceda un poco si es necesario
+  pointer-events: none;
+  z-index: 2; // Debajo de SoldOutSash si ambas estuvieran (caso raro)
+  transform: rotate(45deg);
+
+  span {
+    display: block;
+    width: 100%;
+    padding: 4px 0; // Menos padding vertical
+    background-color: rgba(255, 193, 7, 0.9); // Amarillo con transparencia
+    color: #333; // Texto oscuro para contraste
+    font-size: 10px; // Más pequeño
+    font-weight: bold;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+`;
+
+// Nuevo Badge para la oferta en el precio
+const OfferBadgeStyled = styled.span`
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background-color: #ffc107; // Amarillo
+  color: #343a40; // Texto oscuro
+  padding: 2px 6px;
+  font-size: 0.65em;
+  font-weight: bold;
+  border-radius: 0.2rem;
+  line-height: 1;
+  z-index: 1;
+`;
+
 export const ShoeCard = ({ model }) => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -158,6 +199,10 @@ export const ShoeCard = ({ model }) => {
 
   const totalStock = getEffectiveStock(model);
   const isSoldOut = totalStock === 0;
+  const isInPromotion =
+    model?.isPromoted === true &&
+    typeof model?.pricePromoted === "number" &&
+    model.pricePromoted > 0;
 
   const capitalizeWords = (str) => {
     if (!str) return "";
@@ -166,6 +211,23 @@ export const ShoeCard = ({ model }) => {
       .split(" ")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
+  };
+
+  const formatPrice = (price) => {
+    if (typeof price !== "number" || isNaN(price))
+      return "Precio no disponible";
+    return price.toLocaleString("es-CO") + " COP";
+  };
+
+  const getDisplayPriceString = () => {
+    if (isInPromotion) {
+      return formatPrice(model.pricePromoted);
+    }
+    if (user?.tipoUsuario === "Reventa") return formatPrice(model.price);
+    if (user?.tipoUsuario === "Tienda Aliada")
+      return formatPrice(model.alliancePrice);
+    // Cliente, Preparador, Admin, Whatsapp y !user usan normalPrice
+    return formatPrice(model.normalPrice);
   };
 
   return (
@@ -190,6 +252,11 @@ export const ShoeCard = ({ model }) => {
               <span>AGOTADO</span>
             </SoldOutSash>
           )}
+          {!isSoldOut && isInPromotion && (
+            <PromotionSash>
+              <span>PROMO</span>
+            </PromotionSash>
+          )}
         </ImageContainer>
         <Card.Body>
           <CardTitleStyled>{model.name}</CardTitleStyled>
@@ -203,26 +270,18 @@ export const ShoeCard = ({ model }) => {
           <Card.Text
             style={{
               backgroundColor: "rgba(0, 0, 0, 0.7)",
+              color: "white",
+              padding: "0.5em",
+              borderRadius: "4px",
+              position: "relative",
+              minHeight: "2.5em",
             }}
             className="text-center"
           >
-            {user?.tipoUsuario === "Reventa" &&
-              model.price.toLocaleString("es-CO") + " COP"}
-
-            {user?.tipoUsuario === "Tienda Aliada" &&
-              model.alliancePrice.toLocaleString("es-CO") + " COP"}
-
-            {user?.tipoUsuario === "Cliente" &&
-              model.normalPrice.toLocaleString("es-CO") + " COP"}
-            {user?.tipoUsuario === "Preparador" &&
-              model.normalPrice.toLocaleString("es-CO") + " COP"}
-
-            {user?.tipoUsuario === "Admin" &&
-              model.normalPrice.toLocaleString("es-CO") + " COP"}
-            {user?.tipoUsuario === "Whatsapp" &&
-              model.normalPrice.toLocaleString("es-CO") + " COP"}
-
-            {!user && model.normalPrice.toLocaleString("es-CO") + " COP"}
+            {getDisplayPriceString()}
+            {isInPromotion && !isSoldOut && (
+              <OfferBadgeStyled>OFERTA</OfferBadgeStyled>
+            )}
           </Card.Text>
         </Card.Body>
       </ShoesCardStyled>
