@@ -91,7 +91,16 @@ export const OrdersTableAdmin = ({ orders }) => {
                 <td>
                   {format(new Date(order.createdAt), "MM/dd/yyyy HH:mm:ss")}
                 </td>
-                <td>$ {order.total.toLocaleString("es-CO")}</td>
+                <td>
+                  $ {order.total.toLocaleString("es-CO")}
+                  {order.discount > 0 && (
+                    <span
+                      className={`ms-2 px-2 py-1 rounded-full text-xs font-medium ${userTypeColors["default"]}`}
+                    >
+                      `Descuento: $ ${order.discount?.toLocaleString("es-CO")}`
+                    </span>
+                  )}
+                </td>
                 <td>
                   <span className="me-2">
                     {order.state} <i className={`${iconMap[order.state]}`}></i>

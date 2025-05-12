@@ -1,15 +1,9 @@
-import { Card, Form, Spinner } from "react-bootstrap";
+import { Form, Spinner } from "react-bootstrap";
 import { useState, useEffect } from "react";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
-import { Trophy, ShoppingBag, LineChart } from "lucide-react";
 import { StatsContainerStyled, StatCardStyled } from "./StyledComponents";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { es } from "date-fns/locale";
 import {
   useCountModels,
   useCountPairs,
@@ -19,6 +13,7 @@ import {
   useSumaTotalesOrdenes,
   useParesVendidos,
   useModelosMasVendidos,
+  useInfoUtilidades,
 } from "../../domain/reports/useReports";
 import {
   format,
@@ -30,113 +25,99 @@ import {
   endOfMonth,
 } from "date-fns";
 
-// DATOS ESTÁTICOS ADICIONALES PARA LAS NUEVAS TARJETAS DEL PERIODO
-const periodExtraStatsData = {
-  day: {
-    topSellers: [
-      { name: "Vendedor Ágil", sales: 10 },
-      { name: "Vendedor Rápido", sales: 8 },
-      { name: "Vendedor Veloz", sales: 7 },
-    ],
-    sellersIcon: "bi-people-fill",
-  },
-  week: {
-    topSellers: [
-      { name: "Líder Semanal", sales: 50 },
-      { name: "Campeón Semanal", sales: 40 },
-      { name: "Finalista Semanal", sales: 30 },
-    ],
-    sellersIcon: "bi-trophy",
-  },
-  month: {
-    topSellers: [
-      { name: "Emperador del Mes", sales: 200 },
-      { name: "Rey del Mes", sales: 150 },
-      { name: "Príncipe del Mes", sales: 100 },
-    ],
-    sellersIcon: "bi-shield-check",
-  },
-};
-
 export const ReportList = () => {
-  const [selectedPeriod, setSelectedPeriod] = useState("day"); // Estado para el periodo
-
-  // Estados para las fechas del periodo seleccionado
+  const [selectedPeriod, setSelectedPeriod] = useState("day");
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
 
-  // Hook para obtener los datos de órdenes del periodo
+  const [queryStartDate, setQueryStartDate] = useState(null);
+  const [queryEndDate, setQueryEndDate] = useState(null);
+
+  useEffect(() => {
+    const timestampFormat = "yyyy-MM-dd HH:mm:ss.SSS";
+    if (startDate) {
+      setQueryStartDate(format(startOfDay(startDate), timestampFormat));
+
+      if (endDate) {
+        setQueryEndDate(format(endOfDay(endDate), timestampFormat));
+      } else {
+        setQueryEndDate(format(endOfDay(startDate), timestampFormat));
+      }
+    } else {
+      setQueryStartDate(null);
+      setQueryEndDate(null);
+    }
+  }, [startDate, endDate]);
+
   const {
-    data: periodOrderStats, // Renombrar data a periodOrderStats para claridad
-    loading: isLoadingPeriodReport, // Renombrar loading
-    error: periodReportError, // Renombrar error
-  } = useCountOrders(startDate, endDate);
+    data: periodOrderStats,
+    loading: isLoadingPeriodReport,
+    error: periodReportError,
+  } = useCountOrders(queryStartDate, queryEndDate);
 
   const {
     data: sumaTotalesOrdenes,
     loading: isLoadingSumaTotalesOrdenes,
     error: sumaTotalesOrdenesError,
-  } = useSumaTotalesOrdenes(startDate, endDate);
+  } = useSumaTotalesOrdenes(queryStartDate, queryEndDate);
 
   const {
     data: paresVendidos,
     loading: isLoadingParesVendidos,
     error: paresVendidosError,
-  } = useParesVendidos(startDate, endDate);
+  } = useParesVendidos(queryStartDate, queryEndDate);
 
-  // Handler para el cambio de selección
+  const {
+    data: utilidadesInfo,
+    loading: isLoadingUtilidadesInfo,
+    error: utilidadesInfoError,
+  } = useInfoUtilidades(queryStartDate, queryEndDate);
+
+  const handleDateChange = (dates) => {
+    const [newStart, newEnd] = dates;
+
+    setStartDate(newStart);
+    setEndDate(newEnd);
+
+    setSelectedPeriod("custom");
+  };
+
   const handlePeriodChange = (event) => {
     const newPeriod = event.target.value;
     setSelectedPeriod(newPeriod);
-
-    // Calcular fechas exactas
     const now = new Date();
-    let newStartDate, newEndDate;
+    let newRawStartDate, newRawEndDate;
+
+    if (newPeriod === "custom") {
+      return;
+    }
 
     switch (newPeriod) {
       case "day":
-        newStartDate = startOfDay(now);
-        newEndDate = endOfDay(now);
+        newRawStartDate = startOfDay(now);
+        newRawEndDate = endOfDay(now);
         break;
       case "week":
-        newStartDate = startOfWeek(now, { weekStartsOn: 1 });
-        newEndDate = endOfWeek(now, { weekStartsOn: 1 });
+        newRawStartDate = startOfWeek(now, { weekStartsOn: 1 });
+        newRawEndDate = endOfWeek(now, { weekStartsOn: 1 });
         break;
       case "month":
-        newStartDate = startOfMonth(now);
-        newEndDate = endOfMonth(now);
+        newRawStartDate = startOfMonth(now);
+        newRawEndDate = endOfMonth(now);
         break;
       default:
-        newStartDate = startOfDay(now); // Default a hoy si algo raro pasa
-        newEndDate = endOfDay(now);
+        newRawStartDate = startOfDay(now);
+        newRawEndDate = endOfDay(now);
     }
 
-    // Actualizar los estados de fecha, lo que activará el hook useCountOrders
-    setStartDate(newStartDate);
-    setEndDate(newEndDate);
-
-    // Formatear fechas al estilo timestamp(3) - Log opcional
-    const timestampFormat = "yyyy-MM-dd HH:mm:ss.SSS";
-    const formattedStartDate = format(newStartDate, timestampFormat);
-    const formattedEndDate = format(newEndDate, timestampFormat);
-
-    console.log(
-      `Periodo seleccionado: ${newPeriod}. Fechas: ${formattedStartDate} a ${formattedEndDate}. Fetching data...`
-    );
-
-    // Aquí iría la llamada a la API para obtener datos reales
-    // Es recomendable enviar los objetos Date (startDate, endDate) directamente
-    // si tu API/backend puede manejarlos, o las cadenas formateadas si es necesario.
-    // Ejemplo: fetchDataForPeriod({ startDate, endDate });
+    setStartDate(newRawStartDate);
+    setEndDate(newRawEndDate);
   };
 
-  // useEffect para la carga inicial al montar el componente
   useEffect(() => {
-    // Calcular fechas para el periodo inicial ('day')
     const now = new Date();
     setStartDate(startOfDay(now));
     setEndDate(endOfDay(now));
-    // El array vacío [] asegura que esto se ejecute solo una vez al montar
   }, []);
 
   const {
@@ -167,12 +148,10 @@ export const ReportList = () => {
     data: modelosMasVendidos,
     loading: loadingModelosMasVendidos,
     error: errorModelosMasVendidos,
-  } = useModelosMasVendidos(startDate, endDate);
+  } = useModelosMasVendidos(queryStartDate, queryEndDate);
 
-  // Log para depurar el estado recibido del hook
   useEffect(() => {
     if (!isLoadingPeriodReport) {
-      // Loguear solo cuando no está cargando
       console.log(
         "ReportList: periodOrderStats recibido del hook:",
         periodOrderStats
@@ -180,18 +159,36 @@ export const ReportList = () => {
       console.log("ReportList: isLoadingPeriodReport:", isLoadingPeriodReport);
       console.log("ReportList: periodReportError:", periodReportError);
     }
-  }, [periodOrderStats, isLoadingPeriodReport, periodReportError]);
+  }, [
+    periodOrderStats,
+    isLoadingPeriodReport,
+    periodReportError,
+    queryStartDate,
+    queryEndDate,
+  ]);
 
-  // Obtener los datos extra para el periodo seleccionado
-  const currentPeriodExtraData = periodExtraStatsData[selectedPeriod];
+  const isLoading =
+    isLoadingPeriodReport ||
+    isLoadingSumaTotalesOrdenes ||
+    isLoadingParesVendidos ||
+    loadingModelosMasVendidos ||
+    isLoadingUtilidadesInfo;
+
+  const formatCurrency = (value) => {
+    if (typeof value !== "number") return "-";
+    return value.toLocaleString("es-CO", {
+      style: "currency",
+      currency: "COP",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    });
+  };
 
   return (
     <div className="container mt-5">
-      {/* Título para la sección de estadísticas */}
       <h2 className="text-center mb-4 fw-bold text-primary">
         <i className="bi bi-bar-chart-line-fill me-2"></i> Resumen General
       </h2>
-      {/* Sección de Estadísticas Clave */}
       <StatsContainerStyled>
         <StatCardStyled>
           {loadingUsers ? (
@@ -212,7 +209,6 @@ export const ReportList = () => {
           )}
         </StatCardStyled>
 
-        {/* Pares Registrados - Nuevo Gradiente Verde/Turquesa */}
         <StatCardStyled
           style={{
             background: "linear-gradient(135deg, #11998e 0%, #38ef7d 100%)",
@@ -228,7 +224,6 @@ export const ReportList = () => {
           ) : (
             <>
               <i className="bi bi-collection-fill stat-icon"></i>{" "}
-              {/* Icono aproximado para pares */}
               <div className="stat-value">
                 {countpairs?._sum.quantity?.toLocaleString()}
               </div>
@@ -237,7 +232,6 @@ export const ReportList = () => {
           )}
         </StatCardStyled>
 
-        {/* Modelos Activos - Nuevo Gradiente Rojo/Naranja */}
         <StatCardStyled
           style={{
             background: "linear-gradient(135deg, #ff4e50 0%, #f9d423 100%)",
@@ -261,7 +255,6 @@ export const ReportList = () => {
           )}
         </StatCardStyled>
 
-        {/* Categorías - Nuevo Gradiente Rosa/Rojo */}
         <StatCardStyled
           style={{
             background: "linear-gradient(135deg, #ec008c 0%, #fc6767 100%)",
@@ -286,32 +279,51 @@ export const ReportList = () => {
         </StatCardStyled>
       </StatsContainerStyled>
       <hr />
-      {/* Título para Reporte por Periodo */}
       <h2 className="text-center mb-4 fw-bold text-success">
         <i className="bi bi-calendar-event-fill me-2"></i> Reporte por Periodo
       </h2>
-      {/* Selector de Periodo */}
-      <div className="d-flex justify-content-center mb-4">
+
+      <div className="d-flex justify-content-center align-items-center mb-4 gap-3 flex-wrap">
         <Form.Select
           aria-label="Seleccionar periodo"
           value={selectedPeriod}
           onChange={handlePeriodChange}
-          style={{ maxWidth: "250px" }}
-          disabled={
-            isLoadingPeriodReport ||
-            isLoadingSumaTotalesOrdenes ||
-            isLoadingParesVendidos ||
-            loadingModelosMasVendidos
-          }
+          style={{ width: "auto", minWidth: "150px" }}
+          disabled={isLoading}
         >
           <option value="day">Hoy</option>
           <option value="week">Esta Semana</option>
           <option value="month">Este Mes</option>
+          <option value="custom">Personalizado</option>
         </Form.Select>
+
+        <DatePicker
+          selected={startDate}
+          onChange={handleDateChange}
+          startDate={startDate}
+          endDate={endDate}
+          selectsRange
+          locale={es}
+          dateFormat="dd/MM/yyyy"
+          className="form-control"
+          wrapperClassName="date-picker-wrapper"
+          style={{ width: "auto" }}
+          placeholderText="Selecciona rango de fechas"
+          disabled={isLoading}
+          isClearable
+        />
+        <style>{`
+          .date-picker-wrapper {
+            width: auto;
+            min-width: 220px;
+          }
+          .date-picker-wrapper .form-control {
+             width: 100%;
+          }
+        `}</style>
       </div>
-      {/* Sección de Estadísticas por Periodo */}
+
       <StatsContainerStyled>
-        {/* Tarjeta Órdenes Creadas */}
         <StatCardStyled
           style={{
             background: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
@@ -331,13 +343,12 @@ export const ReportList = () => {
                 {periodOrderStats?.toLocaleString() ?? "-"}
               </div>
               <div className="stat-label">
-                Órdenes Creadas - Todos los estados
+                Órdenes Creadas - Pedidos entregados y pagos confirmados
               </div>
             </>
           )}
         </StatCardStyled>
 
-        {/* Tarjeta Pares Vendidos */}
         <StatCardStyled
           style={{
             background: "linear-gradient(135deg, #ff8c42 0%, #ffcc6b 100%)",
@@ -357,13 +368,12 @@ export const ReportList = () => {
                 {paresVendidos?.toLocaleString() ?? "-"}
               </div>
               <div className="stat-label">
-                Pares Vendidos - Pedidos entregados
+                Pares Vendidos - Pedidos entregados y pagos Confirmados
               </div>
             </>
           )}
         </StatCardStyled>
 
-        {/* Tarjeta Total Recaudado */}
         <StatCardStyled
           style={{
             background: "linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)",
@@ -374,7 +384,7 @@ export const ReportList = () => {
           ) : sumaTotalesOrdenesError ? (
             <i
               className="bi bi-exclamation-triangle-fill text-danger stat-icon"
-              title={sumaTotalesOrdenesError.message || "Error"} // Corregido para usar sumaTotalesOrdenesError
+              title={sumaTotalesOrdenesError.message || "Error"}
             ></i>
           ) : (
             <>
@@ -387,16 +397,15 @@ export const ReportList = () => {
                 }) ?? "-"}
               </div>
               <div className="stat-label">
-                Total Recaudado - pedidos entregados
+                Total Recaudado - pedidos Entregados y pagos confirmados
               </div>
             </>
           )}
         </StatCardStyled>
 
-        {/* Tarjeta Zapato Más Vendido (AHORA CON DATOS REALES) */}
         <StatCardStyled
           style={{
-            background: "linear-gradient(135deg, #28a745 0%, #218838 100%)", // Tono verde
+            background: "linear-gradient(135deg, #28a745 0%, #218838 100%)",
           }}
         >
           {loadingModelosMasVendidos ? (
@@ -415,10 +424,9 @@ export const ReportList = () => {
                 className="stat-label fw-bold"
                 style={{ fontSize: "1.0rem", marginBottom: "2px" }}
               >
-                Zapato Más Vendido
+                Modelo Más Vendido
               </div>
               <i className="bi bi-star-fill stat-icon"></i>{" "}
-              {/* Icono genérico de estrella/premio */}
               <div
                 className="stat-value"
                 style={{ fontSize: "1.1rem", lineHeight: "1.3" }}
@@ -447,7 +455,7 @@ export const ReportList = () => {
                 className="stat-label fw-bold"
                 style={{ fontSize: "1.0rem", marginBottom: "2px" }}
               >
-                Zapato Más Vendido
+                Modelo Más Vendido
               </div>
               <i className="bi bi-question-circle stat-icon"></i>
               <div className="stat-value" style={{ fontSize: "1rem" }}>
@@ -457,44 +465,100 @@ export const ReportList = () => {
           )}
         </StatCardStyled>
 
-        {/* Tarjeta Mejores 3 Vendedores (CON DATOS FICTICIOS AÚN) */}
-        {/* <StatCardStyled
+        <StatCardStyled
           style={{
-            background: "linear-gradient(135deg, #17a2b8 0%, #138496 100%)", // Tono azul verdoso/info
-            paddingTop: "12px",
-            paddingBottom: "12px",
+            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            gridColumn: "span 2",
+            textAlign: "left",
+            padding: "15px",
           }}
         >
-          <>
-            <i
-              className={`bi ${currentPeriodExtraData.sellersIcon} stat-icon mb-2`}
-            ></i>
-            <div
-              className="stat-label fw-bold"
-              style={{ fontSize: "1.1rem", marginBottom: "5px" }}
-            >
-              Top 3 Vendedores
+          {isLoadingUtilidadesInfo ? (
+            <div className="d-flex justify-content-center align-items-center h-100">
+              <Spinner animation="border" size="lg" variant="light" />
             </div>
-            <ul
-              className="list-unstyled text-start w-100 px-2"
-              style={{ fontSize: "0.8rem" }}
-            >
-              {currentPeriodExtraData.topSellers.map((seller, index) => (
-                <li key={index} className="d-flex justify-content-between py-1">
-                  <span>
-                    {index + 1}. {seller.name}
-                  </span>
-                  <span className="fw-bold">
-                    {seller.sales.toLocaleString()}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </>
-        </StatCardStyled> */}
-
-        {/* Se puede añadir una 4ta tarjeta vacía o con otra métrica si es necesario para el grid */}
-        {/* <StatCardStyled style={{ background: 'transparent', boxShadow: 'none'}}></StatCardStyled> */}
+          ) : utilidadesInfoError ? (
+            <div className="d-flex flex-column justify-content-center align-items-center h-100">
+              <i
+                className="bi bi-emoji-frown-fill text-warning stat-icon mb-2"
+                style={{ fontSize: "2rem" }}
+              ></i>
+              <div className="stat-label text-center">
+                Error al cargar utilidades
+                {utilidadesInfoError.message && (
+                  <small className="d-block">
+                    ({utilidadesInfoError.message})
+                  </small>
+                )}
+              </div>
+            </div>
+          ) : utilidadesInfo ? (
+            <>
+              <div className="d-flex align-items-center mb-3">
+                <i
+                  className="bi bi-graph-up-arrow stat-icon me-3"
+                  style={{ fontSize: "2.5rem" }}
+                ></i>
+                <h5 className="mb-0 text-white fw-bold">
+                  Resumen de Utilidades
+                </h5>
+              </div>
+              <div className="row gx-3 gy-2">
+                <div className="col-sm-6">
+                  <small className="text-white-50 d-block">
+                    Utilidad Neta Total
+                  </small>
+                  <strong className="fs-5 text-white">
+                    {formatCurrency(utilidadesInfo.utilidadNetaTotal)}
+                  </strong>
+                </div>
+                <div className="col-sm-6">
+                  <small className="text-white-50 d-block">
+                    Utilidad Bruta Total
+                  </small>
+                  <strong className="fs-5 text-white">
+                    {formatCurrency(utilidadesInfo.utilidadBrutaTotal)}
+                  </strong>
+                </div>
+                <div className="col-sm-6">
+                  <small className="text-white-50 d-block">
+                    Descuentos Aplicados
+                  </small>
+                  <strong className="fs-5 text-white">
+                    {formatCurrency(utilidadesInfo.totalDescuentosAplicados)}
+                  </strong>
+                </div>
+                <div className="col-sm-6">
+                  <small className="text-white-50 d-block">
+                    Órdenes Consideradas
+                  </small>
+                  <strong className="fs-5 text-white">
+                    {utilidadesInfo.ordenesConsideradas?.toLocaleString() ??
+                      "-"}
+                  </strong>
+                </div>
+                <div className="col-sm-6">
+                  <small className="text-white-50 d-block">
+                    Ítems Procesados
+                  </small>
+                  <strong className="fs-5 text-white">
+                    {utilidadesInfo.itemsProcesados?.toLocaleString() ?? "-"}
+                  </strong>
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="d-flex flex-column justify-content-center align-items-center h-100">
+              <i
+                className="bi bi-info-circle-fill text-white-50 stat-icon mb-2"
+                style={{ fontSize: "2rem" }}
+              ></i>
+              <div className="stat-label text-center">
+                No hay datos de utilidad para el periodo.
+              </div>
+            </div>
+          )}
+        </StatCardStyled>
       </StatsContainerStyled>
     </div>
   );

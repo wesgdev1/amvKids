@@ -81,3 +81,15 @@ export const getModelosMasVendidos = async (payload) => {
     return Promise.reject(error);
   }
 };
+
+export const getInfoUtilidades = async (payload) => {
+  try {
+    const { data: response } = await http.post(
+      `/orders/calcularUtilidad`,
+      payload
+    );
+    return { data: response.data };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
