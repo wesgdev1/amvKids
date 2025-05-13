@@ -67,10 +67,22 @@ export const OrdersTablePreparer = ({ orders }) => {
                     {order.typeOrder || "Normal"}
                   </span>
                 </td>
-                <td>{format(new Date(order.createdAt), "MM/dd/yyyy")}</td>
+                <td>
+                  {format(new Date(order.createdAt), "MM/dd/yyyy HH:mm:ss")}
+                </td>
                 <td>$ {order.total.toLocaleString("es-CO")}</td>
                 <td>
-                  {order.state} <i className={`${iconMap[order.state]}`}></i>
+                  {order.areReady ? (
+                    <>
+                      Lista{" "}
+                      <i className="bi bi-check-circle rounded-full bg-green-500"></i>
+                    </>
+                  ) : (
+                    <>
+                      {order.state}{" "}
+                      <i className={`${iconMap[order.state]}`}></i>
+                    </>
+                  )}
                 </td>
                 <td>
                   {order.paymentUrl ? (
