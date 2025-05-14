@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Image, Modal, Table } from "react-bootstrap";
+import { Badge, Image, Modal, Table } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { ControlButton } from "../products/StyledComponents";
 import { Paginator } from "../paginator/Paginator";
@@ -81,6 +81,17 @@ export const OrdersTablePreparer = ({ orders }) => {
                     <>
                       {order.state}{" "}
                       <i className={`${iconMap[order.state]}`}></i>
+                      <Badge
+                        pill
+                        bg="danger"
+                        className="ms-2"
+                        style={{
+                          fontSize: "0.7rem",
+                          padding: "0.2rem 0.5rem",
+                        }}
+                      >
+                        pendiente por alistar
+                      </Badge>
                     </>
                   )}
                 </td>
