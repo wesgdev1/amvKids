@@ -12,112 +12,104 @@ import { ProductDetailCurvawomen } from "./ProductDetailCurvawomen";
 
 // Función para verificar la curva de hombre (Curva2)
 // Requiere: 1x37, 2x38, 3x39, 2x40, 2x41, 1x42, 1x43
-const checkMenCurve = (stocks) => {
-  const requiredCurve = {
-    37: 1,
-    38: 2,
-    39: 3,
-    40: 2,
-    41: 2,
-    42: 1,
-    43: 1,
-  };
-  // const requiredSizeCount = Object.keys(requiredCurve).length;
+// const checkMenCurve = (stocks) => {
+//   const requiredCurve = {
+//     37: 1,
+//     38: 2,
+//     39: 3,
+//     40: 2,
+//     41: 2,
+//     42: 1,
+//     43: 1,
+//   };
+// const requiredSizeCount = Object.keys(requiredCurve).length;
 
-  if (!stocks || stocks.length === 0) {
-    // Solo verificar si hay stocks
-    console.log("Men curve check failed: Null or empty stocks array.");
-    return false;
-  }
-  // Eliminamos la comprobación estricta de longitud: stocks.length !== requiredSizeCount
+// if (!stocks || stocks.length === 0) {
+//   // Solo verificar si hay stocks
+//   console.log("Men curve check failed: Null or empty stocks array.");
+//   return false;
+// }
+// Eliminamos la comprobación estricta de longitud: stocks.length !== requiredSizeCount
 
-  const stockMap = stocks.reduce((acc, stock) => {
-    const size = Number(stock.size);
-    const quantity = Number(stock.quantity);
-    if (!isNaN(size) && !isNaN(quantity)) {
-      acc[size] = (acc[size] || 0) + quantity;
-    }
-    return acc;
-  }, {});
+// const stockMap = stocks.reduce((acc, stock) => {
+//   const size = Number(stock.size);
+//   const quantity = Number(stock.quantity);
+//   if (!isNaN(size) && !isNaN(quantity)) {
+//     acc[size] = (acc[size] || 0) + quantity;
+//   }
+//   return acc;
+// }, {});
 
-  console.log("Men Stock Map (Relaxed Check):", stockMap);
-  console.log("Required Men Curve:", requiredCurve);
+// console.log("Men Stock Map (Relaxed Check):", stockMap);
+// console.log("Required Men Curve:", requiredCurve);
 
-  // Verificar si todas las tallas requeridas existen con la cantidad correcta
-  for (const size in requiredCurve) {
-    if (!(size in stockMap) || stockMap[size] < requiredCurve[size]) {
-      // Cambiado a >= para flexibilidad, o mantenemos === si debe ser exacto?
-      // Mantendremos la comprobación exacta !== por ahora, según la solicitud original.
-      if (stockMap[size] !== requiredCurve[size]) {
-        console.log(
-          `Men curve check failed: Mismatch for size ${size}. Expected ${
-            requiredCurve[size]
-          }, got ${stockMap[size] || 0}`
-        );
-        return false;
-      }
-    }
-  }
+// Verificar si todas las tallas requeridas existen con la cantidad correcta
+// for (const size in requiredCurve) {
+//   if (!(size in stockMap) || stockMap[size] < requiredCurve[size]) {
+//     // Cambiado a >= para flexibilidad, o mantenemos === si debe ser exacto?
+//     // Mantendremos la comprobación exacta !== por ahora, según la solicitud original.
+//     if (stockMap[size] !== requiredCurve[size]) {
+//       return false;
+//     }
+//   }
+// }
 
-  // Eliminamos la verificación de tallas extra: stockMapSizeCount !== requiredSizeCount
+// Eliminamos la verificación de tallas extra: stockMapSizeCount !== requiredSizeCount
 
-  console.log("Men curve check passed (Relaxed Check).");
-  return true;
-};
+//   console.log("Men curve check passed (Relaxed Check).");
+//   return true;
+// };
 
 // Función para verificar la curva de mujer (Curvawomen)
 // Requiere: 2x35, 2x36, 3x37, 2x38, 2x39, 1x40
-const checkWomenCurve = (stocks) => {
-  const requiredCurve = {
-    35: 2,
-    36: 2,
-    37: 3,
-    38: 2,
-    39: 2,
-    40: 1,
-  };
-  // const requiredSizeCount = Object.keys(requiredCurve).length;
+// const checkWomenCurve = (stocks) => {
+//   const requiredCurve = {
+//     35: 2,
+//     36: 2,
+//     37: 3,
+//     38: 2,
+//     39: 2,
+//     40: 1,
+//   };
+//   // const requiredSizeCount = Object.keys(requiredCurve).length;
 
-  if (!stocks || stocks.length === 0) {
-    // Solo verificar si hay stocks
-    console.log("Women curve check failed: Null or empty stocks array.");
-    return false;
-  }
-  // Eliminamos la comprobación estricta de longitud: stocks.length !== requiredSizeCount
+//   if (!stocks || stocks.length === 0) {
+//     // Solo verificar si hay stocks
+//     console.log("Women curve check failed: Null or empty stocks array.");
+//     return false;
+//   }
+//   // Eliminamos la comprobación estricta de longitud: stocks.length !== requiredSizeCount
 
-  const stockMap = stocks.reduce((acc, stock) => {
-    const size = Number(stock.size);
-    const quantity = Number(stock.quantity);
-    if (!isNaN(size) && !isNaN(quantity)) {
-      acc[size] = (acc[size] || 0) + quantity;
-    }
-    return acc;
-  }, {});
+//   const stockMap = stocks.reduce((acc, stock) => {
+//     const size = Number(stock.size);
+//     const quantity = Number(stock.quantity);
+//     if (!isNaN(size) && !isNaN(quantity)) {
+//       acc[size] = (acc[size] || 0) + quantity;
+//     }
+//     return acc;
+//   }, {});
 
-  console.log("Women Stock Map (Relaxed Check):", stockMap);
-  console.log("Required Women Curve:", requiredCurve);
+//   // Verificar si todas las tallas requeridas existen con la cantidad correcta
+//   for (const size in requiredCurve) {
+//     if (!(size in stockMap) || stockMap[size] < requiredCurve[size]) {
+//       // Cambiado a >= para flexibilidad, o mantenemos === si debe ser exacto?
+//       // Mantendremos la comprobación exacta !== por ahora, según la solicitud original.
+//       if (stockMap[size] !== requiredCurve[size]) {
+//         console.log(
+//           `Women curve check failed: Mismatch for size ${size}. Expected ${
+//             requiredCurve[size]
+//           }, got ${stockMap[size] || 0}`
+//         );
+//         return false;
+//       }
+//     }
+//   }
 
-  // Verificar si todas las tallas requeridas existen con la cantidad correcta
-  for (const size in requiredCurve) {
-    if (!(size in stockMap) || stockMap[size] < requiredCurve[size]) {
-      // Cambiado a >= para flexibilidad, o mantenemos === si debe ser exacto?
-      // Mantendremos la comprobación exacta !== por ahora, según la solicitud original.
-      if (stockMap[size] !== requiredCurve[size]) {
-        console.log(
-          `Women curve check failed: Mismatch for size ${size}. Expected ${
-            requiredCurve[size]
-          }, got ${stockMap[size] || 0}`
-        );
-        return false;
-      }
-    }
-  }
+//   // Eliminamos la verificación de tallas extra: stockMapSizeCount !== requiredSizeCount
 
-  // Eliminamos la verificación de tallas extra: stockMapSizeCount !== requiredSizeCount
-
-  console.log("Women curve check passed (Relaxed Check).");
-  return true;
-};
+//   console.log("Women curve check passed (Relaxed Check).");
+//   return true;
+// };
 
 // Definición de SoldOutSash (copiada de ShoeCard.jsx)
 const SoldOutSash = styled.div`
@@ -203,10 +195,10 @@ export const ProductDetail = () => {
   const [zoomCoordsMain, setZoomCoordsMain] = useState({ x: 0, y: 0 });
 
   // Determinar si las curvas están disponibles SOLO cuando data esté cargada
-  const isMenCurveAvailable =
-    data && data.stocks ? checkMenCurve(data.stocks) : false;
-  const isWomenCurveAvailable =
-    data && data.stocks ? checkWomenCurve(data.stocks) : false;
+  // const isMenCurveAvailable =
+  //   data && data.stocks ? checkMenCurve(data.stocks) : false;
+  // const isWomenCurveAvailable =
+  //   data && data.stocks ? checkWomenCurve(data.stocks) : false;
 
   // Calcular si el producto está agotado
   const totalStock = data ? getEffectiveStock(data) : 0;

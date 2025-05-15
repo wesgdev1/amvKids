@@ -26,6 +26,7 @@ import {
   ButtonStyled,
   LoginContainerStyled,
   LoginFormStyled,
+  NavLinkStyled,
 } from "../components/StyledComponents";
 import { signIn } from "../api/auth/auth";
 import { useNavigate } from "react-router-dom";
@@ -173,6 +174,16 @@ export const Login = () => {
                   </>
                 )}
               </ButtonStyled>
+            </div>
+            <div className="mt-4">
+              <p className="text-center text-white">¿No tienes una cuenta?</p>
+              <div className="d-flex justify-center">
+                <NavLinkStyled to={"/signup"}>
+                  <p className="text-center" style={{ color: "#00A4FF" }}>
+                    Regístrate aquí
+                  </p>
+                </NavLinkStyled>
+              </div>
             </div>
           </LoginFormStyled>
         )}

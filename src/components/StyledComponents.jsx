@@ -292,6 +292,16 @@ export const LoginContainerStyled = styled.div`
   overflow: hidden; /* Para contener el fondo */
 `;
 
+export const LoginContainerStyled2 = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  /* Aumentar padding vertical, quitar min-height y position/z-index */
+  position: relative; /* Mantenemos relative para posible posicionamiento absoluto del fondo si es necesario */
+  /* Para contener el fondo */
+`;
 // Nuevo estilo específico para el formulario de Login, sin posición absoluta
 export const LoginFormStyled = styled.form(() => ({
   background: "rgba(0, 0, 0, 0.7)", // Fondo semi-transparente para mejorar legibilidad sobre Zenitho

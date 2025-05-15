@@ -6,8 +6,9 @@ import { toFormikValidationSchema } from "zod-formik-adapter";
 import { z } from "zod";
 import {
   ButtonStyled,
-  FormStyled,
   NavLinkStyled,
+  LoginContainerStyled,
+  LoginFormStyled,
 } from "../components/StyledComponents";
 import { signUp } from "../api/auth/auth";
 import Swal from "sweetalert2";
@@ -23,7 +24,7 @@ const signUpSchema = z
       .string({
         required_error: "El nombre es requerido",
       })
-      .min(3, "El nombre debe tener al menos 5 caracteres"),
+      .min(3, "El nombre debe tener al menos 3 caracteres"),
     email: z
       .string({
         required_error: "El correo es requerido",
@@ -56,7 +57,10 @@ export const SignUp = () => {
   const onRegister = async (payload) => {
     try {
       delete payload.confirmPassword;
-      const response = await signUp(payload);
+      const response = await signUp({
+        ...payload,
+        tipoUsuario: "Cliente",
+      });
 
       const { data } = response;
 
@@ -89,8 +93,18 @@ export const SignUp = () => {
   };
 
   return (
-    <div>
-      <div className="h-full">
+    <LoginContainerStyled>
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          zIndex: -1,
+          overflow: "hidden",
+        }}
+      >
         <Zenitho />
       </div>
 
@@ -108,7 +122,10 @@ export const SignUp = () => {
           handleSubmit,
           isSubmitting,
         }) => (
-          <FormStyled onSubmit={handleSubmit}>
+          <LoginFormStyled
+            onSubmit={handleSubmit}
+            style={{ paddingBottom: "2rem" }}
+          >
             <div className="d-flex justify-center pb-3">
               <Image
                 src="https://res.cloudinary.com/dppqkypts/image/upload/v1709156443/AMV_LOGO_1_nx3ofa.png"
@@ -116,7 +133,17 @@ export const SignUp = () => {
               />
             </div>
 
-            <Form.Group className="mb-3" controlId="formBasicEmail">
+            <div className="mb-3 text-center px-2">
+              <p className="text-white" style={{ fontSize: "0.85rem" }}>
+                <i className="bi bi-info-circle-fill me-2"></i>
+                Este registro es para <strong>Clientes</strong>. Si deseas
+                registrarte como <strong>Tienda Aliada</strong> o{" "}
+                <strong>Reventa</strong>, por favor comunícate directamente con
+                nuestras líneas de atención AMV.
+              </p>
+            </div>
+
+            <Form.Group controlId="formBasicName">
               <Form.Label>Nombre Completo</Form.Label>
               <Form.Control
                 type="text"
@@ -125,15 +152,15 @@ export const SignUp = () => {
                 onChange={handleChange}
                 onBlur={handleBlur}
                 value={values.name}
-                className={touched.name && errors.name ? "is-invalid" : null}
+                className={touched.name && errors.name ? "is-invalid" : ""}
               />
               <ErrorMessage
                 name="name"
                 component="div"
-                className="text-white"
+                className="text-danger"
               />
             </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicEmail">
+            <Form.Group controlId="formBasicEmailSignUp">
               <Form.Label>Correo electronico</Form.Label>
               <Form.Control
                 type="email"
@@ -142,38 +169,38 @@ export const SignUp = () => {
                 onChange={handleChange}
                 onBlur={handleBlur}
                 value={values.email}
-                className={touched.email && errors.email ? "is-invalid" : null}
+                className={touched.email && errors.email ? "is-invalid" : ""}
               />
               <ErrorMessage
                 name="email"
                 component="div"
-                className="text-white"
+                className="text-danger"
               />
-              <Form.Text className="text-muted">
+              <Form.Text className="text-white">
                 Nunca compartiremos tu correo con nadie mas.
               </Form.Text>
             </Form.Group>
 
-            <Form.Group className="mb-3" controlId="formBasicPassword">
+            <Form.Group controlId="formBasicPasswordSignUp">
               <Form.Label>Contraseña</Form.Label>
               <Form.Control
                 type="password"
-                placeholder="Tu contraseña debe tener al menos 8 caracteres"
+                placeholder="Tu contraseña (8-20 caracteres)"
                 name="password"
                 onChange={handleChange}
                 onBlur={handleBlur}
                 value={values.password}
                 className={
-                  touched.password && errors.password ? "is-invalid" : null
+                  touched.password && errors.password ? "is-invalid" : ""
                 }
               />
               <ErrorMessage
                 name="password"
                 component="div"
-                className="text-white"
+                className="text-danger"
               />
             </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicPassword">
+            <Form.Group controlId="formBasicConfirmPassword">
               <Form.Label>Confirmar contraseña</Form.Label>
               <Form.Control
                 type="password"
@@ -185,13 +212,13 @@ export const SignUp = () => {
                 className={
                   touched.confirmPassword && errors.confirmPassword
                     ? "is-invalid"
-                    : null
+                    : ""
                 }
               />
               <ErrorMessage
                 name="confirmPassword"
                 component="div"
-                className="text-white"
+                className="text-danger"
               />
             </Form.Group>
 
@@ -201,27 +228,27 @@ export const SignUp = () => {
                 type="submit"
                 disabled={isSubmitting}
               >
-                {
-                  /*Si esta cargando, muestro el spinner */
-                  !isSubmitting ? (
-                    "Registrarse"
-                  ) : (
+                {!isSubmitting ? (
+                  "Registrarse"
+                ) : (
+                  <>
                     <Spinner animation="border" size="sm" />
-                  )
-                }
+                    <span className="ms-2">Cargando...</span>
+                  </>
+                )}
               </ButtonStyled>
             </div>
             <div>
-              <p className="text-center pt-4">¿Ya tienes cuenta?</p>
+              <p className="text-center pt-4 text-white">¿Ya tienes cuenta?</p>
               <div className="d-flex justify-center">
                 <NavLinkStyled to={"/login"}>
                   <p className="text-center">Inicia sesion</p>
                 </NavLinkStyled>
               </div>
             </div>
-          </FormStyled>
+          </LoginFormStyled>
         )}
       </Formik>
-    </div>
+    </LoginContainerStyled>
   );
 };

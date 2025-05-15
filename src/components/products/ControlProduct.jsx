@@ -10,7 +10,7 @@ import { useCounter } from "../../hooks/useCounter";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../../store";
 import Swal from "sweetalert2";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../../auth/context/AuthContext";
 import { useLocation } from "react-router-dom";
 
@@ -18,7 +18,7 @@ export const ControlProduct = ({ data }) => {
   const location = useLocation();
   const isNoAuthRoute = location.pathname.includes("productosNoAuth");
   const { user } = useContext(AuthContext);
-  const { dispatch } = useCart();
+  const { dispatch, state } = useCart();
   const navigate = useNavigate();
   const handleReturn = () => {
     navigate("/productos");
@@ -29,37 +29,60 @@ export const ControlProduct = ({ data }) => {
   const { counter, increment, decrement, reset } = useCounter(1, maxValue);
 
   const hanldeClickSuccess = () => {
-    //si existe el usuario trabaje normal si no mandelo al login
+    if (!user) {
+      navigate("/login");
+      return;
+    }
 
-    if (user) {
-      if (size === null) {
+    if (size === null) {
+      Swal.fire({
+        icon: "error",
+        title: "Seleccione una talla",
+        showConfirmButton: true,
+        confirmButtonText: "Aceptar",
+      });
+      return;
+    }
+
+    // Lógica específica para clientes con restricción de cantidad
+    if (
+      user.tipoUsuario === "Cliente" &&
+      user.email !== "whatsappcliente@gmail.com"
+    ) {
+      const totalItemsInCart = state.reduce(
+        (acc, currentItem) => acc + currentItem.quantity,
+        0
+      );
+
+      if (totalItemsInCart + counter > 5) {
         Swal.fire({
           icon: "error",
-          title: "Seleccione una talla",
+          title: "No puedes agregar más de 5 pares al carrito.",
+          text: "Los clientes pueden agregar un máximo de 5 pares. Si deseas comprar más, por favor contacta a un asesor.",
           showConfirmButton: true,
           confirmButtonText: "Aceptar",
         });
         return;
       }
-      dispatch({
-        type: "ADD_TO_CART",
-        payload: {
-          item: data,
-          quantity: counter,
-          size: size,
-        },
-      });
-
-      Swal.fire({
-        icon: "success",
-        title: "Producto agregado al carrito",
-        showConfirmButton: true,
-        confirmButtonText: "Aceptar",
-      });
-      reset();
-    } else {
-      navigate("/login");
     }
+
+    // Si todas las validaciones pasan (o no aplican), agregar al carrito
+    dispatch({
+      type: "ADD_TO_CART",
+      payload: {
+        item: data,
+        quantity: counter,
+        size: size,
+      },
+    });
+
+    Swal.fire({
+      icon: "success",
+      title: "Producto agregado al carrito",
+      showConfirmButton: true,
+      confirmButtonText: "Aceptar",
+    });
+    reset();
   };
 
   const handleChange = (e) => {
