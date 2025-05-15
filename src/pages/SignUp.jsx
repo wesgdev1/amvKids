@@ -9,6 +9,7 @@ import {
   NavLinkStyled,
   LoginContainerStyled,
   LoginFormStyled,
+  LoginContainerStyled2,
 } from "../components/StyledComponents";
 import { signUp } from "../api/auth/auth";
 import Swal from "sweetalert2";
@@ -25,6 +26,10 @@ const signUpSchema = z
         required_error: "El nombre es requerido",
       })
       .min(3, "El nombre debe tener al menos 3 caracteres"),
+
+    celular: z.string({
+      required_error: "El celular es requerido",
+    }),
     email: z
       .string({
         required_error: "El correo es requerido",
@@ -48,6 +53,7 @@ const signUpSchema = z
 export const SignUp = () => {
   const initialValues = {
     name: "",
+    celular: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -93,7 +99,7 @@ export const SignUp = () => {
   };
 
   return (
-    <LoginContainerStyled>
+    <LoginContainerStyled2>
       <div
         style={{
           position: "absolute",
@@ -126,7 +132,7 @@ export const SignUp = () => {
             onSubmit={handleSubmit}
             style={{ paddingBottom: "2rem" }}
           >
-            <div className="d-flex justify-center pb-3">
+            <div className="d-flex justify-center">
               <Image
                 src="https://res.cloudinary.com/dppqkypts/image/upload/v1709156443/AMV_LOGO_1_nx3ofa.png"
                 width={70}
@@ -156,6 +162,26 @@ export const SignUp = () => {
               />
               <ErrorMessage
                 name="name"
+                component="div"
+                className="text-danger"
+              />
+            </Form.Group>
+
+            <Form.Group controlId="formBasicName">
+              <Form.Label>Celular</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Ingrese su numero de celular  o whatsapp"
+                name="celular"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.celular}
+                className={
+                  touched.celular && errors.celular ? "is-invalid" : ""
+                }
+              />
+              <ErrorMessage
+                name="celular"
                 component="div"
                 className="text-danger"
               />
@@ -222,7 +248,7 @@ export const SignUp = () => {
               />
             </Form.Group>
 
-            <div className="d-flex justify-center">
+            <div className="d-flex justify-center pt-1">
               <ButtonStyled
                 variant="primary"
                 type="submit"
@@ -249,6 +275,6 @@ export const SignUp = () => {
           </LoginFormStyled>
         )}
       </Formik>
-    </LoginContainerStyled>
+    </LoginContainerStyled2>
   );
 };
