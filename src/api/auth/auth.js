@@ -28,8 +28,9 @@ export const createUsers = async (payload) => {
 };
 
 export const myProfile = async (id) => {
+  console.log("idApi", id);
   try {
-    const { data: response } = await http.get(`/users/myProfile`, id);
+    const { data: response } = await http.post(`/users/myProfile`, { id });
     return { data: response.data };
   } catch (error) {
     return Promise.reject(error);

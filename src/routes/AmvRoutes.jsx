@@ -15,6 +15,7 @@ import { ForbiddenPageAdmin } from "../pages/ForbiddenPageAdmin";
 import { ProductDetailCurva } from "../pages/ProductDetailCurva";
 import { CarListCurves } from "../pages/CarListCurves";
 import { Resultado } from "../pages/Resultado";
+import { ProductDetailNoAuth } from "../pages/ProductDetailNoAuth";
 
 export const AmvRoutes = () => {
   return (
@@ -33,6 +34,16 @@ export const AmvRoutes = () => {
             </ProtectedRoute>
           }
         />
+
+        <Route
+          path="/productosNoAuth/:id"
+          element={
+            <ProtectedRoute>
+              <ProductDetailNoAuth />
+            </ProtectedRoute>
+          }
+        />
+
         <Route
           path="/productosCurvos/:id"
           element={

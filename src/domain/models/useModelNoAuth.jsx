@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
-import { myProfile } from "../../api/auth/auth";
 
-export const useProfile = (id) => {
+import { getModelById, getModelByIdNoAuth } from "../../api/model/model";
+
+export const useModelNoAuth = (idModel) => {
   const [data, setData] = useState();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const cargarUsuarios = async (id) => {
+  const cargarModel = async (idModel) => {
     setLoading(true);
     setError("");
 
     try {
-      const response = await myProfile(id);
+      const response = await getModelByIdNoAuth(idModel);
+
       setData(response.data);
     } catch (error) {
       setError(error);
@@ -21,11 +23,8 @@ export const useProfile = (id) => {
   };
 
   useEffect(() => {
-    console.log("id", id);
-    if (id) {
-      cargarUsuarios(id);
-    }
-  }, [id]);
+    cargarModel(idModel);
+  }, [idModel]);
 
-  return { data, loading, error, cargarUsuarios };
+  return { data, loading, error, cargarModel };
 };

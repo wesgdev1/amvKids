@@ -12,8 +12,11 @@ import { useCart } from "../../store";
 import Swal from "sweetalert2";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../auth/context/AuthContext";
+import { useLocation } from "react-router-dom";
 
 export const ControlProduct = ({ data }) => {
+  const location = useLocation();
+  const isNoAuthRoute = location.pathname.includes("productosNoAuth");
   const { user } = useContext(AuthContext);
   const { dispatch } = useCart();
   const navigate = useNavigate();
@@ -26,31 +29,37 @@ export const ControlProduct = ({ data }) => {
   const { counter, increment, decrement, reset } = useCounter(1, maxValue);
 
   const hanldeClickSuccess = () => {
-    if (size === null) {
+    //si existe el usuario trabaje normal si no mandelo al login
+
+    if (user) {
+      if (size === null) {
+        Swal.fire({
+          icon: "error",
+          title: "Seleccione una talla",
+          showConfirmButton: true,
+          confirmButtonText: "Aceptar",
+        });
+        return;
+      }
+      dispatch({
+        type: "ADD_TO_CART",
+        payload: {
+          item: data,
+          quantity: counter,
+          size: size,
+        },
+      });
+
       Swal.fire({
-        icon: "error",
-        title: "Seleccione una talla",
+        icon: "success",
+        title: "Producto agregado al carrito",
         showConfirmButton: true,
         confirmButtonText: "Aceptar",
       });
-      return;
+      reset();
+    } else {
+      navigate("/login");
     }
-    dispatch({
-      type: "ADD_TO_CART",
-      payload: {
-        item: data,
-        quantity: counter,
-        size: size,
-      },
-    });
-
-    Swal.fire({
-      icon: "success",
-      title: "Producto agregado al carrito",
-      showConfirmButton: true,
-      confirmButtonText: "Aceptar",
-    });
-    reset();
   };
 
   const handleChange = (e) => {
@@ -80,6 +89,8 @@ export const ControlProduct = ({ data }) => {
                 <div className="fs-4">
                   {data.isPromoted && data.pricePromoted > 0 ? (
                     <>${data.pricePromoted.toLocaleString("es-CO")}</>
+                  ) : isNoAuthRoute ? (
+                    <>${data.normalPrice.toLocaleString("es-CO")}</>
                   ) : (
                     <>${data.price.toLocaleString("es-CO")}</>
                   )}

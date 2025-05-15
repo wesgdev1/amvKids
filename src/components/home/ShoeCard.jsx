@@ -176,7 +176,11 @@ export const ShoeCard = ({ model }) => {
   }, []);
 
   const handleClick = () => {
-    navigate(`/productos/${model.id}`);
+    if (user) {
+      navigate(`/productos/${model.id}`);
+    } else {
+      navigate(`/productosNoAuth/${model.id}`);
+    }
   };
 
   const getEffectiveStock = (productModel) => {

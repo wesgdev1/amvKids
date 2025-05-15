@@ -22,6 +22,7 @@ import { useModelWithColors } from "../../domain/models/useModels";
 import styled from "@emotion/styled";
 import { keyframes, css } from "@emotion/react";
 import { useCartCurvas } from "../../store/curvas";
+import { useProfile } from "../../domain/auth/useProfile";
 
 // Definir la animación de "shake"
 const shakeAnimation = keyframes`
@@ -73,6 +74,8 @@ export const NavBarComponent = () => {
   const { user, logout } = useContext(AuthContext);
   // Obtener los datos de modelos con colores
   const { data: modelsData, loading, error } = useModelWithColors();
+
+  const { data: dataProfile, loading: loadingProfile } = useProfile(user?.id);
 
   const cerrarsesion = () => {
     logout();
