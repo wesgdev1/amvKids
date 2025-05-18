@@ -1,9 +1,14 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
 import { Accordion, Form, Offcanvas } from "react-bootstrap";
-import { ButtonStyled } from "./StyledComponents";
+import {
+  ButtonStyled,
+  FilterAccordion,
+  FilterCheckbox,
+  FilterContainer,
+  FilterBadge,
+} from "./StyledComponents";
 import { OffcanvasBSfilter } from "../header/StyledComponents";
-import styled from "@emotion/styled";
 
 export const Filter = ({
   data,
@@ -75,20 +80,6 @@ export const Filter = ({
 
   const promociones = ["Promociones"];
 
-  const OfferBadgeStyled = styled.span`
-    position: absolute;
-    top: -5px;
-    right: -30px;
-    background-color: #ffc107;
-    color: #343a40;
-    padding: 2px 6px;
-    font-size: 0.65em;
-    font-weight: bold;
-    border-radius: 0.2rem;
-    line-height: 1;
-    z-index: 10;
-  `;
-
   return (
     <>
       <ButtonStyled variant="primary" onClick={handleShow} className="me-2">
@@ -99,117 +90,122 @@ export const Filter = ({
           <Offcanvas.Title>Filtros</Offcanvas.Title>
         </Offcanvas.Header>
         <OffcanvasBSfilter>
-          <div className="bg-gray-100 p-8 rounded-lg shadow-lg ">
-            <Accordion defaultActiveKey="1" className="mb-4">
+          <FilterContainer>
+            <FilterAccordion defaultActiveKey="1" className="mb-4">
               <Accordion.Item eventKey="0">
                 <Accordion.Header>Ofertas</Accordion.Header>
                 <Accordion.Body>
-                  {promociones.map((marca) => (
-                    <div
-                      key={marca}
-                      style={{
-                        position: "relative",
-                        display: "inline-block",
-                        marginRight: "10px",
-                      }}
-                    >
+                  <FilterCheckbox>
+                    {promociones.map((marca) => (
+                      <div
+                        key={marca}
+                        style={{
+                          position: "relative",
+                          display: "inline-block",
+                          marginRight: "10px",
+                        }}
+                      >
+                        <Form.Check
+                          type={`checkbox`}
+                          id={`default-${marca}`}
+                          label={marca}
+                          checked={checkFilter[marca] || false}
+                          onChange={() => handleFilter(event, marca, "promo")}
+                        />
+                        <FilterBadge>Ofertas</FilterBadge>
+                      </div>
+                    ))}
+                  </FilterCheckbox>
+                </Accordion.Body>
+              </Accordion.Item>
+            </FilterAccordion>
+
+            <FilterAccordion defaultActiveKey="1" className="mb-4">
+              <Accordion.Item eventKey="0">
+                <Accordion.Header>Marca</Accordion.Header>
+                <Accordion.Body>
+                  <FilterCheckbox>
+                    {marcasUnicas.map((marca) => (
                       <Form.Check
                         key={marca}
                         type={`checkbox`}
                         id={`default-${marca}`}
                         label={marca}
                         checked={checkFilter[marca] || false}
-                        onChange={() => handleFilter(event, marca, "promo")}
-                        // onClick={handleClose}
+                        onChange={() => handleFilter(event, marca, "marca")}
                       />
-                      <OfferBadgeStyled>Oferta</OfferBadgeStyled>
-                    </div>
-                  ))}
+                    ))}
+                  </FilterCheckbox>
                 </Accordion.Body>
               </Accordion.Item>
-            </Accordion>
-            <Accordion defaultActiveKey="1" className="mb-4">
-              <Accordion.Item eventKey="0">
-                <Accordion.Header>Marca</Accordion.Header>
-                <Accordion.Body>
-                  {marcasUnicas.map((marca) => (
-                    <Form.Check
-                      key={marca}
-                      type={`checkbox`}
-                      id={`default-${marca}`}
-                      label={marca}
-                      checked={checkFilter[marca] || false}
-                      onChange={() => handleFilter(event, marca, "marca")}
-                      // onClick={handleClose}
-                    />
-                  ))}
-                </Accordion.Body>
-              </Accordion.Item>
-            </Accordion>
+            </FilterAccordion>
 
-            <Accordion>
+            <FilterAccordion>
               <Accordion.Item eventKey="1" className="mb-4">
                 <Accordion.Header>Tallas</Accordion.Header>
                 <Accordion.Body>
-                  {uniqueSizes.map((talla) => (
-                    <Form.Check
-                      key={talla}
-                      type={`checkbox`}
-                      id={`default-${talla}`}
-                      label={talla}
-                      checked={checkFilter[talla] || false}
-                      onChange={() =>
-                        handleFilter(event, talla.toString(), "talla")
-                      }
-                      // onClick={handleClose}
-                    />
-                  ))}
+                  <FilterCheckbox>
+                    {uniqueSizes.map((talla) => (
+                      <Form.Check
+                        key={talla}
+                        type={`checkbox`}
+                        id={`default-${talla}`}
+                        label={talla}
+                        checked={checkFilter[talla] || false}
+                        onChange={() =>
+                          handleFilter(event, talla.toString(), "talla")
+                        }
+                      />
+                    ))}
+                  </FilterCheckbox>
                 </Accordion.Body>
               </Accordion.Item>
-            </Accordion>
+            </FilterAccordion>
 
-            <Accordion>
+            <FilterAccordion>
               <Accordion.Item eventKey="1" className="mb-4">
                 <Accordion.Header>Color</Accordion.Header>
                 <Accordion.Body>
-                  {basicColors.map((color) => (
-                    <Form.Check
-                      key={color}
-                      type={`checkbox`}
-                      id={`default-${color}`}
-                      label={color}
-                      checked={
-                        checkFilter[color] ||
-                        checkFilter[color.toLowerCase()] ||
-                        false
-                      }
-                      onChange={() => handleFilter(event, color, "color")}
-                      // onClick={handleClose}
-                    />
-                  ))}
+                  <FilterCheckbox>
+                    {basicColors.map((color) => (
+                      <Form.Check
+                        key={color}
+                        type={`checkbox`}
+                        id={`default-${color}`}
+                        label={color}
+                        checked={
+                          checkFilter[color] ||
+                          checkFilter[color.toLowerCase()] ||
+                          false
+                        }
+                        onChange={() => handleFilter(event, color, "color")}
+                      />
+                    ))}
+                  </FilterCheckbox>
                 </Accordion.Body>
               </Accordion.Item>
-            </Accordion>
+            </FilterAccordion>
 
-            <Accordion>
+            <FilterAccordion>
               <Accordion.Item eventKey="1" className="mb-4">
                 <Accordion.Header>Genero</Accordion.Header>
                 <Accordion.Body>
-                  {genres.map((gender) => (
-                    <Form.Check
-                      key={gender}
-                      type={`checkbox`}
-                      id={`default-${gender}`}
-                      label={gender}
-                      checked={checkFilter[gender] || false}
-                      onChange={() => handleFilter(event, gender, "genero")}
-                      // onClick={handleClose}
-                    />
-                  ))}
+                  <FilterCheckbox>
+                    {genres.map((gender) => (
+                      <Form.Check
+                        key={gender}
+                        type={`checkbox`}
+                        id={`default-${gender}`}
+                        label={gender}
+                        checked={checkFilter[gender] || false}
+                        onChange={() => handleFilter(event, gender, "genero")}
+                      />
+                    ))}
+                  </FilterCheckbox>
                 </Accordion.Body>
               </Accordion.Item>
-            </Accordion>
-          </div>
+            </FilterAccordion>
+          </FilterContainer>
         </OffcanvasBSfilter>
         <div className="d-flex justify-content-center mt-4 mb-4">
           <ButtonStyled
