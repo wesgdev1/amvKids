@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Accordion, Form, Offcanvas } from "react-bootstrap";
 import { ButtonStyled } from "./StyledComponents";
 import { OffcanvasBSfilter } from "../header/StyledComponents";
+import styled from "@emotion/styled";
 
 export const Filter = ({
   data,
@@ -72,6 +73,22 @@ export const Filter = ({
     "Verde",
   ];
 
+  const promociones = ["Promociones"];
+
+  const OfferBadgeStyled = styled.span`
+    position: absolute;
+    top: -5px;
+    right: -30px;
+    background-color: #ffc107;
+    color: #343a40;
+    padding: 2px 6px;
+    font-size: 0.65em;
+    font-weight: bold;
+    border-radius: 0.2rem;
+    line-height: 1;
+    z-index: 10;
+  `;
+
   return (
     <>
       <ButtonStyled variant="primary" onClick={handleShow} className="me-2">
@@ -83,6 +100,34 @@ export const Filter = ({
         </Offcanvas.Header>
         <OffcanvasBSfilter>
           <div className="bg-gray-100 p-8 rounded-lg shadow-lg ">
+            <Accordion defaultActiveKey="1" className="mb-4">
+              <Accordion.Item eventKey="0">
+                <Accordion.Header>Ofertas</Accordion.Header>
+                <Accordion.Body>
+                  {promociones.map((marca) => (
+                    <div
+                      key={marca}
+                      style={{
+                        position: "relative",
+                        display: "inline-block",
+                        marginRight: "10px",
+                      }}
+                    >
+                      <Form.Check
+                        key={marca}
+                        type={`checkbox`}
+                        id={`default-${marca}`}
+                        label={marca}
+                        checked={checkFilter[marca] || false}
+                        onChange={() => handleFilter(event, marca, "promo")}
+                        // onClick={handleClose}
+                      />
+                      <OfferBadgeStyled>Oferta</OfferBadgeStyled>
+                    </div>
+                  ))}
+                </Accordion.Body>
+              </Accordion.Item>
+            </Accordion>
             <Accordion defaultActiveKey="1" className="mb-4">
               <Accordion.Item eventKey="0">
                 <Accordion.Header>Marca</Accordion.Header>

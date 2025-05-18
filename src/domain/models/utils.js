@@ -8,6 +8,12 @@ export const generateFilterFormat = (filters) => {
   let colores = filters.color;
   let tallas = filters.talla;
   let genero = filters.genero;
+  let promociones = filters.promo;
+
+  if (promociones !== undefined) {
+    promociones = reemplazarEspacios(promociones);
+    query += `&filtersPromo=${promociones}`;
+  }
 
   if (marcas !== undefined) {
     marcas = reemplazarEspacios(marcas);
