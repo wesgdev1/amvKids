@@ -1,6 +1,10 @@
 import { Form, Spinner } from "react-bootstrap";
 import { useState, useEffect } from "react";
-import { StatsContainerStyled, StatCardStyled } from "./StyledComponents";
+import {
+  StatsContainerStyled,
+  StatCardStyled,
+  StatCardGraficos,
+} from "./StyledComponents";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { es } from "date-fns/locale";
@@ -14,6 +18,7 @@ import {
   useParesVendidos,
   useModelosMasVendidos,
   useInfoUtilidades,
+  useInfoUtilidadesGraficos,
 } from "../../domain/reports/useReports";
 import {
   format,
@@ -24,6 +29,27 @@ import {
   startOfMonth,
   endOfMonth,
 } from "date-fns";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import { Line } from "react-chartjs-2";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 export const ReportList = () => {
   const [selectedPeriod, setSelectedPeriod] = useState("day");
@@ -72,6 +98,17 @@ export const ReportList = () => {
     loading: isLoadingUtilidadesInfo,
     error: utilidadesInfoError,
   } = useInfoUtilidades(queryStartDate, queryEndDate);
+
+  const {
+    data: utilidadesInfoGraficos,
+    loading: isLoadingUtilidadesInfoGraficos,
+    error: utilidadesInfoErrorGraficos,
+  } = useInfoUtilidadesGraficos(queryStartDate, queryEndDate);
+
+  console.log(
+    "ReportList: utilidadesInfoGraficos recibido del hook:",
+    utilidadesInfoGraficos
+  );
 
   const handleDateChange = (dates) => {
     const [newStart, newEnd] = dates;
@@ -182,6 +219,135 @@ export const ReportList = () => {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     });
+  };
+
+  const getDateFormat = (fecha) => {
+    const [year, month, day] = fecha.split("-").map(Number);
+    const date = new Date(year, month - 1, day);
+    const now = new Date();
+    const diffTime = Math.abs(now - date);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays <= 7) {
+      return format(date, "dd/MM");
+    } else if (diffDays <= 31) {
+      return format(date, "dd/MM");
+    } else if (diffDays <= 365) {
+      return format(date, "MMM yyyy", { locale: es });
+    } else {
+      return format(date, "yyyy");
+    }
+  };
+
+  const chartData = {
+    labels:
+      utilidadesInfoGraficos?.utilidadesPorDia?.map((item) =>
+        getDateFormat(item.fecha)
+      ) || [],
+    datasets: [
+      {
+        label: "Utilidad Neta",
+        data:
+          utilidadesInfoGraficos?.utilidadesPorDia?.map(
+            (item) => item.utilidadNeta
+          ) || [],
+        borderColor: "rgb(75, 192, 192)",
+        backgroundColor: "rgba(75, 192, 192, 0.5)",
+        tension: 0.4,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+      },
+      {
+        label: "Utilidad Bruta",
+        data:
+          utilidadesInfoGraficos?.utilidadesPorDia?.map(
+            (item) => item.utilidadBruta
+          ) || [],
+        borderColor: "rgb(255, 99, 132)",
+        backgroundColor: "rgba(255, 99, 132, 0.5)",
+        tension: 0.4,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+      },
+    ],
+  };
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: {
+      mode: "index",
+      intersect: false,
+    },
+    plugins: {
+      legend: {
+        position: "top",
+        labels: {
+          color: "white",
+          font: {
+            size: 12,
+          },
+          usePointStyle: true,
+          pointStyle: "circle",
+        },
+      },
+      tooltip: {
+        callbacks: {
+          title: function (context) {
+            const fecha =
+              utilidadesInfoGraficos?.utilidadesPorDia[context[0].dataIndex]
+                .fecha;
+            const [year, month, day] = fecha.split("-").map(Number);
+            const date = new Date(year, month - 1, day);
+            return format(date, "dd/MM/yyyy");
+          },
+          label: function (context) {
+            let label = context.dataset.label || "";
+            if (label) {
+              label += ": ";
+            }
+            if (context.parsed.y !== null) {
+              label += new Intl.NumberFormat("es-CO", {
+                style: "currency",
+                currency: "COP",
+                minimumFractionDigits: 0,
+              }).format(context.parsed.y);
+            }
+            return label;
+          },
+        },
+      },
+    },
+    scales: {
+      y: {
+        ticks: {
+          color: "white",
+          callback: function (value) {
+            return new Intl.NumberFormat("es-CO", {
+              style: "currency",
+              currency: "COP",
+              minimumFractionDigits: 0,
+              notation: "compact",
+            }).format(value);
+          },
+        },
+        grid: {
+          color: "rgba(255, 255, 255, 0.1)",
+        },
+      },
+      x: {
+        ticks: {
+          color: "white",
+          maxRotation: 45,
+          minRotation: 45,
+          autoSkip: true,
+          maxTicksLimit: 10,
+        },
+        grid: {
+          color: "rgba(255, 255, 255, 0.1)",
+        },
+      },
+    },
   };
 
   return (
@@ -560,6 +726,43 @@ export const ReportList = () => {
           )}
         </StatCardStyled>
       </StatsContainerStyled>
+
+      <StatCardGraficos>
+        {isLoadingUtilidadesInfoGraficos ? (
+          <div className="loading-container">
+            <Spinner animation="border" size="lg" variant="light" />
+          </div>
+        ) : utilidadesInfoErrorGraficos ? (
+          <div className="error-container">
+            <i className="bi bi-exclamation-triangle-fill text-warning"></i>
+            <div className="stat-label text-center">
+              Error al cargar gráfico de utilidades
+              {utilidadesInfoErrorGraficos.message && (
+                <small className="d-block">
+                  ({utilidadesInfoErrorGraficos.message})
+                </small>
+              )}
+            </div>
+          </div>
+        ) : utilidadesInfoGraficos?.utilidadesPorDia?.length > 0 ? (
+          <>
+            <div className="grafico-header">
+              <i className="bi bi-graph-up-arrow"></i>
+              <h5>Evolución de Utilidades</h5>
+            </div>
+            <div className="grafico-container">
+              <Line data={chartData} options={chartOptions} />
+            </div>
+          </>
+        ) : (
+          <div className="no-data-container">
+            <i className="bi bi-info-circle-fill"></i>
+            <div className="stat-label text-center">
+              No hay datos de utilidad para el periodo seleccionado.
+            </div>
+          </div>
+        )}
+      </StatCardGraficos>
     </div>
   );
 };

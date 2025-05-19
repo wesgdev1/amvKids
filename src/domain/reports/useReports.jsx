@@ -9,6 +9,7 @@ import {
   getParesVendidos,
   getModelosMasVendidos,
   getInfoUtilidades,
+  getInfoUtilidadesGraficos,
 } from "../../api/reports/reports";
 
 export const useCountPairs = () => {
@@ -298,6 +299,43 @@ export const useInfoUtilidades = (startDate, endDate) => {
   useEffect(() => {
     if (startDate && endDate) {
       loadInfoUtilidades(startDate, endDate);
+    }
+  }, [startDate, endDate]);
+
+  return { data, loading, error };
+};
+
+export const useInfoUtilidadesGraficos = (startDate, endDate) => {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const loadInfoUtilidadesGraficos = async (start, end) => {
+    if (!start || !end) {
+      setData(null);
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const payload = { startDate: start, endDate: end };
+      const response = await getInfoUtilidadesGraficos(payload);
+
+      setData(response.data);
+    } catch (error) {
+      console.error("Hook: Error fetching period orders:", error);
+      setError(error);
+      setData(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (startDate && endDate) {
+      loadInfoUtilidadesGraficos(startDate, endDate);
     }
   }, [startDate, endDate]);
 

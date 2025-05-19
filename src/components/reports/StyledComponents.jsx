@@ -71,3 +71,79 @@ export const StatCardStyled = styled.div`
     opacity: 0.9;
   }
 `;
+
+// Tarjeta para gráficos de utilidades
+export const StatCardGraficos = styled.div`
+  background: linear-gradient(135deg, #1a2a6c 0%, #b21f1f 50%, #fdbb2d 100%);
+  border-radius: 15px;
+  padding: 2rem;
+  color: white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  margin: 2rem 0;
+  width: 100%;
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+
+  .grafico-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+
+    i {
+      font-size: 2.5rem;
+      margin-right: 1rem;
+      opacity: 0.8;
+    }
+
+    h5 {
+      margin: 0;
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+  }
+
+  .grafico-container {
+    flex: 1;
+    min-height: 70vh;
+    position: relative;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 1rem;
+  }
+
+  .loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+
+  .error-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+
+    i {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      opacity: 0.8;
+    }
+  }
+
+  .no-data-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+
+    i {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+  }
+`;

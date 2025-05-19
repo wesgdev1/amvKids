@@ -93,3 +93,12 @@ export const getInfoUtilidades = async (payload) => {
     return Promise.reject(error);
   }
 };
+
+export const getInfoUtilidadesGraficos = async (payload) => {
+  try {
+    const { data: response } = await http.post(`/orders/graficos`, payload);
+    return { data: response.data };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
