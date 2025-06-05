@@ -293,14 +293,14 @@ export const LoginContainerStyled = styled.div`
 `;
 
 export const LoginContainerStyled2 = styled.div`
+  padding-top: 30px; /* Espacio superior para evitar superposición con el header */
+  padding-bottom: 30px; /* Espacio inferior para evitar superposición con el footer */
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
   height: 100%;
-  /* Aumentar padding vertical, quitar min-height y position/z-index */
-  position: relative; /* Mantenemos relative para posible posicionamiento absoluto del fondo si es necesario */
-  /* Para contener el fondo */
+  background-color: rgba(0, 0, 0, 0.9); /* Fondo semi-transparente */
 `;
 // Nuevo estilo específico para el formulario de Login, sin posición absoluta
 export const LoginFormStyled = styled.form(() => ({

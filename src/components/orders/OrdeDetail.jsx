@@ -207,7 +207,130 @@ export const OrdeDetail = () => {
               </div>
             )}
             <Card.Header>
-              Total: {data.total.toLocaleString("es-CO")} COP
+              <div className="d-flex flex-column gap-2">
+                <div className="d-flex justify-content-between align-items-center">
+                  <span className="fw-bold fs-5">
+                    Total: {data.total.toLocaleString("es-CO")} COP
+                  </span>
+                </div>
+
+                {/* Información de envío */}
+                {(data.formaOrder ||
+                  data.directionOrder ||
+                  data.costoEnvio !== undefined) && (
+                  <div className="mt-3 p-3 bg-light rounded border">
+                    <h6 className="mb-2 text-primary">
+                      <i className="bi bi-truck me-2"></i>
+                      Información de Envío
+                    </h6>
+
+                    {/* Tipo de envío */}
+                    <div className="mb-2">
+                      <strong>Tipo de envío:</strong>
+                      {data.formaOrder ? (
+                        <span
+                          className={`badge ms-2 ${
+                            data.formaOrder === "contraentregaAnticipado"
+                              ? "bg-info"
+                              : data.formaOrder === "tienda"
+                              ? "bg-success"
+                              : data.formaOrder === "contraentrega"
+                              ? "bg-warning"
+                              : "bg-secondary"
+                          }`}
+                        >
+                          {data.formaOrder === "contraentregaAnticipado"
+                            ? "Contraentrega Pago Anticipado"
+                            : data.formaOrder === "tienda"
+                            ? "Recoger en Tienda"
+                            : data.formaOrder === "contraentrega"
+                            ? "Contraentrega"
+                            : data.formaOrder}
+                        </span>
+                      ) : (
+                        <span className="text-muted ms-2">
+                          No hay información
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Dirección de entrega */}
+                    <div className="mb-2">
+                      <strong>Dirección de entrega:</strong>
+                      {data.directionOrder && data.formaOrder !== "tienda" ? (
+                        <div className="text-muted mt-1">
+                          <i className="bi bi-geo-alt me-1"></i>
+                          {data.directionOrder}
+                        </div>
+                      ) : data.formaOrder === "tienda" ? (
+                        <div className="text-info mt-1">
+                          <i className="bi bi-shop me-1"></i>
+                          Recoger en tienda física
+                        </div>
+                      ) : (
+                        <span className="text-muted ms-2">
+                          No hay información
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Costo de envío */}
+                    <div className="mb-0">
+                      <strong>Costo de envío:</strong>
+                      {data.costoEnvio !== undefined &&
+                      data.costoEnvio !== null ? (
+                        <span
+                          className={`ms-2 ${
+                            data.costoEnvio === 0
+                              ? "text-success fw-bold"
+                              : "text-primary"
+                          }`}
+                        >
+                          {data.costoEnvio === 0
+                            ? "GRATIS"
+                            : `$${data.costoEnvio.toLocaleString("es-CO")} COP`}
+                        </span>
+                      ) : (
+                        <span className="text-muted ms-2">
+                          No hay información
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Mensajes contextuales */}
+                    {data.formaOrder === "contraentregaAnticipado" && (
+                      <div className="mt-2 p-2 bg-danger bg-opacity-10 border border-danger border-opacity-25 rounded">
+                        <small className="text-danger fw-bold">
+                          <i className="bi bi-exclamation-triangle me-1"></i>
+                          Cliente debe pagar inmediatamente para confirmar
+                        </small>
+                      </div>
+                    )}
+
+                    {data.formaOrder === "tienda" && (
+                      <div className="mt-2 p-2 bg-success bg-opacity-10 border border-success border-opacity-25 rounded">
+                        <small className="text-success fw-bold">
+                          <i className="bi bi-shop me-1"></i>
+                          Cliente recogerá en tienda física
+                        </small>
+                      </div>
+                    )}
+
+                    {/* Mensaje cuando no hay información completa */}
+                    {!data.formaOrder &&
+                      !data.directionOrder &&
+                      (data.costoEnvio === undefined ||
+                        data.costoEnvio === null) && (
+                        <div className="mt-2 p-2 bg-warning bg-opacity-10 border border-warning border-opacity-25 rounded">
+                          <small className="text-warning fw-bold">
+                            <i className="bi bi-info-circle me-1"></i>
+                            Información de envío no disponible
+                          </small>
+                        </div>
+                      )}
+                  </div>
+                )}
+              </div>
             </Card.Header>
             <Card.Body>
               <Card.Title>Productos</Card.Title>
@@ -385,6 +508,80 @@ export const OrdeDetail = () => {
                                 {/* No hay icono obvio */}
                                 {/* Puedes añadir más si Bold los soporta */}
                               </p>
+                            </div>
+                            <div className="mt-3">
+                              <button
+                                type="button"
+                                className="btn btn-success w-100 d-flex align-items-center justify-content-center gap-2"
+                                onClick={() => {
+                                  const phoneNumber = "573112728811"; // Número sin + y espacios
+
+                                  // Preparar información de la orden
+                                  const orderInfo = `
+🛍️ *Información de mi Pedido*
+
+📦 *Orden:* #${data.codigoOrder}
+💰 *Total:* ${data.total.toLocaleString("es-CO")} COP
+📊 *Estado:* ${data.state}
+${
+  data.formaOrder
+    ? `🚚 *Tipo de envío:* ${
+        data.formaOrder === "contraentregaAnticipado"
+          ? "Contraentrega Pago Anticipado"
+          : data.formaOrder === "tienda"
+          ? "Recoger en Tienda"
+          : data.formaOrder === "contraentrega"
+          ? "Contraentrega"
+          : data.formaOrder
+      }`
+    : ""
+}
+${
+  data.directionOrder && data.formaOrder !== "tienda"
+    ? `📍 *Dirección:* ${data.directionOrder}`
+    : ""
+}
+
+📋 *Productos:*
+${data.orderItems
+  .map(
+    (item) =>
+      `• ${item.quantity}x ${item.model.name} - Talla: ${item.size}${
+        item.model.color ? ` - Color: ${item.model.color}` : ""
+      }`
+  )
+  .join("\n")}
+
+${data.comments ? `💬 *Comentarios:* ${data.comments}` : ""}
+
+Necesito asesoría sobre este pedido que realicé.
+                                  `.trim();
+
+                                  // Codificar el mensaje para URL
+                                  const encodedMessage =
+                                    encodeURIComponent(orderInfo);
+
+                                  // Crear URL de WhatsApp
+                                  const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+
+                                  // Abrir WhatsApp
+                                  window.open(whatsappUrl, "_blank");
+                                }}
+                                style={{
+                                  backgroundColor: "#25D366",
+                                  borderColor: "#25D366",
+                                  fontSize: "0.95rem",
+                                  fontWeight: "500",
+                                  padding: "0.75rem 1rem",
+                                }}
+                              >
+                                <i className="bi bi-whatsapp fs-5"></i>
+                                <span>Hablar con un Asesor</span>
+                              </button>
+                              <small className="text-muted text-center d-block mt-2">
+                                <i className="bi bi-info-circle me-1"></i>
+                                Te ayudamos con cualquier duda sobre tu pedido
+                              </small>
                             </div>
                           </div>
                         )}

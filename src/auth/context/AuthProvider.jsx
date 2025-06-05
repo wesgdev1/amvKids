@@ -53,6 +53,26 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("user", JSON.stringify(user));
   };
 
+  const actualizarDirecciones = (direcciones) => {
+    const user = {
+      ...authState.user,
+      directions: [...authState.user.directions, direcciones],
+    };
+    setAuthState({ user });
+    localStorage.setItem("user", JSON.stringify(user));
+  };
+
+  const eliminarDireccion = (directionId) => {
+    const user = {
+      ...authState.user,
+      directions: authState.user.directions.filter(
+        (direction) => direction.id !== directionId
+      ),
+    };
+    setAuthState({ user });
+    localStorage.setItem("user", JSON.stringify(user));
+  };
+
   useEffect(() => {
     init();
   }, []);
@@ -67,6 +87,8 @@ export const AuthProvider = ({ children }) => {
         logout,
         cambiarImagen,
         actualizarDatosPersonales,
+        actualizarDirecciones,
+        eliminarDireccion,
       }}
     >
       {children}

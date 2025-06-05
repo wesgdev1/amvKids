@@ -42,3 +42,24 @@ export const updatePhotoUserProfile = async (userId, payload) => {
     return Promise.reject(error);
   }
 };
+
+export const editUserCreateDirection = async (payload) => {
+  try {
+    const { data: response, status } = await http.post(`/directions`, payload);
+
+    return { data: response.data, status };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+export const deleteDirection = async (directionId) => {
+  try {
+    const { data: response, status } = await http.delete(
+      `/directions/${directionId}`
+    );
+    return { data: response.data, status };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};

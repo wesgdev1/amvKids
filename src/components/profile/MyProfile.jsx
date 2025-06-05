@@ -9,6 +9,7 @@ import {
   ProfileTab,
   ProfileContent,
 } from "./StyledComponentes";
+import Directions from "./Directions";
 
 export const MyProfile = () => {
   const [activeTab, setActiveTab] = useState("datos");
@@ -19,6 +20,8 @@ export const MyProfile = () => {
         return <DatosPersonales />;
       case "contraseña":
         return <Contrasena />;
+      case "directions":
+        return <Directions />;
       case "foto":
         return <FotoPerfil />;
       default:
@@ -57,6 +60,14 @@ export const MyProfile = () => {
           >
             <i className="bi bi-camera me-2"></i>
             Foto de Perfil
+          </ProfileTab>
+
+          <ProfileTab
+            active={activeTab === "directions"}
+            onClick={() => setActiveTab("directions")}
+          >
+            <i className="bi bi-camera me-2"></i>
+            Direcciones
           </ProfileTab>
         </ProfileTabsContainer>
 

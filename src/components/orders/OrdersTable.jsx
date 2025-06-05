@@ -29,6 +29,59 @@ export const OrdersTable = ({ orders }) => {
     CanceladaAdmin: "bi bi-x-circle",
   };
 
+  const renderTipoEnvio = (formaOrder) => {
+    switch (formaOrder) {
+      case "contraentregaAnticipado":
+        return (
+          <div className="d-flex flex-column">
+            <span className="badge bg-info mb-1">
+              <i className="bi bi-credit-card me-1"></i>
+              Contraentrega Pago Anticipado
+            </span>
+            <small className="text-danger fw-bold">
+              <i className="bi bi-exclamation-triangle me-1"></i>
+              ¡Debes pagar inmediatamente!
+            </small>
+          </div>
+        );
+
+      case "tienda":
+        return (
+          <div className="d-flex flex-column">
+            <span className="badge bg-success mb-1">
+              <i className="bi bi-shop me-1"></i>
+              Recoger en Tienda
+            </span>
+            <small className="text-info">
+              <i className="bi bi-clock me-1"></i>
+              Te esperamos en nuestra tienda
+            </small>
+          </div>
+        );
+
+      case "contraentrega":
+        return (
+          <div className="d-flex flex-column">
+            <span className="badge bg-warning mb-1">
+              <i className="bi bi-cash-coin me-1"></i>
+              Contraentrega
+            </span>
+            <small className="text-muted">
+              <i className="bi bi-truck me-1"></i>
+              Pago al recibir el pedido
+            </small>
+          </div>
+        );
+
+      default:
+        return (
+          <span className="badge bg-secondary">
+            {formaOrder || "No especificado"}
+          </span>
+        );
+    }
+  };
+
   return (
     <div className="pt-4 ">
       {" "}
@@ -40,10 +93,14 @@ export const OrdersTable = ({ orders }) => {
             <th>Fecha</th>
             <th>Total</th>
             <th>Estado</th>
+            <th>Tipo de Envío</th>
             <th>
               <i className="bi bi-receipt-cutoff"></i>
             </th>
-            <th>Opciones</th>
+            <th className="text-center">
+              <i className="bi bi-search me-1"></i>
+              Detalle
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -81,6 +138,9 @@ export const OrdersTable = ({ orders }) => {
                     </span>
                   )}
                 </td>
+                <td className="text-center">
+                  {renderTipoEnvio(order.formaOrder)}
+                </td>
                 <td>
                   {order.paymentUrl ? (
                     <span
@@ -98,9 +158,19 @@ export const OrdersTable = ({ orders }) => {
                   )}
                 </td>
                 <td>
-                  <div className="flex justify-center gap-2">
-                    <ControlButton onClick={() => viewOrder(order)}>
-                      <i className="bi bi-eye-fill"></i>
+                  <div className="d-flex justify-content-center gap-2">
+                    <ControlButton
+                      onClick={() => viewOrder(order)}
+                      className="btn-sm btn-outline-info d-flex align-items-center"
+                      title={`Ver todos los detalles de la orden #${order.codigoOrder}`}
+                      style={{
+                        fontSize: "0.8rem",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      <i className="bi bi-file-text me-1"></i>
+                      <span className="d-none d-md-inline">Ver Detalle</span>
+                      <span className="d-md-none">Detalle</span>
                     </ControlButton>
                   </div>
                 </td>
@@ -110,8 +180,8 @@ export const OrdersTable = ({ orders }) => {
         </tbody>
         <tfoot>
           <tr>
-            <td colSpan="4">
-              <strong>Total Producto: {orders.length}</strong>
+            <td colSpan="8">
+              <strong>Total Órdenes: {orders.length}</strong>
             </td>
           </tr>
         </tfoot>

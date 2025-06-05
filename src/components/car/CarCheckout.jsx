@@ -8,18 +8,89 @@ import AddiWidget from "../payments/AddiWidget";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../auth/context/AuthContext";
 
-export const CarCheckout = ({ calcularTotal, dispatch, state }) => {
+export const CarCheckout = ({
+  calcularTotal,
+  calcularTotalConEnvio,
+  calcularCostoEnvio,
+  tipoEnvio,
+  direccionSeleccionada,
+  direccionesUsuario,
+  dispatch,
+  state,
+}) => {
   const navigate = useNavigate();
   const [comments, setComments] = useState("");
   const [loading, setLoading] = useState(false);
   const { user } = useContext(AuthContext);
 
+  const obtenerDireccionCompleta = () => {
+    console.log(direccionesUsuario);
+    console.log(direccionSeleccionada);
+    if (!tipoEnvio || tipoEnvio === "tienda") {
+      return null;
+    }
+
+    const direccion = direccionesUsuario.find(
+      (dir) => dir.id === direccionSeleccionada
+    );
+    console.log(direccion);
+    return direccion || null;
+  };
+
+  const obtenerNombreTipoEnvio = () => {
+    if (!tipoEnvio) {
+      return "Envío estándar";
+    }
+
+    switch (tipoEnvio) {
+      case "contraentrega":
+        return "Contraentrega";
+      case "contraentregaAnticipado":
+        return "Contraentrega Pago Anticipado";
+      case "tienda":
+      default:
+        return "Recoger en tienda";
+    }
+  };
+
+  const validarPedido = () => {
+    // Solo validar direcciones para usuarios tipo Cliente con envío
+    if (tipoEnvio && tipoEnvio !== "tienda" && !direccionSeleccionada) {
+      Swal.fire({
+        icon: "warning",
+        title: "Dirección requerida",
+        text: "Por favor selecciona una dirección de entrega para continuar.",
+        confirmButtonText: "Entendido",
+      });
+      return false;
+    }
+    return true;
+  };
+
   const handleCheckout = async () => {
+    if (!validarPedido()) {
+      return;
+    }
+
     try {
       setLoading(true);
+
+      const direccionEnvio = obtenerDireccionCompleta();
+
       const payload = {
-        total: calcularTotal(),
+        total: calcularTotalConEnvio(),
         comments,
+        formaOrder: tipoEnvio || "estandar",
+        directionOrder: direccionEnvio
+          ? direccionEnvio.address +
+            "- " +
+            direccionEnvio.city +
+            " " +
+            direccionEnvio.state +
+            " " +
+            direccionEnvio.zipCode
+          : null,
+        costoEnvio: calcularCostoEnvio(),
         items: state.map((element) => {
           return {
             modelId: element.id,
@@ -68,21 +139,60 @@ export const CarCheckout = ({ calcularTotal, dispatch, state }) => {
   return (
     <CardChekoutStyle>
       <Card.Body>
-        <Card.Text>Cuenta </Card.Text>
+        <Card.Text>Resumen del pedido</Card.Text>
+
+        {/* Información del tipo de envío - Solo para Clientes */}
+        {tipoEnvio && (
+          <div className="mb-3 p-2 bg-light rounded">
+            <small className="text-muted d-block">Tipo de envío:</small>
+            <strong className="text-primary">{obtenerNombreTipoEnvio()}</strong>
+            {tipoEnvio !== "tienda" && direccionSeleccionada && (
+              <div className="mt-1 text-black">
+                <small className="text-muted d-block">Dirección:</small>
+                <small>
+                  {obtenerDireccionCompleta()?.address},{" "}
+                  {obtenerDireccionCompleta()?.city},{" "}
+                  {obtenerDireccionCompleta()?.state}{" "}
+                  {obtenerDireccionCompleta()?.zipCode}
+                </small>
+              </div>
+            )}
+          </div>
+        )}
+
         <div className="d-flex justify-content-between">
-          <p className="mb-2">Subtotal</p>
+          <p className="mb-2">Subtotal productos</p>
           <p className="mb-2">${calcularTotal().toLocaleString("es-CO")}</p>
         </div>
+
+        {/* Solo mostrar costo de envío si hay información de envío */}
+        {tipoEnvio && (
+          <div className="d-flex justify-content-between">
+            <p className="mb-2">Costo de envío</p>
+            <p className="mb-2">
+              {calcularCostoEnvio() === 0 ? (
+                <span className="text-success">GRATIS</span>
+              ) : (
+                `$${calcularCostoEnvio().toLocaleString("es-CO")}`
+              )}
+            </p>
+          </div>
+        )}
+
         <div className="d-flex justify-content-between mb-4">
           <p className="mb-2">Descuento</p>
-
           <p className="mb-2">${0}</p>
         </div>
-        <div className="d-flex justify-content-between mb-4">
-          <p className="mb-2">Total</p>
 
-          <p className="mb-2">${calcularTotal().toLocaleString("es-CO")}</p>
+        <hr />
+
+        <div className="d-flex justify-content-between mb-4">
+          <p className="mb-2 fw-bold">Total a pagar</p>
+          <p className="mb-2 fw-bold text-primary">
+            ${calcularTotalConEnvio().toLocaleString("es-CO")}
+          </p>
         </div>
+
         <Card.Text>Comentarios</Card.Text>
         <textarea
           className="w-100 text-black px-2 form-control mb-3"
@@ -122,7 +232,10 @@ export const CarCheckout = ({ calcularTotal, dispatch, state }) => {
         {user?.tipoUsuario !== "Reventa" &&
         user?.tipoUsuario !== "Tienda Aliada" ? (
           <>
-            <AddiWidget price={String(calcularTotal())} allySlug="amv" />
+            <AddiWidget
+              price={String(calcularTotalConEnvio())}
+              allySlug="amv"
+            />
             <div className="mt-3 p-3 rounded-lg bg-light border text-center shadow-sm">
               <p className="text-muted small mb-0">
                 <i className="bi bi-info-circle me-2"></i>
