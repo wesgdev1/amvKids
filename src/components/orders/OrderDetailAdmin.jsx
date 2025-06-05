@@ -703,6 +703,82 @@ export const OrdeDetailAdmin = () => {
     });
   };
 
+  const updateOrderStatus = async (shouldPrint) => {
+    try {
+      const result = await Swal.fire({
+        title: "Pedido preparado",
+        text: "¿Está seguro que el pedido está listo para ser entregado?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si",
+        cancelButtonText: "No",
+      });
+
+      if (result.isConfirmed) {
+        const values = {
+          areReady: true,
+        };
+
+        const updateResult = await updateOrderState(id, values);
+
+        if (updateResult) {
+          // Imprimir el recibo solo si se solicita
+          if (shouldPrint) {
+            try {
+              // Mostrar indicador de carga mientras se imprime
+              Swal.fire({
+                title: "Imprimiendo recibo...",
+                text: "Por favor espere",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                  Swal.showLoading();
+                },
+              });
+
+              // Esperar a que se complete la impresión
+              await printReceipt(data);
+
+              // Cerrar el indicador de carga y mostrar mensaje de éxito
+              Swal.fire({
+                icon: "success",
+                title: "Orden Actualizada",
+                text: "La orden se actualizó correctamente y se ha impreso el recibo",
+              });
+            } catch (printError) {
+              Swal.fire({
+                icon: "error",
+                title: "Error de impresión",
+                text: "No se pudo imprimir el recibo. Verifique la conexión con la impresora.",
+              });
+            }
+          } else {
+            Swal.fire({
+              icon: "success",
+              title: "Orden Actualizada",
+              text: "La orden se actualizó correctamente",
+            });
+          }
+
+          refresh(id);
+        }
+      }
+    } catch (error) {
+      console.error("Error al actualizar orden:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Error al actualizar la orden",
+      });
+    }
+  };
+
+  const handlePedidoEntregadoConImpresion = () => {
+    updateOrderStatus(true);
+  };
+
   return (
     <div className="pt-5 px-4">
       <h4 className="pb-3">
@@ -1055,6 +1131,10 @@ export const OrdeDetailAdmin = () => {
               >
                 <i className="bi bi-printer me-2"></i>
                 Re-imprimir
+              </ButtonCardStyled>
+              <ButtonCardStyled onClick={handlePedidoEntregadoConImpresion}>
+                <i className="bi bi-printer me-2"></i>
+                Marcar listo e imprimir
               </ButtonCardStyled>
               <ButtonCardStyled
                 onClick={handleShowDiscountModal}
