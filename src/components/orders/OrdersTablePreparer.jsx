@@ -30,6 +30,59 @@ export const OrdersTablePreparer = ({ orders }) => {
     CanceladaAdmin: "bi bi-x-circle",
   };
 
+  const renderTipoEnvio = (formaOrder) => {
+    switch (formaOrder) {
+      case "contraentregaAnticipado":
+        return (
+          <div className="d-flex flex-column">
+            <span className="badge bg-info mb-1">
+              <i className="bi bi-credit-card me-1"></i>
+              Contraentrega Pago Anticipado
+            </span>
+            <small className="text-danger fw-bold">
+              <i className="bi bi-exclamation-triangle me-1"></i>
+              El cliente debe pagar inmediatamente
+            </small>
+          </div>
+        );
+
+      case "tienda":
+        return (
+          <div className="d-flex flex-column">
+            <span className="badge bg-success mb-1">
+              <i className="bi bi-shop me-1"></i>
+              Recoger en Tienda
+            </span>
+            <small className="text-info">
+              <i className="bi bi-clock me-1"></i>
+              El cliente ira a la tienda a recoger el pedido
+            </small>
+          </div>
+        );
+
+      case "contraentrega":
+        return (
+          <div className="d-flex flex-column">
+            <span className="badge bg-warning mb-1">
+              <i className="bi bi-cash-coin me-1"></i>
+              Contraentrega
+            </span>
+            <small className="text-muted">
+              <i className="bi bi-truck me-1"></i>
+              El cliente debe pagar al recibir el pedido
+            </small>
+          </div>
+        );
+
+      default:
+        return (
+          <span className="badge bg-secondary">
+            {formaOrder || "No especificado"}
+          </span>
+        );
+    }
+  };
+
   return (
     <div className="pt-4 ">
       {" "}
@@ -43,6 +96,7 @@ export const OrdersTablePreparer = ({ orders }) => {
             <th>Fecha</th>
             <th>Total</th>
             <th>Estado</th>
+            <th>Tipo de Envio</th>
             <th>
               <i className="bi bi-receipt-cutoff"></i>
             </th>
@@ -95,6 +149,10 @@ export const OrdersTablePreparer = ({ orders }) => {
                     </>
                   )}
                 </td>
+
+                <td className="text-center">
+                  {renderTipoEnvio(order.formaOrder)}
+                </td>
                 <td>
                   {order.paymentUrl ? (
                     <span
@@ -111,6 +169,7 @@ export const OrdersTablePreparer = ({ orders }) => {
                     <span>-</span>
                   )}
                 </td>
+
                 <td>
                   <div className="flex justify-center gap-2">
                     <ControlButton onClick={() => viewOrder(order)}>

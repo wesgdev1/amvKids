@@ -80,7 +80,7 @@ export const CarCheckout = ({
       const payload = {
         total: calcularTotalConEnvio(),
         comments,
-        formaOrder: tipoEnvio || "estandar",
+        formaOrder: tipoEnvio || "Reventa-Aliado-Tienda",
         directionOrder: direccionEnvio
           ? direccionEnvio.address +
             "- " +

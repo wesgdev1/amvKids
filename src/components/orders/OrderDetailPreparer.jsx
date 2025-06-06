@@ -303,7 +303,130 @@ export const OrdeDetailPreparer = () => {
               )}
             </div>
             <Card.Header>
-              <strong> Total: {data.total.toLocaleString("es-CO")} COP</strong>
+              <div className="d-flex flex-column gap-2">
+                <div className="d-flex justify-content-between align-items-center">
+                  <span className="fw-bold fs-5">
+                    Total: {data.total.toLocaleString("es-CO")} COP
+                  </span>
+                </div>
+
+                {/* Información de envío */}
+                {(data.formaOrder ||
+                  data.directionOrder ||
+                  data.costoEnvio !== undefined) && (
+                  <div className="mt-3 p-3 bg-light rounded border">
+                    <h6 className="mb-2 text-primary">
+                      <i className="bi bi-truck me-2"></i>
+                      Información de Envío
+                    </h6>
+
+                    {/* Tipo de envío */}
+                    <div className="mb-2">
+                      <strong>Tipo de envío:</strong>
+                      {data.formaOrder ? (
+                        <span
+                          className={`badge ms-2 ${
+                            data.formaOrder === "contraentregaAnticipado"
+                              ? "bg-info"
+                              : data.formaOrder === "tienda"
+                              ? "bg-success"
+                              : data.formaOrder === "contraentrega"
+                              ? "bg-warning"
+                              : "bg-secondary"
+                          }`}
+                        >
+                          {data.formaOrder === "contraentregaAnticipado"
+                            ? "Contraentrega Pago Anticipado"
+                            : data.formaOrder === "tienda"
+                            ? "Recoger en Tienda"
+                            : data.formaOrder === "contraentrega"
+                            ? "Contraentrega"
+                            : data.formaOrder}
+                        </span>
+                      ) : (
+                        <span className="text-muted ms-2">
+                          No hay información
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Dirección de entrega */}
+                    <div className="mb-2">
+                      <strong>Dirección de entrega:</strong>
+                      {data.directionOrder && data.formaOrder !== "tienda" ? (
+                        <div className="text-muted mt-1">
+                          <i className="bi bi-geo-alt me-1"></i>
+                          {data.directionOrder}
+                        </div>
+                      ) : data.formaOrder === "tienda" ? (
+                        <div className="text-info mt-1">
+                          <i className="bi bi-shop me-1"></i>
+                          Recoger en tienda física
+                        </div>
+                      ) : (
+                        <span className="text-muted ms-2">
+                          No hay información
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Costo de envío */}
+                    <div className="mb-0">
+                      <strong>Costo de envío:</strong>
+                      {data.costoEnvio !== undefined &&
+                      data.costoEnvio !== null ? (
+                        <span
+                          className={`ms-2 ${
+                            data.costoEnvio === 0
+                              ? "text-success fw-bold"
+                              : "text-primary"
+                          }`}
+                        >
+                          {data.costoEnvio === 0
+                            ? "GRATIS"
+                            : `$${data.costoEnvio.toLocaleString("es-CO")} COP`}
+                        </span>
+                      ) : (
+                        <span className="text-muted ms-2">
+                          No hay información
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Mensajes contextuales */}
+                    {data.formaOrder === "contraentregaAnticipado" && (
+                      <div className="mt-2 p-2 bg-danger bg-opacity-10 border border-danger border-opacity-25 rounded">
+                        <small className="text-danger fw-bold">
+                          <i className="bi bi-exclamation-triangle me-1"></i>
+                          Cliente debe pagar inmediatamente para confirmar
+                        </small>
+                      </div>
+                    )}
+
+                    {data.formaOrder === "tienda" && (
+                      <div className="mt-2 p-2 bg-success bg-opacity-10 border border-success border-opacity-25 rounded">
+                        <small className="text-success fw-bold">
+                          <i className="bi bi-shop me-1"></i>
+                          Cliente recogerá en tienda física
+                        </small>
+                      </div>
+                    )}
+
+                    {/* Mensaje cuando no hay información completa */}
+                    {!data.formaOrder &&
+                      !data.directionOrder &&
+                      (data.costoEnvio === undefined ||
+                        data.costoEnvio === null) && (
+                        <div className="mt-2 p-2 bg-warning bg-opacity-10 border border-warning border-opacity-25 rounded">
+                          <small className="text-warning fw-bold">
+                            <i className="bi bi-info-circle me-1"></i>
+                            Información de envío no disponible
+                          </small>
+                        </div>
+                      )}
+                  </div>
+                )}
+              </div>
             </Card.Header>
             <Card.Body>
               <Card.Title className="fw-bold">
