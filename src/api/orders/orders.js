@@ -27,6 +27,16 @@ export const getAllOrders = async () => {
   }
 };
 
+export const getAllOrdersWithParams = async (payload) => {
+  console.log("payload", payload);
+  try {
+    const { data: response } = await http.post("/orders/search", payload);
+    return { data: response.data };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 export const getAllPreparer = async () => {
   try {
     const { data: response } = await http.get("/orders/preparer");

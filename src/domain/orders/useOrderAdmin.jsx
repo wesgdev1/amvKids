@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { getAllOrders } from "../../api/orders/orders";
+import { getAllOrders, getAllOrdersWithParams } from "../../api/orders/orders";
 
-export const useOrderAdmin = () => {
+export const useOrderAdmin = (searchParams = {}) => {
   const [data, setData] = useState();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -11,7 +11,20 @@ export const useOrderAdmin = () => {
     setError("");
 
     try {
-      const response = await getAllOrders();
+      const { name, size, color } = searchParams;
+      const hasSearchParams = name || size || color;
+
+      let response;
+      if (hasSearchParams) {
+        const payload = {
+          ...(name && { name }),
+          ...(size && { size }),
+          ...(color && { color }),
+        };
+        response = await getAllOrdersWithParams(payload);
+      } else {
+        response = await getAllOrders();
+      }
 
       setData(response.data);
     } catch (error) {
@@ -23,7 +36,7 @@ export const useOrderAdmin = () => {
 
   useEffect(() => {
     cargarOrders();
-  }, []);
+  }, [searchParams.name, searchParams.size, searchParams.color]);
 
   return { data, loading, error, cargarOrders };
 };
