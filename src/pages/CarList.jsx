@@ -1,4 +1,4 @@
-import { Card, Col, Row, Button, Image, Alert } from "react-bootstrap";
+import { Card, Col, Row, Button, Image, Alert, Form } from "react-bootstrap";
 import { useCart } from "../store";
 import { CarCheckout } from "../components/car/CarCheckout";
 import { CardElements } from "../components/car/CardElements";
@@ -15,6 +15,8 @@ export const CarList = () => {
   // Estados para manejo de envío
   const [tipoEnvio, setTipoEnvio] = useState("tienda");
   const [direccionSeleccionada, setDireccionSeleccionada] = useState("");
+  const [cedulaNit, setCedulaNit] = useState("");
+  const [telefonoContacto, setTelefonoContacto] = useState(user?.celular || "");
 
   const calcularTotalCarrito = () => {
     let total = 0;
@@ -38,7 +40,7 @@ export const CarList = () => {
     switch (tipoEnvio) {
       case "contraentrega":
         return 25000;
-      case "contraentregaAnticipado":
+      case "pagoAnticipado":
         return 15000;
       case "tienda":
       default:
@@ -189,26 +191,22 @@ export const CarList = () => {
                                   className="form-check-input"
                                   type="radio"
                                   name="tipoEnvio"
-                                  id="contraentregaAnticipado"
-                                  value="contraentregaAnticipado"
-                                  checked={
-                                    tipoEnvio === "contraentregaAnticipado"
-                                  }
+                                  id="pagoAnticipado"
+                                  value="pagoAnticipado"
+                                  checked={tipoEnvio === "pagoAnticipado"}
                                   onChange={() =>
-                                    handleTipoEnvioChange(
-                                      "contraentregaAnticipado"
-                                    )
+                                    handleTipoEnvioChange("pagoAnticipado")
                                   }
                                 />
                                 <label
                                   className="form-check-label w-100"
-                                  htmlFor="contraentregaAnticipado"
+                                  htmlFor="pagoAnticipado"
                                 >
                                   <div className="d-flex justify-content-between align-items-center">
                                     <div>
                                       <strong>
                                         <i className="bi bi-credit-card me-2"></i>
-                                        Contraentrega Pago Anticipado
+                                        Pago Anticipado
                                       </strong>
                                       <br />
                                       <small className="text-muted">
@@ -221,6 +219,51 @@ export const CarList = () => {
                                     </span>
                                   </div>
                                 </label>
+                              </div>
+                            </div>
+
+                            {/* Campos adicionales para información de contacto */}
+                            <div className="mt-4">
+                              <h6 className="mb-3">
+                                <i className="bi bi-person-lines-fill me-2"></i>
+                                Información de contacto
+                              </h6>
+                              <div className="row g-3">
+                                <div className="col-md-6">
+                                  <Form.Label htmlFor="cedulaNit">
+                                    Cédula o NIT{" "}
+                                    <span className="text-danger">*</span>
+                                  </Form.Label>
+                                  <Form.Control
+                                    id="cedulaNit"
+                                    type="text"
+                                    placeholder="Ingresa tu cédula o NIT"
+                                    value={cedulaNit}
+                                    onChange={(e) =>
+                                      setCedulaNit(e.target.value)
+                                    }
+                                    required
+                                  />
+                                </div>
+                                <div className="col-md-6">
+                                  <Form.Label htmlFor="telefonoContacto">
+                                    Teléfono de contacto{" "}
+                                    <span className="text-danger">*</span>
+                                  </Form.Label>
+                                  <Form.Control
+                                    id="telefonoContacto"
+                                    type="tel"
+                                    placeholder="Ingresa tu teléfono"
+                                    value={telefonoContacto}
+                                    onChange={(e) =>
+                                      setTelefonoContacto(e.target.value)
+                                    }
+                                    required
+                                  />
+                                  <Form.Text className="text-muted">
+                                    Se usará para coordinar la entrega
+                                  </Form.Text>
+                                </div>
                               </div>
                             </div>
 
@@ -257,6 +300,18 @@ export const CarList = () => {
                                         </option>
                                       ))}
                                     </select>
+                                    <div className="mt-2">
+                                      <Button
+                                        variant="link"
+                                        className="p-0 text-decoration-none"
+                                        onClick={() =>
+                                          navigate("/profile?tab=direcciones")
+                                        }
+                                      >
+                                        <i className="bi bi-plus-circle me-1"></i>
+                                        Agregar nueva dirección
+                                      </Button>
+                                    </div>
                                   </div>
                                 ) : (
                                   <Alert variant="warning" className="mt-3">
@@ -306,6 +361,12 @@ export const CarList = () => {
                         user?.tipoUsuario === "Cliente"
                           ? user?.directions || []
                           : []
+                      }
+                      cedulaNit={
+                        user?.tipoUsuario === "Cliente" ? cedulaNit : ""
+                      }
+                      telefonoContacto={
+                        user?.tipoUsuario === "Cliente" ? telefonoContacto : ""
                       }
                       dispatch={dispatch}
                     />

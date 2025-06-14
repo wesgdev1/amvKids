@@ -31,12 +31,12 @@ export const OrdersTable = ({ orders }) => {
 
   const renderTipoEnvio = (formaOrder) => {
     switch (formaOrder) {
-      case "contraentregaAnticipado":
+      case "pagoAnticipado":
         return (
           <div className="d-flex flex-column">
             <span className="badge bg-info mb-1">
               <i className="bi bi-credit-card me-1"></i>
-              Contraentrega Pago Anticipado
+              Pago Anticipado
             </span>
             <small className="text-danger fw-bold">
               <i className="bi bi-exclamation-triangle me-1"></i>

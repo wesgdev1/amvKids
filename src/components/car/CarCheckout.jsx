@@ -15,6 +15,8 @@ export const CarCheckout = ({
   tipoEnvio,
   direccionSeleccionada,
   direccionesUsuario,
+  cedulaNit,
+  telefonoContacto,
   dispatch,
   state,
 }) => {
@@ -45,8 +47,8 @@ export const CarCheckout = ({
     switch (tipoEnvio) {
       case "contraentrega":
         return "Contraentrega";
-      case "contraentregaAnticipado":
-        return "Contraentrega Pago Anticipado";
+      case "pagoAnticipado":
+        return "Pago Anticipado";
       case "tienda":
       default:
         return "Recoger en tienda";
@@ -64,6 +66,29 @@ export const CarCheckout = ({
       });
       return false;
     }
+
+    // Validar cédula/NIT
+    if (tipoEnvio && !cedulaNit.trim()) {
+      Swal.fire({
+        icon: "warning",
+        title: "Cédula o NIT requerido",
+        text: "Por favor ingresa tu cédula o NIT para continuar.",
+        confirmButtonText: "Entendido",
+      });
+      return false;
+    }
+
+    // Validar teléfono de contacto
+    if (tipoEnvio && !telefonoContacto.trim()) {
+      Swal.fire({
+        icon: "warning",
+        title: "Teléfono requerido",
+        text: "Por favor ingresa tu teléfono de contacto para continuar.",
+        confirmButtonText: "Entendido",
+      });
+      return false;
+    }
+
     return true;
   };
 
@@ -91,6 +116,8 @@ export const CarCheckout = ({
             direccionEnvio.zipCode
           : null,
         costoEnvio: calcularCostoEnvio(),
+        cedulaNit,
+        telefonoContacto,
         items: state.map((element) => {
           return {
             modelId: element.id,

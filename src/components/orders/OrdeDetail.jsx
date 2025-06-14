@@ -230,7 +230,7 @@ export const OrdeDetail = () => {
                       {data.formaOrder ? (
                         <span
                           className={`badge ms-2 ${
-                            data.formaOrder === "contraentregaAnticipado"
+                            data.formaOrder === "pagoAnticipado"
                               ? "bg-info"
                               : data.formaOrder === "tienda"
                               ? "bg-success"
@@ -239,8 +239,8 @@ export const OrdeDetail = () => {
                               : "bg-secondary"
                           }`}
                         >
-                          {data.formaOrder === "contraentregaAnticipado"
-                            ? "Contraentrega Pago Anticipado"
+                          {data.formaOrder === "pagoAnticipado"
+                            ? "Pago Anticipado"
                             : data.formaOrder === "tienda"
                             ? "Recoger en Tienda"
                             : data.formaOrder === "contraentrega"
@@ -275,7 +275,7 @@ export const OrdeDetail = () => {
                     </div>
 
                     {/* Costo de envío */}
-                    <div className="mb-0">
+                    <div className="mb-2">
                       <strong>Costo de envío:</strong>
                       {data.costoEnvio !== undefined &&
                       data.costoEnvio !== null ? (
@@ -297,8 +297,24 @@ export const OrdeDetail = () => {
                       )}
                     </div>
 
+                    {/* Cédula/NIT */}
+                    <div className="mb-2">
+                      <strong>Cédula/NIT:</strong>
+                      <span className="ms-2">
+                        {data.cedulaNit || "No reporta"}
+                      </span>
+                    </div>
+
+                    {/* Teléfono de contacto */}
+                    <div className="mb-0">
+                      <strong>Teléfono de contacto:</strong>
+                      <span className="ms-2">
+                        {data.telefonoContacto || "No reporta"}
+                      </span>
+                    </div>
+
                     {/* Mensajes contextuales */}
-                    {data.formaOrder === "contraentregaAnticipado" && (
+                    {data.formaOrder === "pagoAnticipado" && (
                       <div className="mt-2 p-2 bg-danger bg-opacity-10 border border-danger border-opacity-25 rounded">
                         <small className="text-danger fw-bold">
                           <i className="bi bi-exclamation-triangle me-1"></i>
@@ -526,8 +542,8 @@ export const OrdeDetail = () => {
 ${
   data.formaOrder
     ? `🚚 *Tipo de envío:* ${
-        data.formaOrder === "contraentregaAnticipado"
-          ? "Contraentrega Pago Anticipado"
+        data.formaOrder === "pagoAnticipado"
+          ? "Pago Anticipado"
           : data.formaOrder === "tienda"
           ? "Recoger en Tienda"
           : data.formaOrder === "contraentrega"
