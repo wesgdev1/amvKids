@@ -4,6 +4,7 @@ import {
   getAllModels,
   getAllModelWithFilters,
   getAllModelWithFiltersSearch,
+  getModelLowStock,
   getModelNamesWithColors,
   getRecommendedModels,
 } from "../../api/model/model";
@@ -144,6 +145,33 @@ export const useModelWithColors = () => {
 
   useEffect(() => {
     cargarModelsColor();
+  }, []);
+
+  return { data, loading, error };
+};
+
+export const useModelLowStock = () => {
+  const [data, setData] = useState();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const cargarModelsLow = async () => {
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await getModelLowStock();
+
+      setData(response.data);
+    } catch (error) {
+      setError(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    cargarModelsLow();
   }, []);
 
   return { data, loading, error };

@@ -136,3 +136,12 @@ export const getModelNamesWithColors = async () => {
     return Promise.reject(error);
   }
 };
+
+export const getModelLowStock = async () => {
+  try {
+    const { data: response } = await http.get(`/models/lowStock`);
+    return { data: response.data };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};

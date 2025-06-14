@@ -150,7 +150,12 @@ export const NavBarComponent = () => {
       {
         path: "/profile/reports",
         icon: "bi bi-info-circle",
-        label: "Informes",
+        label: "Informes Ventas",
+      },
+      {
+        path: "/profile/alerts",
+        icon: "bi bi-info-circle",
+        label: "Alertas Inventario",
       },
       { path: "/profile/orders", icon: "bi bi-border-width", label: "Ordenes" },
       { path: "/profile/products", icon: "bi bi-box", label: "Calzados" },

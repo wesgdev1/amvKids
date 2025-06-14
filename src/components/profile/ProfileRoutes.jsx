@@ -17,6 +17,7 @@ import { OrderListByUser } from "../users/OrderListbyUser";
 import { OrderPreparer } from "../orders/OrderPreparer";
 import { OrdeDetailPreparer } from "../orders/OrderDetailPreparer";
 import { AdminRoute } from "../../auth/AdminRoute";
+import { AlertsList } from "../reports/AlertsList";
 
 export const ProfileRoutes = () => {
   return (
@@ -28,6 +29,14 @@ export const ProfileRoutes = () => {
           element={
             <AdminRoute>
               <ReportList />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/alerts"
+          element={
+            <AdminRoute>
+              <AlertsList />
             </AdminRoute>
           }
         />
