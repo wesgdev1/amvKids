@@ -3,7 +3,7 @@ import Swal from "sweetalert2";
 import { ButtonPayment, CardChekoutStyle } from "./StyledComponent";
 import { Card, Spinner, Tooltip, OverlayTrigger, Alert } from "react-bootstrap";
 import { useContext, useState } from "react";
-import { createOrder } from "../../api/orders/orders";
+import { createOrder, createOrderWhitoutUser } from "../../api/orders/orders";
 import AddiWidget from "../payments/AddiWidget";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../auth/context/AuthContext";
@@ -17,6 +17,10 @@ export const CarCheckout = ({
   direccionesUsuario,
   cedulaNit,
   telefonoContacto,
+  // Campos para usuarios invitados
+  guestName,
+  guestEmail,
+  direccionEnvio,
   dispatch,
   state,
 }) => {
@@ -56,37 +60,96 @@ export const CarCheckout = ({
   };
 
   const validarPedido = () => {
-    // Solo validar direcciones para usuarios tipo Cliente con envío
-    if (tipoEnvio && tipoEnvio !== "tienda" && !direccionSeleccionada) {
-      Swal.fire({
-        icon: "warning",
-        title: "Dirección requerida",
-        text: "Por favor selecciona una dirección de entrega para continuar.",
-        confirmButtonText: "Entendido",
-      });
-      return false;
-    }
+    // Validar campos para usuarios invitados (sin cuenta)
+    if (!user) {
+      // Validar nombre para usuarios invitados (siempre requerido)
+      if (!guestName.trim()) {
+        Swal.fire({
+          icon: "warning",
+          title: "Nombre requerido",
+          text: "Por favor ingresa tu nombre completo para continuar.",
+          confirmButtonText: "Entendido",
+        });
+        return false;
+      }
 
-    // Validar cédula/NIT
-    if (tipoEnvio && !cedulaNit.trim()) {
-      Swal.fire({
-        icon: "warning",
-        title: "Cédula o NIT requerido",
-        text: "Por favor ingresa tu cédula o NIT para continuar.",
-        confirmButtonText: "Entendido",
-      });
-      return false;
-    }
+      // Validar email para usuarios invitados (siempre requerido)
+      if (!guestEmail.trim()) {
+        Swal.fire({
+          icon: "warning",
+          title: "Correo requerido",
+          text: "Por favor ingresa tu correo electrónico para continuar.",
+          confirmButtonText: "Entendido",
+        });
+        return false;
+      }
 
-    // Validar teléfono de contacto
-    if (tipoEnvio && !telefonoContacto.trim()) {
-      Swal.fire({
-        icon: "warning",
-        title: "Teléfono requerido",
-        text: "Por favor ingresa tu teléfono de contacto para continuar.",
-        confirmButtonText: "Entendido",
-      });
-      return false;
+      // Validar dirección de envío solo si no es recogida en tienda
+      if (tipoEnvio && tipoEnvio !== "tienda" && !direccionEnvio.trim()) {
+        Swal.fire({
+          icon: "warning",
+          title: "Dirección requerida",
+          text: "Por favor ingresa la dirección de entrega para continuar.",
+          confirmButtonText: "Entendido",
+        });
+        return false;
+      }
+
+      // Validar cédula/NIT para usuarios invitados (siempre requerido)
+      if (!cedulaNit.trim()) {
+        Swal.fire({
+          icon: "warning",
+          title: "Cédula o NIT requerido",
+          text: "Por favor ingresa tu cédula o NIT para continuar.",
+          confirmButtonText: "Entendido",
+        });
+        return false;
+      }
+
+      // Validar teléfono de contacto para usuarios invitados (siempre requerido)
+      if (!telefonoContacto.trim()) {
+        Swal.fire({
+          icon: "warning",
+          title: "Teléfono requerido",
+          text: "Por favor ingresa tu teléfono de contacto para continuar.",
+          confirmButtonText: "Entendido",
+        });
+        return false;
+      }
+    } else {
+      // Validaciones para usuarios autenticados
+      if (tipoEnvio && tipoEnvio !== "tienda" && !direccionSeleccionada) {
+        Swal.fire({
+          icon: "warning",
+          title: "Dirección requerida",
+          text: "Por favor selecciona una dirección de entrega para continuar.",
+          confirmButtonText: "Entendido",
+        });
+        return false;
+      }
+
+      // Para usuarios autenticados, solo validar cédula/NIT y teléfono si NO es recogida en tienda
+      if (tipoEnvio && tipoEnvio !== "tienda") {
+        if (!cedulaNit.trim()) {
+          Swal.fire({
+            icon: "warning",
+            title: "Cédula o NIT requerido",
+            text: "Por favor ingresa tu cédula o NIT para continuar.",
+            confirmButtonText: "Entendido",
+          });
+          return false;
+        }
+
+        if (!telefonoContacto.trim()) {
+          Swal.fire({
+            icon: "warning",
+            title: "Teléfono requerido",
+            text: "Por favor ingresa tu teléfono de contacto para continuar.",
+            confirmButtonText: "Entendido",
+          });
+          return false;
+        }
+      }
     }
 
     return true;
@@ -100,24 +163,30 @@ export const CarCheckout = ({
     try {
       setLoading(true);
 
-      const direccionEnvio = obtenerDireccionCompleta();
+      const direccionCompleta = obtenerDireccionCompleta();
 
       const payload = {
         total: calcularTotalConEnvio(),
         comments,
         formaOrder: tipoEnvio || "Reventa-Aliado-Tienda",
-        directionOrder: direccionEnvio
-          ? direccionEnvio.address +
-            "- " +
-            direccionEnvio.city +
-            " " +
-            direccionEnvio.state +
-            " " +
-            direccionEnvio.zipCode
-          : null,
+        directionOrder:
+          !user && direccionEnvio
+            ? direccionEnvio // Para usuarios invitados, usar la dirección ingresada directamente
+            : direccionCompleta
+            ? direccionCompleta.address +
+              "- " +
+              direccionCompleta.city +
+              " " +
+              direccionCompleta.state +
+              " " +
+              direccionCompleta.zipCode
+            : null,
         costoEnvio: calcularCostoEnvio(),
         cedulaNit,
         telefonoContacto,
+        // Campos adicionales para usuarios invitados
+        name: !user ? guestName : undefined,
+        email: !user ? guestEmail : undefined,
         items: state.map((element) => {
           return {
             modelId: element.id,
@@ -135,30 +204,95 @@ export const CarCheckout = ({
         }),
       };
 
-      let response = await createOrder(payload);
-      console.log("envie la orden", response);
+      let response;
+
+      if (user) {
+        response = await createOrder(payload);
+        console.log("envie la orden", response);
+      } else {
+        // Si el usuario no está autenticado, usar la función para crear orden sin usuario
+        response = await createOrderWhitoutUser(payload);
+        console.log("envie la orden sin usuario", response);
+      }
 
       if (response) {
+        if (user) {
+          // Usuario autenticado - mostrar mensaje normal
+          Swal.fire({
+            icon: "success",
+            title: "Compra exitosa",
+            showConfirmButton: true,
+            confirmButtonText: "Aceptar",
+          });
+
+          dispatch({
+            type: "DELETE_ALL",
+          });
+          navigate("/profile/myOrders");
+        } else {
+          // Usuario invitado - mostrar mensaje especial y redirigir al login
+          Swal.fire({
+            icon: "success",
+            title: "¡Orden creada exitosamente!",
+            html: `
+              <div class="text-start">
+                <p><strong>✅ Tu orden ha sido procesada correctamente</strong></p>
+                <p><strong>🎉 Se ha creado una cuenta automáticamente</strong></p>
+                <p><strong>📧 Revisa tu correo electrónico:</strong></p>
+                <p class="text-muted ms-3">${guestEmail}</p>
+                <p>Hemos enviado tus credenciales de acceso (usuario y contraseña) a tu correo.</p>
+                <p class="text-warning"><strong>⚠️ Importante:</strong> Verifica también tu carpeta de spam.</p>
+              </div>
+            `,
+            showConfirmButton: true,
+            confirmButtonText: "Ir al Login",
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+          }).then(() => {
+            dispatch({
+              type: "DELETE_ALL",
+            });
+            navigate("/login");
+          });
+        }
+      }
+      setLoading(false);
+    } catch (error) {
+      console.error("Error al crear la orden:", error);
+
+      if (user) {
+        // Error para usuario autenticado
         Swal.fire({
-          icon: "success",
-          title: "Compra exitosa",
+          icon: "error",
+          title: "Error al realizar la compra",
+          text:
+            error.message ||
+            "Ocurrió un error inesperado. Por favor intenta nuevamente.",
           showConfirmButton: true,
           confirmButtonText: "Aceptar",
         });
+      } else {
+        // Error para usuario invitado
+        Swal.fire({
+          icon: "error",
+          title: "No se pudo crear la orden",
+          html: `
+            <div class="text-start">
+              <p><strong>❌ Error al procesar tu pedido</strong></p>
+              <p>No se pudo crear la orden ni la cuenta de usuario.</p>
+              <p class="text-muted">${error.message || "Error desconocido"}</p>
+              <p><strong>💡 Sugerencias:</strong></p>
+              <ul class="text-start">
+                <li>Verifica tu conexión a internet</li>
+                <li>Asegúrate de que todos los campos estén completos</li>
+                <li>Intenta nuevamente en unos momentos</li>
+              </ul>
+            </div>
+          `,
+          showConfirmButton: true,
+          confirmButtonText: "Entendido",
+        });
       }
-      setLoading(false);
-
-      dispatch({
-        type: "DELETE_ALL",
-      });
-      navigate("/profile/myOrders");
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: `Error al realizar la compra, ${error.message}`,
-        showConfirmButton: true,
-        confirmButtonText: "Aceptar",
-      });
       setLoading(false);
     }
   };
@@ -168,19 +302,31 @@ export const CarCheckout = ({
       <Card.Body>
         <Card.Text>Resumen del pedido</Card.Text>
 
-        {/* Información del tipo de envío - Solo para Clientes */}
+        {/* Información del tipo de envío */}
         {tipoEnvio && (
           <div className="mb-3 p-2 bg-light rounded">
             <small className="text-muted d-block">Tipo de envío:</small>
             <strong className="text-primary">{obtenerNombreTipoEnvio()}</strong>
-            {tipoEnvio !== "tienda" && direccionSeleccionada && (
+            {tipoEnvio !== "tienda" && (
               <div className="mt-1 text-black">
                 <small className="text-muted d-block">Dirección:</small>
                 <small>
-                  {obtenerDireccionCompleta()?.address},{" "}
-                  {obtenerDireccionCompleta()?.city},{" "}
-                  {obtenerDireccionCompleta()?.state}{" "}
-                  {obtenerDireccionCompleta()?.zipCode}
+                  {!user && direccionEnvio ? (
+                    // Mostrar dirección de usuario invitado
+                    direccionEnvio
+                  ) : direccionSeleccionada && obtenerDireccionCompleta() ? (
+                    // Mostrar dirección de usuario autenticado
+                    <>
+                      {obtenerDireccionCompleta()?.address},{" "}
+                      {obtenerDireccionCompleta()?.city},{" "}
+                      {obtenerDireccionCompleta()?.state}{" "}
+                      {obtenerDireccionCompleta()?.zipCode}
+                    </>
+                  ) : (
+                    <span className="text-muted">
+                      Dirección no especificada
+                    </span>
+                  )}
                 </small>
               </div>
             )}

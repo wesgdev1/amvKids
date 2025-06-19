@@ -22,7 +22,6 @@ import { useModelWithColors } from "../../domain/models/useModels";
 import styled from "@emotion/styled";
 import { keyframes, css } from "@emotion/react";
 import { useCartCurvas } from "../../store/curvas";
-import { useProfile } from "../../domain/auth/useProfile";
 
 // Definir la animación de "shake"
 const shakeAnimation = keyframes`
@@ -74,8 +73,6 @@ export const NavBarComponent = () => {
   const { user, logout } = useContext(AuthContext);
   // Obtener los datos de modelos con colores
   const { data: modelsData, loading, error } = useModelWithColors();
-
-  const { data: dataProfile, loading: loadingProfile } = useProfile(user?.id);
 
   const cerrarsesion = () => {
     logout();
@@ -300,10 +297,20 @@ export const NavBarComponent = () => {
                   </div>
                 </div>
               ) : (
-                <ButtonStyled onClick={onHandleClick}>
-                  <i className="bi bi-person" /> /{" "}
-                  <i className="bi bi-person-fill-add" />
-                </ButtonStyled>
+                <div className="flex items-center gap-3">
+                  <ContainerIcon
+                    onClick={() => navigate("/verCarritoDeCompras")}
+                  >
+                    <i className="bi bi-cart4"></i>
+                    <AnimatedBadge bg="danger" hidden={total === 0}>
+                      {total}
+                    </AnimatedBadge>
+                  </ContainerIcon>
+                  <ButtonStyled onClick={onHandleClick}>
+                    <i className="bi bi-person" /> /{" "}
+                    <i className="bi bi-person-fill-add" />
+                  </ButtonStyled>
+                </div>
               )}
             </Nav>
 

@@ -1,7 +1,10 @@
 import { Card, Col, Image, Row } from "react-bootstrap";
 import { ButtonCrash, CardElementStyle } from "./StyledComponent";
+import { useContext } from "react";
+import { AuthContext } from "../../auth/context/AuthContext";
 
 export const CardElements = ({ model, dispatch }) => {
+  const { user } = useContext(AuthContext);
   const deleteElement = (aux) => {
     console.log(aux);
     dispatch({
@@ -44,8 +47,10 @@ export const CardElements = ({ model, dispatch }) => {
           <Col>
             {model.isPromoted && model.pricePromoted > 0 ? (
               <>${model.pricePromoted.toLocaleString("es-CO")}</>
-            ) : (
+            ) : user ? (
               <>${model.price.toLocaleString("es-CO")}</>
+            ) : (
+              <>${model.normalPrice.toLocaleString("es-CO")}</>
             )}
           </Col>
           <Col>

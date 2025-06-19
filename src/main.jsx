@@ -15,8 +15,8 @@ import { CartCurvasProvider } from "./store/curvas.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <AuthProvider>
-      <CartProvider>
+    <CartProvider>
+      <AuthProvider>
         <CartCurvasProvider>
           <BrowserRouter>
             <ThemeProvider theme={theme}>
@@ -24,7 +24,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             </ThemeProvider>
           </BrowserRouter>
         </CartCurvasProvider>
-      </CartProvider>
-    </AuthProvider>
+      </AuthProvider>
+    </CartProvider>
   </React.StrictMode>
 );

@@ -2,6 +2,7 @@ import { AuthContext } from "./AuthContext";
 import PropTypes from "prop-types";
 
 import { useEffect, useState } from "react";
+import { useCart } from "../../store";
 
 export const AuthProvider = ({ children }) => {
   const [authState, setAuthState] = useState({
@@ -14,6 +15,7 @@ export const AuthProvider = ({ children }) => {
   });
 
   const [isAuthLoading, setIsAuthLoading] = useState(true);
+  const { dispatch, state } = useCart();
 
   const init = async () => {
     try {
@@ -31,6 +33,14 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = (payload) => {
+    // borrar el localStorage
+    localStorage.clear();
+    dispatch({
+      type: "DELETE_ALL",
+    });
+
+    // guardar el usuario en el localStorage
+
     localStorage.setItem("user", JSON.stringify(payload));
     init();
   };

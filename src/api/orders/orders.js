@@ -9,6 +9,18 @@ export const createOrder = async (payload) => {
   }
 };
 
+export const createOrderWhitoutUser = async (payload) => {
+  try {
+    const { data: response } = await http.post(
+      "/orders/createOrderWhitoutUser",
+      payload
+    );
+    return { data: response.data };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 export const getMyOrders = async () => {
   try {
     const { data: response } = await http.get("/orders/myOrders");

@@ -29,10 +29,10 @@ export const ControlProduct = ({ data }) => {
   const { counter, increment, decrement, reset } = useCounter(1, maxValue);
 
   const hanldeClickSuccess = () => {
-    if (!user) {
-      navigate("/login");
-      return;
-    }
+    // if (!user) {
+    //   navigate("/login");
+    //   return;
+    // }
 
     if (size === null) {
       Swal.fire({
@@ -46,8 +46,8 @@ export const ControlProduct = ({ data }) => {
 
     // Lógica específica para clientes con restricción de cantidad
     if (
-      user.tipoUsuario === "Cliente" &&
-      user.email !== "whatsappcliente@gmail.com"
+      user?.tipoUsuario === "Cliente" &&
+      user?.email !== "whatsappcliente@gmail.com"
     ) {
       const totalItemsInCart = state.reduce(
         (acc, currentItem) => acc + currentItem.quantity,
@@ -183,13 +183,8 @@ export const ControlProduct = ({ data }) => {
             </BtnSubmitStyled>
           )
         ) : (
-          <BtnSubmitStyled
-            onClick={() => {
-              navigate("/login");
-            }}
-            width="100%"
-          >
-            Iniciar sesion para comprar
+          <BtnSubmitStyled onClick={hanldeClickSuccess} width="100%">
+            Agregar al carrito
           </BtnSubmitStyled>
         )}
         {/* <BtnSubmitStyled onClick={hanldeClickSuccess} width="100%">

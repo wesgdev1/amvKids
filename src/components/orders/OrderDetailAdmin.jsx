@@ -329,7 +329,7 @@ export const OrdeDetailAdmin = () => {
         price = itemToRemove.model[priceField];
       } else {
         // si hay historico
-        price = itemToRemove[priceField];
+        price = itemToRemove[priceField] || itemToRemove.price;
       }
     }
 
@@ -337,7 +337,9 @@ export const OrdeDetailAdmin = () => {
 
     if (typeof price !== "number") {
       console.error(
-        `Precio inválido o no encontrado para el campo ${priceField}`
+        `Precio ${price} o no encontrado para el campos ${priceField} ${itemToRemove.model.name}
+         
+        `
       );
       return order.total;
     }
@@ -394,7 +396,7 @@ export const OrdeDetailAdmin = () => {
         price = itemToRemove.model[priceField];
       } else {
         // si hay historico
-        price = itemToRemove[priceField];
+        price = itemToRemove[priceField] || itemToRemove.price;
       }
     }
 

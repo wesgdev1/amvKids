@@ -18,6 +18,11 @@ export const CarList = () => {
   const [cedulaNit, setCedulaNit] = useState("");
   const [telefonoContacto, setTelefonoContacto] = useState(user?.celular || "");
 
+  // Estados para usuarios invitados (sin cuenta)
+  const [guestName, setGuestName] = useState("");
+  const [guestEmail, setGuestEmail] = useState("");
+  const [direccionEnvio, setDireccionEnvio] = useState("");
+
   const calcularTotalCarrito = () => {
     let total = 0;
     state.forEach((element) => {
@@ -30,8 +35,11 @@ export const CarList = () => {
     let total = 0;
     state.forEach((element) => {
       total +=
-        (element.isPromoted ? element.pricePromoted : element.price) *
-        element.quantity;
+        (element.isPromoted
+          ? element.pricePromoted
+          : user
+          ? element.price
+          : element.normalPrice) * element.quantity;
     });
     return total;
   };
@@ -104,7 +112,7 @@ export const CarList = () => {
 
                     <div className="mt-4">
                       {/* Sección de selección de tipo de envío - Solo para Clientes */}
-                      {user?.tipoUsuario === "Cliente" && (
+                      {(user?.tipoUsuario === "Cliente" || !user) && (
                         <Card className="mb-4">
                           <Card.Header className="bg-light">
                             <h5 className="mb-0">
@@ -223,52 +231,124 @@ export const CarList = () => {
                             </div>
 
                             {/* Campos adicionales para información de contacto */}
-                            <div className="mt-4">
-                              <h6 className="mb-3">
-                                <i className="bi bi-person-lines-fill me-2"></i>
-                                Información de contacto
-                              </h6>
-                              <div className="row g-3">
-                                <div className="col-md-6">
-                                  <Form.Label htmlFor="cedulaNit">
-                                    Cédula o NIT{" "}
-                                    <span className="text-danger">*</span>
-                                  </Form.Label>
-                                  <Form.Control
-                                    id="cedulaNit"
-                                    type="text"
-                                    placeholder="Ingresa tu cédula o NIT"
-                                    value={cedulaNit}
-                                    onChange={(e) =>
-                                      setCedulaNit(e.target.value)
-                                    }
-                                    required
-                                  />
-                                </div>
-                                <div className="col-md-6">
-                                  <Form.Label htmlFor="telefonoContacto">
-                                    Teléfono de contacto{" "}
-                                    <span className="text-danger">*</span>
-                                  </Form.Label>
-                                  <Form.Control
-                                    id="telefonoContacto"
-                                    type="tel"
-                                    placeholder="Ingresa tu teléfono"
-                                    value={telefonoContacto}
-                                    onChange={(e) =>
-                                      setTelefonoContacto(e.target.value)
-                                    }
-                                    required
-                                  />
-                                  <Form.Text className="text-muted">
-                                    Se usará para coordinar la entrega
-                                  </Form.Text>
+                            {/* Solo mostrar si: usuario invitado (siempre) O usuario autenticado con envío (no tienda) */}
+                            {(!user || (user && tipoEnvio !== "tienda")) && (
+                              <div className="mt-4">
+                                <h6 className="mb-3">
+                                  <i className="bi bi-person-lines-fill me-2"></i>
+                                  Información de contacto
+                                </h6>
+                                <div className="row g-3">
+                                  <div className="col-md-6">
+                                    <Form.Label htmlFor="cedulaNit">
+                                      Cédula o NIT{" "}
+                                      <span className="text-danger">*</span>
+                                    </Form.Label>
+                                    <Form.Control
+                                      id="cedulaNit"
+                                      type="text"
+                                      placeholder="Ingresa tu cédula o NIT"
+                                      value={cedulaNit}
+                                      onChange={(e) =>
+                                        setCedulaNit(e.target.value)
+                                      }
+                                      required
+                                    />
+                                  </div>
+                                  <div className="col-md-6">
+                                    <Form.Label htmlFor="telefonoContacto">
+                                      Teléfono de contacto{" "}
+                                      <span className="text-danger">*</span>
+                                    </Form.Label>
+                                    <Form.Control
+                                      id="telefonoContacto"
+                                      type="tel"
+                                      placeholder="Ingresa tu teléfono"
+                                      value={telefonoContacto}
+                                      onChange={(e) =>
+                                        setTelefonoContacto(e.target.value)
+                                      }
+                                      required
+                                    />
+                                    <Form.Text className="text-muted">
+                                      Se usará para coordinar la entrega
+                                    </Form.Text>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
+                            )}
 
-                            {/* Selección de dirección si se requiere */}
-                            {requiereSeleccionDireccion && (
+                            {/* Información adicional para usuarios invitados */}
+                            {!user && (
+                              <div className="mt-4">
+                                <h6>
+                                  <i className="bi bi-person me-2"></i>
+                                  Información personal
+                                </h6>
+                                <div className="mt-3">
+                                  <div className="row g-3">
+                                    <div className="col-md-6">
+                                      <Form.Label htmlFor="guestName">
+                                        Nombre completo{" "}
+                                        <span className="text-danger">*</span>
+                                      </Form.Label>
+                                      <Form.Control
+                                        id="guestName"
+                                        type="text"
+                                        placeholder="Ingresa tu nombre completo"
+                                        value={guestName}
+                                        onChange={(e) =>
+                                          setGuestName(e.target.value)
+                                        }
+                                        required
+                                      />
+                                    </div>
+                                    <div className="col-md-6">
+                                      <Form.Label htmlFor="guestEmail">
+                                        Correo electrónico{" "}
+                                        <span className="text-danger">*</span>
+                                      </Form.Label>
+                                      <Form.Control
+                                        id="guestEmail"
+                                        type="email"
+                                        placeholder="Ingresa tu correo electrónico"
+                                        value={guestEmail}
+                                        onChange={(e) =>
+                                          setGuestEmail(e.target.value)
+                                        }
+                                        required
+                                      />
+                                    </div>
+                                    {/* Solo mostrar dirección si requiere envío */}
+                                    {requiereSeleccionDireccion && (
+                                      <div className="col-12">
+                                        <Form.Label htmlFor="direccionEnvio">
+                                          Dirección de entrega{" "}
+                                          <span className="text-danger">*</span>
+                                        </Form.Label>
+                                        <Form.Control
+                                          id="direccionEnvio"
+                                          type="text"
+                                          placeholder="Ingresa la dirección completa de entrega"
+                                          value={direccionEnvio}
+                                          onChange={(e) =>
+                                            setDireccionEnvio(e.target.value)
+                                          }
+                                          required
+                                        />
+                                        <Form.Text className="text-muted">
+                                          Incluye dirección, ciudad,
+                                          departamento y código postal si aplica
+                                        </Form.Text>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Selección de dirección para usuarios autenticados con envío */}
+                            {user && requiereSeleccionDireccion && (
                               <div className="mt-4">
                                 <h6>
                                   <i className="bi bi-geo-alt me-2"></i>
@@ -340,34 +420,46 @@ export const CarList = () => {
                       state={state}
                       calcularTotal={calcularTotal}
                       calcularTotalConEnvio={
-                        user?.tipoUsuario === "Cliente"
+                        user?.tipoUsuario === "Cliente" || !user
                           ? calcularTotalConEnvio
                           : calcularTotal
                       }
                       calcularCostoEnvio={
-                        user?.tipoUsuario === "Cliente"
+                        user?.tipoUsuario === "Cliente" || !user
                           ? calcularCostoEnvio
                           : () => 0
                       }
                       tipoEnvio={
-                        user?.tipoUsuario === "Cliente" ? tipoEnvio : null
+                        user?.tipoUsuario === "Cliente" || !user
+                          ? tipoEnvio
+                          : null
                       }
                       direccionSeleccionada={
-                        user?.tipoUsuario === "Cliente"
+                        user?.tipoUsuario === "Cliente" || !user
                           ? direccionSeleccionada
                           : null
                       }
                       direccionesUsuario={
-                        user?.tipoUsuario === "Cliente"
+                        user?.tipoUsuario === "Cliente" || !user
                           ? user?.directions || []
                           : []
                       }
                       cedulaNit={
-                        user?.tipoUsuario === "Cliente" ? cedulaNit : ""
+                        (user?.tipoUsuario === "Cliente" || !user) &&
+                        (!user || tipoEnvio !== "tienda")
+                          ? cedulaNit
+                          : ""
                       }
                       telefonoContacto={
-                        user?.tipoUsuario === "Cliente" ? telefonoContacto : ""
+                        (user?.tipoUsuario === "Cliente" || !user) &&
+                        (!user || tipoEnvio !== "tienda")
+                          ? telefonoContacto
+                          : ""
                       }
+                      // Campos para usuarios invitados
+                      guestName={!user ? guestName : ""}
+                      guestEmail={!user ? guestEmail : ""}
+                      direccionEnvio={!user ? direccionEnvio : ""}
                       dispatch={dispatch}
                     />
                   </Col>
