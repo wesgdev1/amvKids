@@ -108,11 +108,20 @@ export const NavBarComponent = () => {
 
   const handleKeyPress = (event) => {
     // Navegar al presionar Enter directamente en el input
-    if (event.key === "Enter" && searchValue.trim() !== "") {
+    // También capturar otros eventos que pueden ocurrir en móviles
+    if (
+      (event.key === "Enter" || event.key === "Go" || event.key === "Search") &&
+      searchValue.trim() !== ""
+    ) {
       event.preventDefault(); // Prevenir cualquier comportamiento por defecto
+      executeSearch();
+    }
+  };
+
+  const executeSearch = () => {
+    if (searchValue.trim() !== "") {
       navigate(`/productos/search/${searchValue.trim()}`);
       setSearchValue(""); // Limpiar después de buscar
-      //  window.location.reload();
     }
   };
 
@@ -240,24 +249,35 @@ export const NavBarComponent = () => {
           <div className="d-flex justify-around items-center gap-2">
             <NavLogo />
             <div className="d-flex flex-col  " style={{ width: "65%" }}>
-              <Typeahead
-                id="product-search-typeahead"
-                options={typeaheadOptions}
-                labelKey="displayLabel"
-                minLength={1}
-                maxResults={10}
-                filterBy={filterByCallback}
-                placeholder={
-                  loading
-                    ? "Cargando modelos..."
-                    : "Qué calzado estás buscando?"
-                }
-                disabled={loading || !!error}
-                onInputChange={handleInputChange}
-                onChange={handleSelection}
-                onKeyDown={handleKeyPress}
-                inputValue={searchValue}
-              />
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  executeSearch();
+                }}
+              >
+                <Typeahead
+                  id="product-search-typeahead"
+                  options={typeaheadOptions}
+                  labelKey="displayLabel"
+                  minLength={1}
+                  maxResults={10}
+                  filterBy={filterByCallback}
+                  placeholder={
+                    loading
+                      ? "Cargando modelos..."
+                      : "Qué calzado estás buscando?"
+                  }
+                  disabled={loading || !!error}
+                  onInputChange={handleInputChange}
+                  onChange={handleSelection}
+                  onKeyDown={handleKeyPress}
+                  inputValue={searchValue}
+                  inputProps={{
+                    inputMode: "search",
+                    enterKeyHint: "search",
+                  }}
+                />
+              </form>
               {error && (
                 <small className="text-danger">Error al cargar modelos</small>
               )}
