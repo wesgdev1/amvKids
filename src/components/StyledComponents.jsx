@@ -41,6 +41,19 @@ export const ButtonStyled = styled(Button)(({ theme }) => ({
   height: "30px",
 }));
 
+export const ButtonStyledNew = styled(Button)(({ theme }) => ({
+  background: theme.colors.buttonColor,
+  color: "black",
+  fontWeight: "bold",
+  border: "none",
+  borderRadius: "5px",
+  cursor: "pointer",
+  "&:hover": {
+    background: theme.colors.mainColor,
+  },
+  height: "30px",
+}));
+
 export const ShoesCardStyled = styled(Card)(({ theme }) => ({
   width: "13rem",
   color: "white",

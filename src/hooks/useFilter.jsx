@@ -62,5 +62,6 @@ export const useFilter = (initialFilter = []) => {
     checkFilter,
     setCheckFilter,
     filtrosSeleccionadosAgrupados,
+    setFiltrosSeleccionadosAgrupados,
   };
 };

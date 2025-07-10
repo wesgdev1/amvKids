@@ -1,6 +1,7 @@
 import { Badge, Image, Nav, Row } from "react-bootstrap";
 import {
   ButtonStyled,
+  ButtonStyledNew,
   ConteinerNavStyled,
   NavLinkStyled,
 } from "../StyledComponents";
@@ -327,8 +328,9 @@ export const NavBarComponent = () => {
                     </AnimatedBadge>
                   </ContainerIcon>
                   <ButtonStyled onClick={onHandleClick}>
-                    <i className="bi bi-person" /> /{" "}
-                    <i className="bi bi-person-fill-add" />
+                    <i className="bi bi-person" />
+                    {/* /{" "}
+                    <i className="bi bi-person-fill-add" /> */}
                   </ButtonStyled>
                 </div>
               )}

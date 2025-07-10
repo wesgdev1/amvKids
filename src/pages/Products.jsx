@@ -17,10 +17,12 @@ export const Products = () => {
     setCheckFilter,
     selectedFilters,
     filtrosSeleccionadosAgrupados,
+    setFiltrosSeleccionadosAgrupados,
   } = useFilter();
   const { data, loading, error, cargarModel } = useModels(
     filtrosSeleccionadosAgrupados,
-    searchValue
+    searchValue,
+    setFiltrosSeleccionadosAgrupados
   );
   const { data: dataforFilter } = useModelsFilter();
 
