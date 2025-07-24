@@ -173,10 +173,21 @@ export const NavBarComponent = () => {
         label: "Usuarios",
       },
       {
+        path: "/profile/creators",
+        icon: "bi bi-people-fill",
+        label: "Creadores UGC",
+      },
+      {
+        path: "/profile/coupons",
+        icon: "bi bi-ticket-perforated-fill",
+        label: "Cupones",
+      },
+      {
         path: "/profile/scan",
         icon: "bi bi-upc-scan",
         label: "Escanear Código",
       },
+
       // { path: "/login", icon: "bi bi-box-arrow-left", label: "Cerrar sesión" },
     ],
     Reventa: [

@@ -18,6 +18,8 @@ import { OrderPreparer } from "../orders/OrderPreparer";
 import { OrdeDetailPreparer } from "../orders/OrderDetailPreparer";
 import { AdminRoute } from "../../auth/AdminRoute";
 import { AlertsList } from "../reports/AlertsList";
+import { UgcCreators } from "../ugcCreators/UgcCreators";
+import { Coupons } from "../coupons/Coupons";
 
 export const ProfileRoutes = () => {
   return (
@@ -61,6 +63,22 @@ export const ProfileRoutes = () => {
           element={
             <AdminRoute>
               <ProductForm />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/creators"
+          element={
+            <AdminRoute>
+              <UgcCreators />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/coupons"
+          element={
+            <AdminRoute>
+              <Coupons />
             </AdminRoute>
           }
         />
