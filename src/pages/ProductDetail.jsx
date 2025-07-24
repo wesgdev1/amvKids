@@ -4,11 +4,13 @@ import { Alert, Carousel, Image, Modal } from "react-bootstrap";
 import {} from "../components/products/StyledComponents";
 import { ControlProduct } from "../components/products/ControlProduct";
 import { ContainerMov } from "../components/home/StyledComponents";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import { CustomLoader } from "../components/common/CustomLoader";
 import { ProductDetailCurva2 } from "./ProductDetailCurva2";
 import { ProductDetailCurvawomen } from "./ProductDetailCurvawomen";
+import { AuthContext } from "../auth/context/AuthContext";
+import { Guide } from "../components/guide/Guide";
 
 // Función para verificar la curva de hombre (Curva2)
 // Requiere: 1x37, 2x38, 3x39, 2x40, 2x41, 1x42, 1x43
@@ -183,6 +185,13 @@ const getEffectiveStock = (productData) => {
 export const ProductDetail = () => {
   const params = useParams();
   const { id } = params;
+  const { user, isAuthLoading } = useContext(AuthContext);
+
+  useEffect(() => {
+    if (!isAuthLoading && !user) {
+      window.location.href = `/productosNoAuth/${id}`;
+    }
+  }, [isAuthLoading, user, id]);
 
   const { data, loading, error } = useModel(id);
 
@@ -336,6 +345,7 @@ export const ProductDetail = () => {
           </div>
 
           {/* Descripción estilizada */}
+          <Guide />
 
           <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
             <Modal.Header closeButton>
