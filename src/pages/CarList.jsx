@@ -49,7 +49,7 @@ export const CarList = () => {
       case "contraentrega":
         return 25000;
       case "pagoAnticipado":
-        return 15000;
+        return 18000;
       case "tienda":
       default:
         return 0;
@@ -223,7 +223,7 @@ export const CarList = () => {
                                       </small>
                                     </div>
                                     <span className="badge bg-info">
-                                      +$15,000
+                                      +$18,000
                                     </span>
                                   </div>
                                 </label>
