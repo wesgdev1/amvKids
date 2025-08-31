@@ -307,7 +307,7 @@ export const OrdeDetailAdmin = () => {
         priceField = "price";
         break;
       case "Cliente":
-        priceField = "NormalPrice";
+        priceField = "normalPrice";
         break;
       case "Tienda Aliada":
         priceField = "alliancePrice";
@@ -373,7 +373,7 @@ export const OrdeDetailAdmin = () => {
         priceField = "price";
         break;
       case "Cliente":
-        priceField = "NormalPrice";
+        priceField = "normalPrice";
         break;
       case "Tienda Aliada":
         priceField = "alliancePrice";
