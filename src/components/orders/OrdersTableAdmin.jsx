@@ -156,21 +156,47 @@ export const OrdersTableAdmin = ({ orders }) => {
                   )}
                 </td>
                 <td>
-                  <span className="me-2">
-                    {order.state} <i className={`${iconMap[order.state]}`}></i>
-                  </span>
+                  <div className="d-flex align-items-center gap-2 flex-wrap">
+                    <span
+                      className={`px-2 py-1 rounded-pill text-xs font-medium d-flex align-items-center gap-1 ${
+                        order.state === "Creada"
+                          ? "bg-yellow-100 text-yellow-800"
+                          : order.state === "Pago Enviado"
+                          ? "bg-orange-100 text-orange-800"
+                          : order.state === "Pago Confirmado"
+                          ? "bg-green-100 text-green-800"
+                          : order.state === "Pedido Entregado"
+                          ? "bg-blue-100 text-blue-800"
+                          : order.state === "CanceladaAdmin"
+                          ? "bg-red-100 text-red-800"
+                          : "bg-gray-100 text-gray-800"
+                      }`}
+                    >
+                      <i
+                        className={`${iconMap[order.state]}`}
+                        style={{ fontSize: "0.7rem" }}
+                      ></i>
+                      {order.state}
+                    </span>
 
-                  {order.areReady ? (
-                    <span className="text-green-600 whitespace-nowrap">
-                      <i className="bi bi-check-circle-fill me-1"></i>
-                      (Alistada)
-                    </span>
-                  ) : (
-                    <span className="text-orange-500 whitespace-nowrap">
-                      <i className="bi bi-clock-history me-1"></i>
-                      (Pendiente por alistar)
-                    </span>
-                  )}
+                    {order.areReady ? (
+                      <span className="px-2 py-1 rounded-pill bg-success text-white text-xs d-flex align-items-center gap-1">
+                        <i
+                          className="bi bi-check-circle-fill"
+                          style={{ fontSize: "0.7rem" }}
+                        ></i>
+                        (Alistada)
+                      </span>
+                    ) : (
+                      <span className="px-2 py-1 rounded-pill bg-warning text-dark text-xs d-flex align-items-center gap-1">
+                        <i
+                          className="bi bi-clock-history"
+                          style={{ fontSize: "0.7rem" }}
+                        ></i>
+                        (Pendiente por alistar)
+                      </span>
+                    )}
+                  </div>
                 </td>
                 <td className="text-center">
                   {renderTipoEnvio(order.formaOrder)}
@@ -205,7 +231,7 @@ export const OrdersTableAdmin = ({ orders }) => {
         <tfoot>
           <tr>
             <td colSpan="4">
-              <strong>Total de Ordenes: {orders.length}</strong>
+              <strong>Total de Ordenes por entregar: {orders.length}</strong>
             </td>
           </tr>
         </tfoot>

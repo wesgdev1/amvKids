@@ -35,25 +35,57 @@ export const Products = () => {
           Aqui encontrararas todos los productos de nuestra tienda
         </div> */}
         {/* <hr /> */}
-        <div className="relative w-full h-10 mb-4 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 overflow-hidden flex items-center">
-          <div className="absolute whitespace-nowrap animate-marquee text-white text-base font-medium">
-            <span className="mx-6">Pagos con Addi ✨</span>
-            <span className="mx-6">•</span>
-            <span className="mx-6">Transferencias (Nequi/Bancolombia) 🏦</span>
-            <span className="mx-6">•</span>
-            <span className="mx-6">Efectivo (Efecty/Baloto) 💵</span>
-            <span className="mx-6">•</span>
-            <span className="mx-6">Tarjetas Débito/Crédito 💳</span>
-            <span className="mx-6">•</span>
-            <span className="mx-6">Pagos con Addi ✨</span>
-            <span className="mx-6">•</span>
-            <span className="mx-6">Transferencias (Nequi/Bancolombia) 🏦</span>
-            <span className="mx-6">•</span>
-            <span className="mx-6">Efectivo (Efecty/Baloto) 💵</span>
-            <span className="mx-6">•</span>
-            <span className="mx-6">Tarjetas Débito/Crédito 💳</span>
-            <span className="mx-6">•</span>
+        <div className="relative w-full h-12 mb-6 bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-600 overflow-hidden flex items-center rounded-lg shadow-lg border border-purple-200/20">
+          {/* Efecto de brillo superpuesto */}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 animate-pulse"></div>
+
+          {/* Contenido del marquee */}
+          <div className="absolute whitespace-nowrap animate-marquee text-white text-sm font-semibold tracking-wide">
+            <span className="inline-flex items-center mx-8">
+              <span className="w-2 h-2 bg-yellow-300 rounded-full mr-2 animate-pulse"></span>
+              Pagos con Addi ✨
+            </span>
+            <span className="mx-4 text-purple-200">●</span>
+            <span className="inline-flex items-center mx-8">
+              <span className="w-2 h-2 bg-blue-300 rounded-full mr-2 animate-pulse"></span>
+              Transferencias (Nequi/Bancolombia) 🏦
+            </span>
+            <span className="mx-4 text-purple-200">●</span>
+            <span className="inline-flex items-center mx-8">
+              <span className="w-2 h-2 bg-green-300 rounded-full mr-2 animate-pulse"></span>
+              Efectivo (Efecty/Baloto) 💵
+            </span>
+            <span className="mx-4 text-purple-200">●</span>
+            <span className="inline-flex items-center mx-8">
+              <span className="w-2 h-2 bg-pink-300 rounded-full mr-2 animate-pulse"></span>
+              Tarjetas Débito/Crédito 💳
+            </span>
+            <span className="mx-4 text-purple-200">●</span>
+            <span className="inline-flex items-center mx-8">
+              <span className="w-2 h-2 bg-yellow-300 rounded-full mr-2 animate-pulse"></span>
+              Pagos con Addi ✨
+            </span>
+            <span className="mx-4 text-purple-200">●</span>
+            <span className="inline-flex items-center mx-8">
+              <span className="w-2 h-2 bg-blue-300 rounded-full mr-2 animate-pulse"></span>
+              Transferencias (Nequi/Bancolombia) 🏦
+            </span>
+            <span className="mx-4 text-purple-200">●</span>
+            <span className="inline-flex items-center mx-8">
+              <span className="w-2 h-2 bg-green-300 rounded-full mr-2 animate-pulse"></span>
+              Efectivo (Efecty/Baloto) 💵
+            </span>
+            <span className="mx-4 text-purple-200">●</span>
+            <span className="inline-flex items-center mx-8">
+              <span className="w-2 h-2 bg-pink-300 rounded-full mr-2 animate-pulse"></span>
+              Tarjetas Débito/Crédito 💳
+            </span>
+            <span className="mx-4 text-purple-200">●</span>
           </div>
+
+          {/* Efectos de borde brillante */}
+          <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/40 to-transparent"></div>
+          <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/40 to-transparent"></div>
         </div>
         {/* si la location contiene /productos/search/ tengo boton de borrar busqueda que me redirige a products  */}
         {location.pathname.includes("/productos/search/") && (

@@ -11,8 +11,9 @@ export const useOrderAdmin = (searchParams = {}) => {
     setError("");
 
     try {
-      const { name, size, color } = searchParams;
-      const hasSearchParams = name || size || color;
+      const { name, size, color, codigoOrder } = searchParams;
+      const hasSearchParams = name || size || color || codigoOrder;
+      console.log("hasSearchParams", hasSearchParams);
 
       let response;
       if (hasSearchParams) {
@@ -20,6 +21,7 @@ export const useOrderAdmin = (searchParams = {}) => {
           ...(name && { name }),
           ...(size && { size }),
           ...(color && { color }),
+          ...(codigoOrder && { codigoOrder }),
         };
         response = await getAllOrdersWithParams(payload);
       } else {
@@ -36,7 +38,12 @@ export const useOrderAdmin = (searchParams = {}) => {
 
   useEffect(() => {
     cargarOrders();
-  }, [searchParams.name, searchParams.size, searchParams.color]);
+  }, [
+    searchParams.name,
+    searchParams.size,
+    searchParams.color,
+    searchParams.codigoOrder,
+  ]);
 
   return { data, loading, error, cargarOrders };
 };

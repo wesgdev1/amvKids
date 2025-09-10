@@ -14,6 +14,7 @@ export const OrdersAdmin = () => {
   // Estados para búsqueda avanzada
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
   const [advancedSearch, setAdvancedSearch] = useState({
+    codigoOrder: "",
     name: "",
     size: "",
     color: "",
@@ -86,6 +87,7 @@ export const OrdersAdmin = () => {
 
   const clearAdvancedSearch = () => {
     setAdvancedSearch({
+      codigoOrder: "",
       name: "",
       size: "",
       color: "",
@@ -122,7 +124,7 @@ export const OrdersAdmin = () => {
 
       {/* Búsqueda básica */}
       <div className="d-flex gap-3 mb-3 flex-wrap">
-        <Form.Control
+        {/* <Form.Control
           type="search"
           size="sm"
           placeholder="Buscar por código orden/usuario o nombre..."
@@ -132,7 +134,7 @@ export const OrdersAdmin = () => {
           onChange={handleInputChange}
           onKeyDown={onSearch}
           value={searchValue}
-        />
+        /> */}
         <Form.Select
           size="sm"
           value={filterUserType}
@@ -185,6 +187,18 @@ export const OrdersAdmin = () => {
           </Card.Header>
           <Card.Body>
             <div className="row g-3">
+              <div className="col-md-4">
+                <Form.Label>Numero de Orden</Form.Label>
+                <Form.Control
+                  type="text"
+                  size="sm"
+                  placeholder="Ej: 1847"
+                  value={advancedSearch.codigoOrder}
+                  onChange={(e) =>
+                    handleAdvancedSearchChange("codigoOrder", e.target.value)
+                  }
+                />
+              </div>
               <div className="col-md-4">
                 <Form.Label>Nombre del Modelo</Form.Label>
                 <Form.Control
