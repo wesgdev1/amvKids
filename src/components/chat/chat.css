@@ -1,0 +1,50 @@
+:root {
+  /* 🎨 Paleta de colores cool */
+  --chat--color-primary: #390688;
+  --chat--color-primary-shade-50: #4a0b9a;
+  --chat--color-primary-shade-100: #5c10ac;
+  --chat--color-secondary: #73ccfd;
+  --chat--color-accent: #90ff69;
+  --chat--color-dark: #1a0633;
+  --chat--color-light: #f8faff;
+
+  /* 🪟 Ventana */
+  --chat--window--width: 420px;
+  --chat--window--height: 600px;
+  --chat--window--border: 3px solid var(--chat--color-primary);
+  --chat--border-radius: 20px;
+  --chat--header--background: linear-gradient(135deg, var(--chat--color-primary), var(--chat--color-secondary));
+  --chat--header--color: #fff;
+  --chat--header--padding: 1.2rem;
+
+  /* 💬 Mensajes */
+  --chat--message--font-size: 1rem;
+  --chat--message--user--background: linear-gradient(135deg, var(--chat--color-primary), #4a0b9a);
+  --chat--message--user--color: var(--chat--color-primary)
+  --chat--message--bot--background: linear-gradient(135deg, var(--chat--color-secondary), #5bb3f0);
+  --chat--message--bot--color: #1a0633;
+  --chat--message--border-radius: 18px;
+
+  /* ⌨️ Input */
+  --chat--textarea--height: 60px;
+  --chat--message-line-height: 1.6;
+
+  /* 🔘 Toggle */
+  --chat--toggle--background: linear-gradient(135deg, var(--chat--color-primary), var(--chat--color-accent));
+  --chat--toggle--hover--background: linear-gradient(135deg, var(--chat--color-primary-shade-50), #a3ff7d);
+  --chat--toggle--active--background: linear-gradient(135deg, var(--chat--color-primary-shade-100), #7aff56);
+  --chat--toggle--color: #fff;
+  --chat--toggle--size: 68px;
+
+
+  
+  /* position */
+  --chat--toggle--bottom: 40px;
+  --chat--toggle--right: 40px;
+  --chat--window--bottom: 10px;
+  --chat--window--right: 20px;
+
+
+  
+}
+

@@ -6,6 +6,7 @@ import PublicationsInstagram from "../components/home/PublicationsInstagram";
 import { ShoesPrincipal } from "../components/home/ShoesPrincipal";
 import { Homevideo } from "../components/videos/Homevideo";
 import Hero from "../componentsCarousell/Hero";
+import { N8nChat } from "../components/chat/N8nChat";
 
 export const Home = () => {
   return (
@@ -17,7 +18,8 @@ export const Home = () => {
       <Asesors />
       <Homevideo />
       <ButtonWhatsapp />
-      <ButtonWhatsappAmv />
+      {/* <ButtonWhatsappAmv /> */}
+      {/* <N8nChat /> */}
     </>
   );
 };

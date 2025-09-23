@@ -6,6 +6,7 @@ import { BrowserRouter } from "react-router-dom";
 import "./index.css"; // quitar si hay problemas
 import "./theme/custom.scss";
 import "./theme/index.css";
+//import "./components/chat/chat.css"; // 👈 importa aquí al nivel global
 import theme from "./theme/index.js";
 
 import "bootstrap-icons/font/bootstrap-icons.css";

@@ -530,7 +530,7 @@ export const OrdeDetail = () => {
                                 type="button"
                                 className="btn btn-success w-100 d-flex align-items-center justify-content-center gap-2"
                                 onClick={() => {
-                                  const phoneNumber = "573112728811"; // Número sin + y espacios
+                                  const phoneNumber = "573123460008"; // Número sin + y espacios
 
                                   // Preparar información de la orden
                                   const orderInfo = `

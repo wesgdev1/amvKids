@@ -4,7 +4,7 @@ const Asesors = () => {
   const imageUrl =
     "https://res.cloudinary.com/dppqkypts/image/upload/v1745955616/ChatGPT_Image_29_abr_2025_02_38_09_p.m._a9mgmk.png";
   // Reemplaza 'TU_NUMERO' con tu número de WhatsApp real, incluyendo código de país sin el '+'
-  const whatsappNumber = "573112728811"; // Ejemplo Perú: 51 + número
+  const whatsappNumber = "573123460008"; // Ejemplo Perú: 51 + número
   const whatsappMessage = encodeURIComponent(
     "Hola, estoy interesado en ser asesor de sus productos."
   );

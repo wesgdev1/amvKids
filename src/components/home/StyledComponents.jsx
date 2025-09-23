@@ -52,8 +52,8 @@ export const IconStyled = styled("a")(() => ({
   width: "70px",
   lineHeight: "70px",
   position: "fixed",
-  bottom: "15%",
-  right: "5%",
+  bottom: "80px",
+  right: "20px",
   textAlign: "center",
 
   boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.75)",
@@ -72,8 +72,8 @@ export const IconStyled2 = styled("a")(() => ({
   width: "70px",
   lineHeight: "70px",
   position: "fixed",
-  bottom: "5%",
-  right: "5%",
+  bottom: "10%",
+  right: "1.5%",
   textAlign: "center",
 
   boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.75)",
