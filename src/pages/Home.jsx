@@ -22,7 +22,7 @@ export const Home = () => {
       <Homevideo />
       <ButtonWhatsapp />
       {/* <ButtonWhatsappAmv /> */}
-      {/* <N8nChat /> */}
+      <N8nChat />
     </>
   );
 };
