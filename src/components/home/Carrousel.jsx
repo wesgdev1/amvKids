@@ -11,7 +11,7 @@ export const Carrousel = () => {
   };
 
   return (
-    <Carousel className="pb-2 h-auto ">
+    <Carousel className="pb-0 h-auto ">
       <Carousel.Item>
         <img
           className="d-block w-100 "
