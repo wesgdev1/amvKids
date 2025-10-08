@@ -93,8 +93,9 @@ const BrandsGrid = styled.div`
   }
 
   @media (max-width: 480px) {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
+    max-width: 100%;
   }
 `;
 
@@ -115,6 +116,11 @@ const BrandCard = styled.a`
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   border: 2px solid transparent;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 480px) {
+    padding: 1.5rem 1rem;
+    min-height: 140px;
+  }
 
   &::before {
     content: "";
@@ -161,7 +167,8 @@ const BrandLogo = styled.div`
   z-index: 1;
 
   @media (max-width: 480px) {
-    font-size: 1.7rem;
+    font-size: 1.5rem;
+    margin-bottom: 0.6rem;
   }
 `;
 
@@ -172,6 +179,11 @@ const BrandDescription = styled.p`
   margin: 0;
   font-weight: 500;
   opacity: 0.8;
+
+  @media (max-width: 480px) {
+    font-size: 0.8rem;
+    line-height: 1.3;
+  }
 `;
 
 const Subtitle = styled.p`
