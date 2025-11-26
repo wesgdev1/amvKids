@@ -92,7 +92,7 @@ export const OrdersTablePreparer = ({ orders }) => {
             <th># Orden</th>
             <th>codigo</th>
             <th>Nombre</th>
-            <th>Tipo</th>
+            <th>Cupon</th>
             <th>Fecha</th>
             <th>Total</th>
             <th>Estado</th>
@@ -111,15 +111,29 @@ export const OrdersTablePreparer = ({ orders }) => {
                 <td>{order.user.codigo}</td>
                 <td>{order.user.name}</td>
                 <td>
-                  <span
-                    className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      order.typeOrder === "Curva"
-                        ? "bg-indigo-100 text-indigo-800"
-                        : "bg-gray-100 text-gray-800"
-                    }`}
-                  >
-                    {order.typeOrder || "Normal"}
-                  </span>
+                  {order.coupon ? (
+                    <Badge
+                      bg="success"
+                      style={{
+                        fontSize: "0.7rem",
+                        padding: "0.3rem 0.6rem",
+                        borderRadius: "12px",
+                        fontWeight: "500",
+                        letterSpacing: "0.5px",
+                        boxShadow: "0 2px 4px rgba(40, 167, 69, 0.2)",
+                      }}
+                    >
+                      <i className="bi bi-tag-fill me-1"></i>
+                      {order.coupon.code}
+                    </Badge>
+                  ) : (
+                    <span
+                      className="text-muted"
+                      style={{ fontSize: "0.85rem" }}
+                    >
+                      Sin cupón
+                    </span>
+                  )}
                 </td>
                 <td>
                   {format(new Date(order.createdAt), "MM/dd/yyyy HH:mm:ss")}

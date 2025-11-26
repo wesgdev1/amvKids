@@ -3,13 +3,21 @@ import Swal from "sweetalert2";
 import { ButtonPayment, CardChekoutStyle } from "./StyledComponent";
 import { Card, Spinner, Tooltip, OverlayTrigger, Alert } from "react-bootstrap";
 import { useContext, useState } from "react";
-import { createOrder, createOrderWhitoutUser } from "../../api/orders/orders";
+import {
+  createOrder,
+  createOrderWhitoutUser,
+  validarCupon,
+} from "../../api/orders/orders";
 import AddiWidget from "../payments/AddiWidget";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../auth/context/AuthContext";
+import { Form, Button, InputGroup } from "react-bootstrap";
 
 export const CarCheckout = ({
   calcularTotal,
+  calcularTotalconDescuento,
+  calcularTotalConEnvioConDescuento,
+  calcularcantidadADescontar,
   calcularTotalConEnvio,
   calcularCostoEnvio,
   tipoEnvio,
@@ -27,7 +35,75 @@ export const CarCheckout = ({
   const navigate = useNavigate();
   const [comments, setComments] = useState("");
   const [loading, setLoading] = useState(false);
+  const [couponCode, setCouponCode] = useState("");
+  const [couponLoading, setCouponLoading] = useState(false);
+  const [couponValid, setCouponValid] = useState(null);
+  const [descuento, setDescuento] = useState(0);
+  const [couponId, setCouponId] = useState(null);
   const { user } = useContext(AuthContext);
+
+  const validateCoupon = async () => {
+    if (!couponCode.trim()) {
+      Swal.fire({
+        icon: "warning",
+        title: "Cupón requerido",
+        text: "Por favor ingresa un código de cupón",
+        confirmButtonColor: "#3085d6",
+      });
+      return;
+    }
+
+    setCouponLoading(true);
+    setCouponValid(null);
+
+    try {
+      // Validar cupón con la API
+      const isValid = await validarCupon({
+        codigoCupon: couponCode,
+      });
+
+      console.log("isValid", isValid.data.discount);
+
+      if (isValid.data) {
+        setDescuento(isValid.data.discount);
+        setCouponId(isValid.data.id);
+        setCouponValid(true);
+        console.log("✅ Cupón válido:", couponCode);
+        Swal.fire({
+          icon: "success",
+          title: "¡Cupón válido!",
+          text: `El cupón "${couponCode} tiene un descuento de ${isValid.data.discount}%" ha sido aplicado correctamente`,
+          confirmButtonColor: "#28a745",
+          timer: 3000,
+          timerProgressBar: true,
+        });
+      } else {
+        // Cupón inválido - limpiar campo y resetear estado
+        setCouponValid(null);
+        setCouponCode("");
+        console.log("❌ Cupón inválido:", couponCode);
+        Swal.fire({
+          icon: "error",
+          title: "Cupón inválido",
+          text: `El cupón "${couponCode}" no es válido o ha expirado`,
+          confirmButtonColor: "#dc3545",
+        });
+      }
+    } catch (error) {
+      // Error de conexión o API - limpiar campo y resetear estado
+      console.error("💥 Error validando cupón:", error);
+      setCouponValid(null);
+      setCouponCode("");
+      Swal.fire({
+        icon: "error",
+        title: "Este cupon no es valido",
+        text: "No se pudo validar el cupón. Ingrese un cupon valido.",
+        confirmButtonColor: "#dc3545",
+      });
+    } finally {
+      setCouponLoading(false);
+    }
+  };
 
   const obtenerDireccionCompleta = () => {
     console.log(direccionesUsuario);
@@ -166,7 +242,13 @@ export const CarCheckout = ({
       const direccionCompleta = obtenerDireccionCompleta();
 
       const payload = {
-        total: calcularTotalConEnvio(),
+        discountCoupon: couponValid
+          ? calcularcantidadADescontar(descuento)
+          : null,
+        couponId: couponValid ? couponId : null,
+        total: couponValid
+          ? calcularTotalConEnvioConDescuento(descuento)
+          : calcularTotalConEnvio(),
         comments,
         formaOrder: tipoEnvio || "Reventa-Aliado-Tienda",
         directionOrder:
@@ -352,9 +434,109 @@ export const CarCheckout = ({
           </div>
         )}
 
+        {/* Sección de cupón - Solo visible para Pago Anticipado */}
+        {tipoEnvio === "pagoAnticipado" && (
+          <div className="mb-4 p-3 bg-light rounded border">
+            <div className="d-flex align-items-center mb-2">
+              <i className="bi bi-tag-fill text-primary me-2"></i>
+              <small className="text-muted fw-semibold">
+                ¿Tienes un cupón de descuento?
+              </small>
+            </div>
+
+            <InputGroup className="mb-2">
+              <Form.Control
+                type="text"
+                placeholder="Ingresa tu código de cupón"
+                value={couponCode}
+                onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                disabled={couponLoading}
+                className={`${
+                  couponValid === true
+                    ? "border-success"
+                    : couponValid === false
+                    ? "border-danger"
+                    : ""
+                }`}
+                style={{
+                  borderWidth: couponValid !== null ? "2px" : "1px",
+                }}
+              />
+              <Button
+                variant={
+                  couponValid === true
+                    ? "success"
+                    : couponValid === false
+                    ? "danger"
+                    : "primary"
+                }
+                onClick={validateCoupon}
+                disabled={couponLoading || !couponCode.trim()}
+                className="px-3"
+              >
+                {couponLoading ? (
+                  <>
+                    <Spinner animation="border" size="sm" className="me-1" />
+                    Validando...
+                  </>
+                ) : couponValid === true ? (
+                  <>
+                    <i className="bi bi-check-circle-fill me-1"></i>
+                    Válido
+                  </>
+                ) : couponValid === false ? (
+                  <>
+                    <i className="bi bi-x-circle-fill me-1"></i>
+                    Inválido
+                  </>
+                ) : (
+                  <>
+                    <i className="bi bi-check2 me-1"></i>
+                    Validar
+                  </>
+                )}
+              </Button>
+            </InputGroup>
+
+            {couponValid === true && (
+              <>
+                <div className="d-flex align-items-center text-success">
+                  <i className="bi bi-check-circle-fill me-2"></i>
+                  <small className="fw-semibold">
+                    ¡Cupón aplicado! {couponCode}, se hara un descuento de{" "}
+                    {descuento}%
+                  </small>
+                </div>
+                <div className="d-flex align-items-center text-success">
+                  <i className="bi bi-check-circle-fill me-2"></i>
+
+                  <small className="fw-semibold">
+                    El descuento se aplicara a productos que no esten en
+                    promocion u ofertas.
+                  </small>
+                </div>
+              </>
+            )}
+
+            {couponValid === false && (
+              <div className="d-flex align-items-center text-danger">
+                <i className="bi bi-exclamation-triangle-fill me-2"></i>
+                <small>
+                  Cupón inválido. Verifica el código e intenta nuevamente.
+                </small>
+              </div>
+            )}
+          </div>
+        )}
+
         <div className="d-flex justify-content-between mb-4">
           <p className="mb-2">Descuento</p>
-          <p className="mb-2">${0}</p>
+          <p className="mb-2">
+            $
+            {couponValid
+              ? calcularcantidadADescontar(descuento).toLocaleString("es-CO")
+              : 0}
+          </p>
         </div>
 
         <hr />
@@ -362,7 +544,12 @@ export const CarCheckout = ({
         <div className="d-flex justify-content-between mb-4">
           <p className="mb-2 fw-bold">Total a pagar</p>
           <p className="mb-2 fw-bold text-primary">
-            ${calcularTotalConEnvio().toLocaleString("es-CO")}
+            $
+            {couponValid
+              ? calcularTotalConEnvioConDescuento(descuento).toLocaleString(
+                  "es-CO"
+                )
+              : calcularTotalConEnvio().toLocaleString("es-CO")}
           </p>
         </div>
 

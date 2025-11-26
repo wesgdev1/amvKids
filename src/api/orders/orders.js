@@ -145,3 +145,12 @@ export const updateTotalDiscount = async (payload) => {
     return Promise.reject(error);
   }
 };
+
+export const validarCupon = async (payload) => {
+  try {
+    const { data: response } = await http.post(`/orders/validarCupon`, payload);
+    return { data: response.data };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};

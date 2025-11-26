@@ -214,6 +214,25 @@ export const OrdeDetail = () => {
                   </span>
                 </div>
 
+                <div>
+                  {data?.coupon ? (
+                    <>
+                      {" "}
+                      <Badge>
+                        <i className="bi bi-tag-fill me-1"></i>
+                        Tiene aplicado un cupon de descuento:{" "}
+                        {data?.coupon?.code}
+                      </Badge>
+                      <Badge>
+                        <i className="bi bi-tag-fill me-1"></i>
+                        descuento aplicado: {data?.coupon?.discount}%
+                      </Badge>
+                    </>
+                  ) : (
+                    <></>
+                  )}
+                </div>
+
                 {/* Información de envío */}
                 {(data.formaOrder ||
                   data.directionOrder ||

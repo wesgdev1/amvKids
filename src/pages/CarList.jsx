@@ -44,6 +44,30 @@ export const CarList = () => {
     return total;
   };
 
+  const calularTotalNoPromo = () => {
+    // solo de elemento no en promocion
+    let total = 0;
+    state.forEach((element) => {
+      if (!element.isPromoted) {
+        //total += element.quantity * element.normalPrice;
+        total += user
+          ? element.price * element.quantity
+          : element.normalPrice * element.quantity;
+      }
+    });
+    return total;
+  };
+  const calcularTotalSiPromo = () => {
+    // SOLO itero los que estan en promocion
+    let total = 0;
+    state.forEach((element) => {
+      if (element.isPromoted) {
+        total += element.quantity * element.pricePromoted;
+      }
+    });
+    return total;
+  };
+
   const calcularCostoEnvio = () => {
     switch (tipoEnvio) {
       case "contraentrega":
@@ -58,6 +82,22 @@ export const CarList = () => {
 
   const calcularTotalConEnvio = () => {
     return calcularTotal() + calcularCostoEnvio();
+  };
+
+  const calcularTotalconDescuento = (porcentajeDescuento) => {
+    return calcularTotal() * (1 - porcentajeDescuento / 100);
+  };
+
+  const calcularcantidadADescontar = (porcentajeDescuento) => {
+    console.log("norpomor", calularTotalNoPromo());
+    return calularTotalNoPromo() * (porcentajeDescuento / 100);
+  };
+  const calcularTotalConEnvioConDescuento = (porcentajeDescuento) => {
+    return (
+      calcularTotalconDescuento(porcentajeDescuento) +
+      calcularCostoEnvio() +
+      calcularTotalSiPromo() * (porcentajeDescuento / 100)
+    );
   };
 
   const handleTipoEnvioChange = (tipo) => {
@@ -418,6 +458,11 @@ export const CarList = () => {
                   <Col className="col-12 col-lg-4">
                     <CarCheckout
                       state={state}
+                      calcularTotalconDescuento={calcularTotalconDescuento}
+                      calcularcantidadADescontar={calcularcantidadADescontar}
+                      calcularTotalConEnvioConDescuento={
+                        calcularTotalConEnvioConDescuento
+                      }
                       calcularTotal={calcularTotal}
                       calcularTotalConEnvio={
                         user?.tipoUsuario === "Cliente" || !user
