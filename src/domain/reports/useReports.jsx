@@ -10,6 +10,7 @@ import {
   getModelosMasVendidos,
   getInfoUtilidades,
   getInfoUtilidadesGraficos,
+  getNumbersOfOrdersWithCoupons,
 } from "../../api/reports/reports";
 
 export const useCountPairs = () => {
@@ -339,5 +340,39 @@ export const useInfoUtilidadesGraficos = (startDate, endDate) => {
     }
   }, [startDate, endDate]);
 
+  return { data, loading, error };
+};
+
+export const useCountOrdersWithCoupons = (startDate, endDate) => {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const loadCountOrdersWithCoupons = async (start, end) => {
+    if (!start || !end) {
+      setData(null);
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const payload = { startDate: start, endDate: end };
+      const response = await getNumbersOfOrdersWithCoupons(payload);
+
+      setData(response.data);
+    } catch (error) {
+      console.error("Hook: Error fetching period orders:", error);
+      setError(error);
+      setData(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    if (startDate && endDate) {
+      loadCountOrdersWithCoupons(startDate, endDate);
+    }
+  }, [startDate, endDate]);
   return { data, loading, error };
 };

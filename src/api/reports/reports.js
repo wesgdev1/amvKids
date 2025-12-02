@@ -58,6 +58,18 @@ export const getSumaTotalesOrdenes = async (payload) => {
   }
 };
 
+export const getNumbersOfOrdersWithCoupons = async (payload) => {
+  try {
+    const { data: response } = await http.post(
+      `/orders/orderswithcoupon`,
+      payload
+    );
+    return { data: response.data };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 export const getParesVendidos = async (payload) => {
   try {
     const { data: response } = await http.post(

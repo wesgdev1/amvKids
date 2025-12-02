@@ -19,6 +19,7 @@ import {
   useModelosMasVendidos,
   useInfoUtilidades,
   useInfoUtilidadesGraficos,
+  useCountOrdersWithCoupons,
 } from "../../domain/reports/useReports";
 import {
   format,
@@ -108,6 +109,17 @@ export const ReportList = () => {
   console.log(
     "ReportList: utilidadesInfoGraficos recibido del hook:",
     utilidadesInfoGraficos
+  );
+
+  const {
+    data: countOrdersWithCoupons,
+    loading: isLoadingCountOrdersWithCoupons,
+    error: countOrdersWithCouponsError,
+  } = useCountOrdersWithCoupons(queryStartDate, queryEndDate);
+
+  console.log(
+    "ReportList: countOrdersWithCoupons recibido del hook:",
+    countOrdersWithCoupons
   );
 
   const handleDateChange = (dates) => {
@@ -723,6 +735,32 @@ export const ReportList = () => {
                 No hay datos de utilidad para el periodo.
               </div>
             </div>
+          )}
+        </StatCardStyled>
+
+        {/* aqui debo mostrar la informacion del numero de cupones */}
+        <StatCardStyled
+          style={{
+            background: "linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%)",
+          }}
+        >
+          {isLoadingCountOrdersWithCoupons ? (
+            <Spinner animation="border" size="sm" variant="light" />
+          ) : countOrdersWithCouponsError ? (
+            <i
+              className="bi bi-exclamation-triangle-fill text-danger stat-icon"
+              title={countOrdersWithCouponsError.message || "Error"}
+            ></i>
+          ) : (
+            <>
+              <i className="bi bi-gift-fill stat-icon"></i>
+              <div className="stat-value">
+                {countOrdersWithCoupons?.toLocaleString() ?? "-"}
+              </div>
+              <div className="stat-label">
+                Órdenes con Cupones - Pedidos entregados y pagos confirmados
+              </div>
+            </>
           )}
         </StatCardStyled>
       </StatsContainerStyled>
