@@ -4,6 +4,7 @@ import { Table } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { Paginator } from "../paginator/Paginator";
 import { ControlButton } from "./StyledComponents";
+import { InitialsAvatar } from "../common/InitialsAvatar";
 
 export const ProductsTable = ({ productos }) => {
   const [productosBypage, setProductosByPage] = useState(10);
@@ -27,17 +28,29 @@ export const ProductsTable = ({ productos }) => {
       <Table striped bordered hover style={{ fontSize: "0.8rem" }}>
         <thead>
           <tr>
-            <th>Nombre del producto</th>
-            <th>Numero de modelos</th>
-            <th>Opciones</th>
+            <th>
+              <i className="bi bi-tag-fill me-1"></i>Nombre del producto
+            </th>
+            <th>
+              <i className="bi bi-check-circle-fill me-1"></i>Modelos Activos
+            </th>
+            <th>
+              <i className="bi bi-archive-fill me-1"></i>Modelos Archivados
+            </th>
+            <th>
+              <i className="bi bi-gear-fill me-1"></i>Opciones
+            </th>
           </tr>
         </thead>
         <tbody>
           {productos
             .map((producto) => (
               <tr key={producto.id}>
-                <td>{producto.name}</td>
+                <td>
+                  <InitialsAvatar name={producto.name.toUpperCase()} />
+                </td>
                 <td>{producto.models.length}</td>
+                <td>{0}</td>
                 <td>
                   <div className="flex justify-center gap-2">
                     <ControlButton onClick={() => viewProduct(producto)}>

@@ -1,9 +1,41 @@
 import { useNavigate } from "react-router-dom";
 import { Alert, Button, Form, Spinner } from "react-bootstrap";
 import { useState } from "react";
+import styled from "styled-components";
 import { ProductsTable } from "./ProductsTable";
 import { useProducts } from "../../domain/products/useProducts";
 import { ButtonProfile } from "./StyledComponents";
+
+const StatsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 28px;
+`;
+
+const StatCard = styled.div`
+  background: #fff;
+  border-radius: 14px;
+  padding: 18px 22px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.07);
+`;
+
+const StatLabel = styled.p`
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #9e9e9e;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 6px;
+`;
+
+const StatValue = styled.p`
+  font-size: 2rem;
+  font-weight: 800;
+  color: ${({ $color }) => $color || "#1a1a1a"};
+  margin: 0;
+  line-height: 1;
+`;
 
 export const ProductList = () => {
   const navigate = useNavigate();
@@ -85,6 +117,29 @@ export const ProductList = () => {
       >
         Volver
       </Button>
+      <StatsGrid>
+        <StatCard>
+          <StatLabel>Marcas</StatLabel>
+          <StatValue $color="#5a2d9e">{data?.length || 0}</StatValue>
+        </StatCard>
+        <StatCard>
+          <StatLabel>Modelos Totales</StatLabel>
+          <StatValue>
+            {data?.reduce((acc, p) => acc + (p.models?.length || 0), 0) || 0}
+          </StatValue>
+        </StatCard>
+        <StatCard>
+          <StatLabel>Activos</StatLabel>
+          <StatValue>
+            {data?.reduce((acc, p) => acc + (p.models?.length || 0), 0) || 0}
+          </StatValue>
+        </StatCard>
+        <StatCard>
+          <StatLabel>Archivados</StatLabel>
+          <StatValue>{0}</StatValue>
+        </StatCard>
+      </StatsGrid>
+
       <h4 className="pb-3">
         <i className="bi bi-box"></i> Productos o Categorias
       </h4>
