@@ -15,7 +15,7 @@ export const Carrousel = () => {
       <Carousel.Item>
         <img
           className="d-block w-100 "
-          src="https://res.cloudinary.com/dppqkypts/image/upload/v1777121478/222PON_EL_LOGO_202604221718_n8zzlj.png"
+          src="https://res.cloudinary.com/dppqkypts/image/upload/v1777121462/Copia_de_Dise%C3%B1o_sin_t%C3%ADtulo_2_bz8jjy.png"
           alt="First slide"
         />
         {/* Boton de ver productos */}
