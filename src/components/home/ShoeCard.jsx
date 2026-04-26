@@ -12,15 +12,16 @@ const ImageContainer = styled.div`
   aspect-ratio: 1;
   position: relative;
   overflow: hidden;
+  border-radius: 6px;
 `;
 
 const ImageSkeleton = styled.div`
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background: linear-gradient(90deg, #2a0560 25%, #3d0880 50%, #2a0560 75%);
   background-size: 200% 100%;
   animation: loading 1.5s infinite;
-  border-radius: 5px;
+  border-radius: 6px;
 
   @keyframes loading {
     0% {
@@ -33,7 +34,7 @@ const ImageSkeleton = styled.div`
 `;
 
 const CardImage = styled(Card.Img)`
-  transition: opacity 0.3s ease-in-out;
+  transition: transform 0.4s ease, opacity 0.3s ease-in-out;
   opacity: ${({ loaded }) => (loaded ? 1 : 0)};
   width: 100%;
   height: 100%;
@@ -41,6 +42,10 @@ const CardImage = styled(Card.Img)`
   position: absolute;
   top: 0;
   left: 0;
+
+  &:hover {
+    transform: scale(1.06);
+  }
 `;
 
 const CardTitleStyled = styled(Card.Title)`
@@ -48,99 +53,104 @@ const CardTitleStyled = styled(Card.Title)`
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+`;
+
+const TagsRow = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 6px;
 `;
 
 const ColorTag = styled.span`
   display: inline-block;
-  background-color: white;
-  color: #000000;
-  padding: 0.2em 0.5em;
-  border-radius: 5px;
-  font-size: 0.8em;
-  margin-top: 0.5em;
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  padding: 0.15em 0.5em;
+  border-radius: 4px;
+  font-size: 0.72em;
   text-transform: capitalize;
+  backdrop-filter: blur(4px);
 `;
 
 const ProductTag = styled.span`
   display: inline-block;
-  background-color: #a7f3d0;
-  color: #047857;
-  padding: 0.2em 0.5em;
-  border-radius: 5px;
-  font-size: 0.8em;
-  margin-top: 0.5em;
-  margin-left: 0.5em;
-  font-weight: 500;
+  background-color: #90ff69;
+  color: #1a1a1a;
+  padding: 0.15em 0.5em;
+  border-radius: 4px;
+  font-size: 0.72em;
+  font-weight: 700;
+  text-transform: capitalize;
 `;
 
-// Nuevo componente estilizado para la etiqueta "AGOTADO"
-const SoldOutSash = styled.div`
+const SoldOutOverlay = styled.div`
   position: absolute;
-  top: 0px; // Ajusta según el borde/padding de ImageContainer
-  left: 0px;
-  width: 150px;
-  height: 150px;
-  overflow: hidden;
-  pointer-events: none; // Para no interferir con clics en la tarjeta
-  z-index: 3; // Para estar sobre la imagen
-
-  span {
-    position: absolute;
-    display: block;
-    width: 200px; // Ancho de la cinta
-    padding: 8px 0;
-    background-color: rgba(220, 53, 69, 0.85); // Rojo con algo de transparencia
-    color: white;
-    font-size: 14px;
-    font-weight: bold;
-    text-align: center;
-    transform: rotate(-45deg);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    // Ajuste de posición para la esquina superior izquierda
-    left: -60px;
-    top: 35px;
-  }
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 4;
+  border-radius: 6px;
 `;
 
-// Nuevo componente estilizado para la etiqueta "EN PROMOCIÓN"
-const PromotionSash = styled.div`
+const SoldOutBadge = styled.div`
+  background: rgba(220, 53, 69, 0.92);
+  color: white;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  padding: 6px 16px;
+  border-radius: 20px;
+  text-transform: uppercase;
+`;
+
+const PromoBadge = styled.div`
   position: absolute;
-  top: 8px; // Ajuste para no superponerse completamente con la esquina
-  right: -35px; // Ligeramente fuera para efecto de cinta
-  width: 120px; // Más pequeña
-  height: auto;
-  overflow: visible; // Permitir que la cinta exceda un poco si es necesario
-  pointer-events: none;
-  z-index: 2; // Debajo de SoldOutSash si ambas estuvieran (caso raro)
-  transform: rotate(45deg);
-
-  span {
-    display: block;
-    width: 100%;
-    padding: 4px 0; // Menos padding vertical
-    background-color: rgba(255, 193, 7, 0.9); // Amarillo con transparencia
-    color: #333; // Texto oscuro para contraste
-    font-size: 10px; // Más pequeño
-    font-weight: bold;
-    text-align: center;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-  }
+  top: 8px;
+  right: 8px;
+  background: linear-gradient(135deg, #ffc107, #ff9800);
+  color: #1a1a1a;
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  padding: 3px 9px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  z-index: 3;
+  box-shadow: 0 2px 6px rgba(255, 152, 0, 0.5);
 `;
 
-// Nuevo Badge para la oferta en el precio
+const PriceBox = styled(Card.Text)`
+  background: rgba(0, 0, 0, 0.55);
+  color: white;
+  padding: 0.4em 0.6em;
+  border-radius: 6px;
+  position: relative;
+  min-height: 2.2em;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-align: center;
+  margin-top: 6px;
+  margin-bottom: 0;
+`;
+
 const OfferBadgeStyled = styled.span`
   position: absolute;
   top: 4px;
   right: 4px;
-  background-color: #ffc107; // Amarillo
-  color: #343a40; // Texto oscuro
+  background-color: #ffc107;
+  color: #343a40;
   padding: 2px 6px;
-  font-size: 0.65em;
-  font-weight: bold;
-  border-radius: 0.2rem;
+  font-size: 0.6em;
+  font-weight: 800;
+  border-radius: 4px;
   line-height: 1;
-  z-index: 1;
 `;
 
 export const ShoeCard = ({ model }) => {
@@ -158,20 +168,12 @@ export const ShoeCard = ({ model }) => {
           observer.disconnect();
         }
       },
-      {
-        threshold: 0.1,
-        rootMargin: "100px",
-      }
+      { threshold: 0.1, rootMargin: "100px" }
     );
 
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
-    }
-
+    if (containerRef.current) observer.observe(containerRef.current);
     return () => {
-      if (observer) {
-        observer.disconnect();
-      }
+      if (observer) observer.disconnect();
     };
   }, []);
 
@@ -185,19 +187,14 @@ export const ShoeCard = ({ model }) => {
 
   const getEffectiveStock = (productModel) => {
     if (!productModel) return 0;
-    // Escenario 1: model.stock es un valor numérico directo
-    if (typeof productModel.stocks === "number") {
-      return productModel.stocks;
-    }
-    // Escenario 2: model.stock es un array de objetos de stock
+    if (typeof productModel.stocks === "number") return productModel.stocks;
     if (Array.isArray(productModel.stocks)) {
-      if (productModel.stocks.length === 0) return 0; // Array vacío significa sin stock
+      if (productModel.stocks.length === 0) return 0;
       return productModel.stocks.reduce(
         (sum, item) => sum + (Number(item.quantity) || 0),
         0
       );
     }
-    // Fallback: si model.stock no está en el formato esperado, asumir 0 stock
     return 0;
   };
 
@@ -224,13 +221,10 @@ export const ShoeCard = ({ model }) => {
   };
 
   const getDisplayPriceString = () => {
-    if (isInPromotion) {
-      return formatPrice(model.pricePromoted);
-    }
+    if (isInPromotion) return formatPrice(model.pricePromoted);
     if (user?.tipoUsuario === "Reventa") return formatPrice(model.price);
     if (user?.tipoUsuario === "Tienda Aliada")
       return formatPrice(model.alliancePrice);
-    // Cliente, Preparador, Admin, Whatsapp y !user usan normalPrice
     return formatPrice(model.normalPrice);
   };
 
@@ -252,41 +246,27 @@ export const ShoeCard = ({ model }) => {
             onLoad={() => setImageLoaded(true)}
           />
           {isSoldOut && (
-            <SoldOutSash>
-              <span>AGOTADO</span>
-            </SoldOutSash>
+            <SoldOutOverlay>
+              <SoldOutBadge>Agotado</SoldOutBadge>
+            </SoldOutOverlay>
           )}
-          {!isSoldOut && isInPromotion && (
-            <PromotionSash>
-              <span>PROMO</span>
-            </PromotionSash>
-          )}
+          {!isSoldOut && isInPromotion && <PromoBadge>Promo</PromoBadge>}
         </ImageContainer>
-        <Card.Body>
+        <Card.Body style={{ padding: "10px 6px 6px" }}>
           <CardTitleStyled>{model.name}</CardTitleStyled>
-          <div>
+          <TagsRow>
             {model.color && <ColorTag>{model.color}</ColorTag>}
             {model.product?.name && (
               <ProductTag>{capitalizeWords(model.product.name)}</ProductTag>
             )}
-          </div>
+          </TagsRow>
           <CardDescroptionStyle>{model.description}</CardDescroptionStyle>
-          <Card.Text
-            style={{
-              backgroundColor: "rgba(0, 0, 0, 0.7)",
-              color: "white",
-              padding: "0.5em",
-              borderRadius: "4px",
-              position: "relative",
-              minHeight: "2.5em",
-            }}
-            className="text-center"
-          >
+          <PriceBox>
             {getDisplayPriceString()}
             {isInPromotion && !isSoldOut && (
               <OfferBadgeStyled>OFERTA</OfferBadgeStyled>
             )}
-          </Card.Text>
+          </PriceBox>
         </Card.Body>
       </ShoesCardStyled>
     </>
