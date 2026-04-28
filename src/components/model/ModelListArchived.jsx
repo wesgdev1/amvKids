@@ -1,11 +1,14 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { Alert, Button, Form, Spinner } from "react-bootstrap";
 import { useState } from "react";
-import { useProduct } from "../../domain/products/useProduct";
+import {
+  useProduct,
+  useProductArchived,
+} from "../../domain/products/useProduct";
 import { ButtonProfile } from "../products/StyledComponents";
 import { ModelsTable } from "./ModelsTable";
 
-export const ModelList = () => {
+export const ModelListArchived = () => {
   const params = useParams();
   const { idProduct } = params;
   console.log(idProduct);
@@ -15,7 +18,7 @@ export const ModelList = () => {
     loading,
     error,
     cargaProducto: refresh,
-  } = useProduct(idProduct);
+  } = useProductArchived(idProduct);
   const handleClick = () => {
     navigate(`/profile/products/${idProduct}/models/new`);
   };
@@ -56,7 +59,7 @@ export const ModelList = () => {
         Volver
       </Button>
       <h4 className="pb-3">
-        <i className="bi bi-box"></i> Modelos Activos - {data?.name}
+        <i className="bi bi-box"></i> Modelos Archivados - {data?.name}
       </h4>
       <div className="d-flex justify-content-start pb-3">
         <ButtonProfile onClick={handleClick}>Agregar Modelo</ButtonProfile>

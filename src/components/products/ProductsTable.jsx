@@ -11,7 +11,9 @@ const ArchivedButton = styled.button`
   color: #666;
   cursor: pointer;
   margin-left: 8px;
-  transition: border-color 0.2s, color 0.2s;
+  transition:
+    border-color 0.2s,
+    color 0.2s;
 
   &:hover {
     border-color: #390688;
@@ -34,6 +36,9 @@ export const ProductsTable = ({ productos }) => {
 
   const viewProduct = (producto) => {
     navigate(`/profile/products/${producto.id}/models`);
+  };
+  const viewProductArchived = (producto) => {
+    navigate(`/profile/products/${producto.id}/modelsArchived`);
   };
   const editProduct = (producto) => {
     navigate(`/profile/products/new`, {
@@ -72,7 +77,7 @@ export const ProductsTable = ({ productos }) => {
                 </td>
                 <td>
                   {producto.models?.filter((m) => !m.isActive).length || 0}
-                  <ArchivedButton onClick={() => console.log(producto)}>
+                  <ArchivedButton onClick={() => viewProductArchived(producto)}>
                     ver archivados
                   </ArchivedButton>
                 </td>

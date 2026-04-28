@@ -35,3 +35,12 @@ export const getProductById = async (id) => {
     return Promise.reject(error);
   }
 };
+
+export const getProductByIdArchived = async (id) => {
+  try {
+    const { data: response } = await http.get(`/products/archived/${id}`);
+    return { data: response.data };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};

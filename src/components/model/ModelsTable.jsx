@@ -62,8 +62,8 @@ export const ModelsTable = ({ modelos, refresh, productId }) => {
 
     try {
       Swal.fire({
-        title: "Archivar Modelo - " + modelo.name,
-        text: `Estás a punto de archivar el modelo ${modelo.name}. ¿Deseas continuar?`,
+        title: modelo.isActive ? "¿Archivar modelo?" : "¿Desarchivar modelo?",
+        text: `Estás a punto de ${modelo.isActive ? "archivar" : "desarchivar"} el modelo ${modelo.name}. ¿Deseas continuar?`,
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
@@ -72,24 +72,37 @@ export const ModelsTable = ({ modelos, refresh, productId }) => {
         cancelButtonText: "No",
       }).then((result) => {
         if (result.isConfirmed) {
-          const result = updateModelText(modelo.id, {
-            isActive: false,
-          });
-          if (result) {
+          updateModelText(modelo.id, {
+            isActive: !modelo.isActive,
+          }).then(() => {
             Swal.fire({
               icon: "success",
-              title: "Modelo Archivado",
-              text: `El modelo ${modelo.name} se archivó correctamente`,
+              title: modelo.isActive
+                ? "Modelo Archivado"
+                : "Modelo Desarchivado",
+              text: `El modelo ${modelo.name} se ${
+                modelo.isActive ? "archivó" : "desarchivó"
+              } correctamente`,
             });
             refresh(productId);
-          }
+          });
         }
+        // if (result) {
+        //   Swal.fire({
+        //     icon: "success",
+        //     title: modelo.isActive
+        //       ? "Modelo Archivado"
+        //       : "Modelo Desarchivado",
+        //     text: `El modelo ${modelo.name} se ${modelo.isActive ? "archivó" : "desarchivó"} correctamente`,
+        //   });
+        //   refresh(productId);
+        // }
       });
     } catch (error) {
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: `No se pudo archivar el modelo ${modelo.name}`,
+        text: `No se pudo ${modelo.isActive ? "archivar" : "desarchivar"} el modelo ${modelo.name}`,
       });
     }
   };
@@ -243,7 +256,11 @@ export const ModelsTable = ({ modelos, refresh, productId }) => {
                           <i className="bi bi-pencil-fill"></i>
                         </ControlButton>
                         <ControlButton onClick={() => archivedModel(modelo)}>
-                          <i className="bi bi-archive-fill"></i>
+                          {modelo.isActive ? (
+                            <i className="bi bi-archive-fill"></i>
+                          ) : (
+                            <i className="bi bi-box-arrow-in-up-right"></i>
+                          )}
                         </ControlButton>
                       </div>
                     </td>

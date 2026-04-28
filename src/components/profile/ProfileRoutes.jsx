@@ -20,6 +20,7 @@ import { AdminRoute } from "../../auth/AdminRoute";
 import { AlertsList } from "../reports/AlertsList";
 import { UgcCreators } from "../ugcCreators/UgcCreators";
 import { Coupons } from "../coupons/Coupons";
+import { ModelListArchived } from "../model/ModelListArchived";
 
 export const ProfileRoutes = () => {
   return (
@@ -89,6 +90,10 @@ export const ProfileRoutes = () => {
         <Route path="/prepareOrders/:id" element={<OrdeDetailPreparer />} />
         <Route path="/products" element={<ProductList />} />
         <Route path="/products/:idProduct/models" element={<ModelList />} />
+        <Route
+          path="/products/:idProduct/modelsArchived"
+          element={<ModelListArchived />}
+        />
         <Route path="/products/:idProduct/models/new" element={<ModelForm />} />
         <Route path="/models/:idModel" element={<ModelDetail />} />
         <Route path="/users" element={<UserList />} />

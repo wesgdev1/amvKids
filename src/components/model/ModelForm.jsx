@@ -229,8 +229,12 @@ export const ModelForm = () => {
         <div className="w-100 d-flex justify-content-start mb-4">
           <Button
             variant="outline-secondary"
+            // onClick={() => {
+            //   navigate(`/profile/products/${idProduct}/models`);
+            // }}
+
             onClick={() => {
-              navigate(`/profile/products/${idProduct}/models`);
+              window.history.back();
             }}
           >
             <i className="bi bi-arrow-left me-2"></i>Volver
