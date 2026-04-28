@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { Alert, Form, Spinner, Card, Button } from "react-bootstrap";
-import { ButtonProfile } from "../products/StyledComponents";
+import { Alert, Form, Spinner, Button } from "react-bootstrap";
 import { useOrderAdmin } from "../../domain/orders/useOrderAdmin";
 import { OrdersTableAdmin } from "./OrdersTableAdmin";
 import styled from "styled-components";
@@ -12,29 +11,36 @@ const SearchContainer = styled.div`
   padding: 2rem;
   margin-bottom: 2rem;
   border: 1px solid #e5e7eb;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
     0 2px 4px -1px rgba(0, 0, 0, 0.06);
   transition: all 0.2s ease;
 
   &:hover {
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    box-shadow:
+      0 10px 15px -3px rgba(0, 0, 0, 0.1),
       0 4px 6px -2px rgba(0, 0, 0, 0.05);
   }
 `;
 
-const SearchTitle = styled.h5`
+const SearchTitle = styled.button`
+  background: none;
+  border: none;
+  padding: 0;
+  width: 100%;
   color: #111827;
   font-weight: 600;
-  margin-bottom: 1.5rem;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 0.5rem;
-  font-size: 1.25rem;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
-    sans-serif;
+  font-size: 1.1rem;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
+  cursor: pointer;
 
-  i {
-    font-size: 1.25rem;
+  i.icon-left {
+    font-size: 1.1rem;
     color: #3b82f6;
   }
 `;
@@ -46,8 +52,8 @@ const StyledFormControl = styled(Form.Control)`
   color: #111827 !important;
   transition: all 0.2s ease;
   font-weight: 400;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
-    sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
   padding: 0.75rem 1rem;
 
   &:focus {
@@ -75,8 +81,8 @@ const StyledFormSelect = styled(Form.Select)`
   transition: all 0.2s ease;
   font-weight: 400;
   cursor: pointer;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
-    sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
   padding: 0.75rem 1rem;
 
   &:focus {
@@ -101,91 +107,37 @@ const StyledFormLabel = styled(Form.Label)`
   font-weight: 500;
   margin-bottom: 0.5rem !important;
   font-size: 0.875rem;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
-    sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
 `;
 
 const SearchGrid = styled.div`
   display: grid;
-  grid-template-columns: auto 1fr auto auto;
-  gap: 1.5rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.2rem;
   align-items: end;
 
-  @media (max-width: 992px) {
+  @media (max-width: 768px) {
     grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
   }
 
   @media (max-width: 576px) {
     grid-template-columns: 1fr;
-    gap: 1.2rem;
   }
 `;
 
-const AdvancedSearchButton = styled(Button)`
-  background: #f9fafb !important;
-  border: 1px solid #d1d5db !important;
-  border-radius: 8px !important;
-  color: #374151 !important;
-  font-weight: 500;
-  padding: 0.5rem 1rem;
-  transition: all 0.2s ease;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
-    sans-serif;
-  font-size: 0.875rem;
-
-  &:hover {
-    background: #f3f4f6 !important;
-    border-color: #9ca3af !important;
-    color: #111827 !important;
-  }
-
-  &:focus {
-    background: #f9fafb !important;
-    border-color: #3b82f6 !important;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
-    color: #374151 !important;
-  }
-
-  i {
-    margin-right: 0.5rem;
-  }
+const Divider = styled.div`
+  border-top: 1px solid #e5e7eb;
+  margin: 1.2rem 0;
 `;
 
-const AdvancedSearchCard = styled(Card)`
-  background: #ffffff !important;
-  border: 1px solid #e5e7eb !important;
-  border-radius: 12px !important;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  overflow: hidden;
-  animation: slideDown 0.3s ease-out;
-
-  @keyframes slideDown {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .card-header {
-    background: #f9fafb !important;
-    border-bottom: 1px solid #e5e7eb !important;
-    color: #111827;
-    font-weight: 600;
-    padding: 1rem 1.5rem;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
-      sans-serif;
-  }
-
-  .card-body {
-    padding: 1.5rem;
-    color: #111827;
-  }
+const SectionLabel = styled.p`
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.8rem;
 `;
 
 const ClearButton = styled(Button)`
@@ -196,8 +148,8 @@ const ClearButton = styled(Button)`
   font-weight: 500;
   transition: all 0.2s ease;
   padding: 0.5rem 1rem;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
-    sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
   font-size: 0.875rem;
 
   &:hover {
@@ -228,27 +180,43 @@ const FilterTag = styled.div`
   display: inline-block;
   margin: 0.25rem;
   border: 1px solid #bfdbfe;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
-    sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
+`;
+
+const SearchButton = styled(Button)`
+  background: #390688 !important;
+  border: none !important;
+  border-radius: 8px !important;
+  color: #fff !important;
+  font-weight: 600;
+  padding: 0.5rem 1.4rem;
+  transition: background 0.2s ease;
+  font-size: 0.875rem;
+
+  &:hover {
+    background: #5a2d9e !important;
+  }
 `;
 
 export const OrdersAdmin = () => {
-  const [searchValue, setSearchValue] = useState("");
-  const [filteredData, setFilteredData] = useState([]);
-  const [notificacion, setNotificacion] = useState(false);
   const [filterUserType, setFilterUserType] = useState("Todos");
   const [filterOrderState, setFilterOrderState] = useState("Todos");
 
-  // Estados para búsqueda avanzada
-  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
   const [advancedSearch, setAdvancedSearch] = useState({
     codigoOrder: "",
     name: "",
     size: "",
     color: "",
   });
+  const [committedSearch, setCommittedSearch] = useState({
+    codigoOrder: "",
+    name: "",
+    size: "",
+    color: "",
+  });
 
-  const { data, loading, error } = useOrderAdmin(advancedSearch);
+  const { data, loading, error } = useOrderAdmin(committedSearch);
 
   const userTypes = ["Todos", "Cliente", "Reventa", "Tienda Aliada"];
   const orderStates = [
@@ -260,297 +228,200 @@ export const OrdersAdmin = () => {
     "CanceladaAdmin",
   ];
 
-  const handleInputChange = (e) => {
-    setSearchValue(e.target.value);
+  const handleSearchChange = (field, value) => {
+    setAdvancedSearch((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleUserTypeChange = (e) => {
-    setFilterUserType(e.target.value);
-    setFilteredData([]);
-    setNotificacion(false);
+  const applySearch = () => {
+    setCommittedSearch(advancedSearch);
   };
 
-  const handleOrderStateChange = (e) => {
-    setFilterOrderState(e.target.value);
-    setFilteredData([]);
-    setNotificacion(false);
+  const clearSearch = () => {
+    const empty = { codigoOrder: "", name: "", size: "", color: "" };
+    setAdvancedSearch(empty);
+    setCommittedSearch(empty);
+    setFilterUserType("Todos");
+    setFilterOrderState("Todos");
   };
 
-  const onSearch = (e) => {
-    if (e.key === "Enter" && e.target.value !== "") {
-      e.preventDefault();
-
-      let baseData = data || [];
-      if (filterUserType !== "Todos") {
-        baseData = baseData.filter(
-          (order) => order.user.tipoUsuario === filterUserType
-        );
-      }
-      if (filterOrderState !== "Todos") {
-        baseData = baseData.filter((order) => order.state === filterOrderState);
-      }
-
-      const filter = baseData.filter((order) => {
-        return (
-          order.codigoOrder == searchValue ||
-          order.user.codigo == searchValue ||
-          order.user.name.toLowerCase().includes(searchValue.toLowerCase())
-        );
-      });
-      setFilteredData(filter);
-      setNotificacion(filter.length === 0);
-      setSearchValue("");
-    }
+  const handleEnter = (e) => {
+    if (e.key === "Enter") applySearch();
   };
 
-  const handleAdvancedSearchChange = (field, value) => {
-    setAdvancedSearch((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-    // Resetear filtros cuando cambie la búsqueda avanzada
-    setFilteredData([]);
-    setNotificacion(false);
-  };
-
-  const clearAdvancedSearch = () => {
-    setAdvancedSearch({
-      codigoOrder: "",
-      name: "",
-      size: "",
-      color: "",
-    });
-    setFilteredData([]);
-    setNotificacion(false);
-  };
-
-  let filteredBySelectors = data || [];
-  if (filterUserType !== "Todos") {
-    filteredBySelectors = filteredBySelectors.filter(
-      (order) => order.user.tipoUsuario === filterUserType
+  let dataToShow = data || [];
+  if (filterUserType !== "Todos")
+    dataToShow = dataToShow.filter(
+      (o) => o.user.tipoUsuario === filterUserType
     );
-  }
-  if (filterOrderState !== "Todos") {
-    filteredBySelectors = filteredBySelectors.filter(
-      (order) => order.state === filterOrderState
-    );
-  }
+  if (filterOrderState !== "Todos")
+    dataToShow = dataToShow.filter((o) => o.state === filterOrderState);
 
-  const dataToShow =
-    filteredData.length > 0 || notificacion
-      ? filteredData
-      : filteredBySelectors;
-  const showNotFoundMessage = notificacion && filteredData.length === 0;
-  const showNoDataMessage =
-    !loading && !error && dataToShow.length === 0 && !notificacion;
+  const hasActiveFilters = Object.values(committedSearch).some(Boolean);
+  const [showFilters, setShowFilters] = useState(false);
 
   return (
     <div className="pt-5 px-4">
       <h4 className="pb-3">
         <i className="bi bi-receipt-cutoff"></i> Ordenes de apartado
       </h4>
-
       <p>
-        Por defecto se mostraran todas las ordenes que no estan marcadas como
-        entregadas
+        Por defecto se mostrarán todas las órdenes no marcadas como entregadas.
       </p>
       <hr />
 
-      {/* Búsqueda básica estilizada */}
       <SearchContainer>
-        <SearchTitle>
-          <i className="bi bi-search"></i>
-          Búsqueda de Órdenes
+        <SearchTitle onClick={() => setShowFilters((v) => !v)}>
+          <span>
+            <i className="bi bi-search icon-left me-2"></i>
+            Búsqueda y Filtros
+          </span>
+          <i
+            className={`bi ${showFilters ? "bi-chevron-up" : "bi-chevron-down"}`}
+          ></i>
         </SearchTitle>
 
-        <SearchGrid>
-          <div>
-            <StyledFormLabel>Número de Orden</StyledFormLabel>
-            <StyledFormControl
-              type="text"
-              size="sm"
-              placeholder="Ej: 1847"
-              value={advancedSearch.codigoOrder}
-              onChange={(e) =>
-                handleAdvancedSearchChange("codigoOrder", e.target.value)
-              }
-            />
+        {hasActiveFilters && !showFilters && (
+          <div className="d-flex flex-wrap align-items-center mt-2">
+            <span className="text-muted small me-2">Filtros activos:</span>
+            {committedSearch.codigoOrder && (
+              <FilterTag>Orden: {committedSearch.codigoOrder}</FilterTag>
+            )}
+            {committedSearch.name && (
+              <FilterTag>Modelo: {committedSearch.name}</FilterTag>
+            )}
+            {committedSearch.size && (
+              <FilterTag>Talla: {committedSearch.size}</FilterTag>
+            )}
+            {committedSearch.color && (
+              <FilterTag>Color: {committedSearch.color}</FilterTag>
+            )}
           </div>
+        )}
 
-          <div>
-            <StyledFormLabel>Tipo de Usuario</StyledFormLabel>
-            <StyledFormSelect
-              size="sm"
-              value={filterUserType}
-              onChange={handleUserTypeChange}
-              aria-label="Filtrar por tipo de usuario"
-            >
-              {userTypes.map((type) => (
-                <option key={type} value={type}>
-                  {type === "Todos" ? "Todos los tipos" : type}
-                </option>
-              ))}
-            </StyledFormSelect>
-          </div>
-
-          <div>
-            <StyledFormLabel>Estado de Orden</StyledFormLabel>
-            <StyledFormSelect
-              size="sm"
-              value={filterOrderState}
-              onChange={handleOrderStateChange}
-              aria-label="Filtrar por estado de orden"
-            >
-              {orderStates.map((state) => (
-                <option key={state} value={state}>
-                  {state === "Todos" ? "Todos los estados" : state}
-                </option>
-              ))}
-            </StyledFormSelect>
-          </div>
-        </SearchGrid>
-      </SearchContainer>
-
-      {/* Botón para mostrar/ocultar búsqueda avanzada */}
-      <div className="mb-3">
-        <AdvancedSearchButton
-          size="sm"
-          onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}
-        >
-          <i className="bi bi-funnel"></i> Búsqueda Avanzada
-          <i
-            className={`bi ${
-              showAdvancedSearch ? "bi-chevron-up" : "bi-chevron-down"
-            } ms-2`}
-          ></i>
-        </AdvancedSearchButton>
-      </div>
-
-      {/* Sección de búsqueda avanzada */}
-      {showAdvancedSearch && (
-        <AdvancedSearchCard className="mb-4">
-          <Card.Header>
-            <h6 className="mb-0">
-              <i className="bi bi-gear me-2"></i>
-              Búsqueda Avanzada por Productos
-            </h6>
-          </Card.Header>
-          <Card.Body>
-            <div className="row g-3">
-              <div className="col-md-4">
-                <Form.Label>Número de Orden</Form.Label>
+        {showFilters && (
+          <>
+            <SectionLabel className="mt-3">
+              Filtros por base de datos
+            </SectionLabel>
+            <SearchGrid>
+              <div>
+                <StyledFormLabel>Número de Orden</StyledFormLabel>
                 <StyledFormControl
                   type="text"
-                  size="sm"
                   placeholder="Ej: 1847"
                   value={advancedSearch.codigoOrder}
                   onChange={(e) =>
-                    handleAdvancedSearchChange("codigoOrder", e.target.value)
+                    handleSearchChange("codigoOrder", e.target.value)
                   }
+                  onKeyDown={handleEnter}
                 />
               </div>
-              <div className="col-md-4">
-                <Form.Label>Nombre del Modelo</Form.Label>
+              <div>
+                <StyledFormLabel>Nombre del Modelo</StyledFormLabel>
                 <StyledFormControl
                   type="text"
-                  size="sm"
                   placeholder="Ej: Retro 3"
                   value={advancedSearch.name}
-                  onChange={(e) =>
-                    handleAdvancedSearchChange("name", e.target.value)
-                  }
+                  onChange={(e) => handleSearchChange("name", e.target.value)}
+                  onKeyDown={handleEnter}
                 />
               </div>
-              <div className="col-md-4">
-                <Form.Label>Talla</Form.Label>
+              <div>
+                <StyledFormLabel>Talla</StyledFormLabel>
                 <StyledFormControl
                   type="number"
-                  size="sm"
                   placeholder="Ej: 25, 43, 35"
                   value={advancedSearch.size}
-                  onChange={(e) =>
-                    handleAdvancedSearchChange("size", e.target.value)
-                  }
+                  onChange={(e) => handleSearchChange("size", e.target.value)}
+                  onKeyDown={handleEnter}
                 />
               </div>
-              <div className="col-md-4">
-                <Form.Label>Color</Form.Label>
+              <div>
+                <StyledFormLabel>Color</StyledFormLabel>
                 <StyledFormControl
                   type="text"
-                  size="sm"
                   placeholder="Ej: Rojo, Azul"
                   value={advancedSearch.color}
-                  onChange={(e) =>
-                    handleAdvancedSearchChange("color", e.target.value)
-                  }
+                  onChange={(e) => handleSearchChange("color", e.target.value)}
+                  onKeyDown={handleEnter}
                 />
               </div>
-            </div>
+            </SearchGrid>
+
+            <Divider />
+
+            <SectionLabel>Filtros locales</SectionLabel>
+            <SearchGrid>
+              <div>
+                <StyledFormLabel>Tipo de Usuario</StyledFormLabel>
+                <StyledFormSelect
+                  value={filterUserType}
+                  onChange={(e) => setFilterUserType(e.target.value)}
+                >
+                  {userTypes.map((type) => (
+                    <option key={type} value={type}>
+                      {type === "Todos" ? "Todos los tipos" : type}
+                    </option>
+                  ))}
+                </StyledFormSelect>
+              </div>
+              <div>
+                <StyledFormLabel>Estado de Orden</StyledFormLabel>
+                <StyledFormSelect
+                  value={filterOrderState}
+                  onChange={(e) => setFilterOrderState(e.target.value)}
+                >
+                  {orderStates.map((state) => (
+                    <option key={state} value={state}>
+                      {state === "Todos" ? "Todos los estados" : state}
+                    </option>
+                  ))}
+                </StyledFormSelect>
+              </div>
+            </SearchGrid>
+
             <div className="mt-3 d-flex gap-2 align-items-center flex-wrap">
-              <ClearButton size="sm" onClick={clearAdvancedSearch}>
-                <i className="bi bi-x-circle"></i> Limpiar Filtros
+              <SearchButton onClick={applySearch}>
+                <i className="bi bi-search me-1"></i> Buscar
+              </SearchButton>
+              <ClearButton onClick={clearSearch}>
+                <i className="bi bi-x-circle me-1"></i> Limpiar
               </ClearButton>
-              {(advancedSearch.name ||
-                advancedSearch.size ||
-                advancedSearch.color) && (
+              {hasActiveFilters && (
                 <div className="d-flex flex-wrap align-items-center">
                   <span className="text-muted small me-2">
                     Filtros activos:
                   </span>
-                  {advancedSearch.name && (
-                    <FilterTag>Nombre: "{advancedSearch.name}"</FilterTag>
+                  {committedSearch.codigoOrder && (
+                    <FilterTag>Orden: {committedSearch.codigoOrder}</FilterTag>
                   )}
-                  {advancedSearch.size && (
-                    <FilterTag>Talla: "{advancedSearch.size}"</FilterTag>
+                  {committedSearch.name && (
+                    <FilterTag>Modelo: {committedSearch.name}</FilterTag>
                   )}
-                  {advancedSearch.color && (
-                    <FilterTag>Color: "{advancedSearch.color}"</FilterTag>
+                  {committedSearch.size && (
+                    <FilterTag>Talla: {committedSearch.size}</FilterTag>
+                  )}
+                  {committedSearch.color && (
+                    <FilterTag>Color: {committedSearch.color}</FilterTag>
                   )}
                 </div>
               )}
             </div>
-          </Card.Body>
-        </AdvancedSearchCard>
-      )}
+          </>
+        )}
+      </SearchContainer>
 
       {loading && <Spinner animation="border" variant="info" />}
       {error && <Alert variant="danger">{error}</Alert>}
 
-      {showNotFoundMessage && (
-        <div className="pt-3">
-          <p>No se encontraron resultados para la búsqueda.</p>
-          <ButtonProfile
-            onClick={() => {
-              setNotificacion(false);
-              setFilteredData([]);
-            }}
-          >
-            Ver todos ({filterUserType} / {filterOrderState})
-          </ButtonProfile>
-        </div>
-      )}
-
-      {!loading && !error && !showNotFoundMessage && dataToShow.length > 0 && (
-        <>
-          {filteredData.length > 0 && (
-            <p className="pt-2">
-              Se encontraron: ({filteredData.length}) coincidencias.
-            </p>
-          )}
-          {filteredData.length > 0 && (
-            <ButtonProfile onClick={() => setFilteredData([])}>
-              Mostrar todos ({filterUserType} / {filterOrderState})
-            </ButtonProfile>
-          )}
-          <OrdersTableAdmin orders={dataToShow} />
-        </>
-      )}
-
-      {showNoDataMessage && (
+      {!loading && !error && dataToShow.length === 0 && (
         <p className="pt-3">
-          No hay órdenes que mostrar para los filtros seleccionados (
-          {filterUserType} / {filterOrderState}).
+          No hay órdenes que mostrar para los filtros seleccionados.
         </p>
+      )}
+
+      {!loading && !error && dataToShow.length > 0 && (
+        <OrdersTableAdmin orders={dataToShow} />
       )}
     </div>
   );
