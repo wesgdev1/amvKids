@@ -1,5 +1,23 @@
 import { useState } from "react";
 import { Table } from "react-bootstrap";
+import styled from "styled-components";
+
+const ArchivedButton = styled.button`
+  background: none;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  padding: 2px 10px;
+  font-size: 0.7rem;
+  color: #666;
+  cursor: pointer;
+  margin-left: 8px;
+  transition: border-color 0.2s, color 0.2s;
+
+  &:hover {
+    border-color: #390688;
+    color: #390688;
+  }
+`;
 
 import { useNavigate } from "react-router-dom";
 import { Paginator } from "../paginator/Paginator";
@@ -49,8 +67,15 @@ export const ProductsTable = ({ productos }) => {
                 <td>
                   <InitialsAvatar name={producto.name.toUpperCase()} />
                 </td>
-                <td>{producto.models.length}</td>
-                <td>{0}</td>
+                <td>
+                  {producto.models?.filter((m) => m.isActive).length || 0}
+                </td>
+                <td>
+                  {producto.models?.filter((m) => !m.isActive).length || 0}
+                  <ArchivedButton onClick={() => console.log(producto)}>
+                    ver archivados
+                  </ArchivedButton>
+                </td>
                 <td>
                   <div className="flex justify-center gap-2">
                     <ControlButton onClick={() => viewProduct(producto)}>

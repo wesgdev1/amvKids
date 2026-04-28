@@ -25,5 +25,5 @@ export const useProduct = (idProduct) => {
     cargaProducto(idProduct);
   }, [idProduct]);
 
-  return { data, loading, error };
+  return { data, loading, error, cargaProducto };
 };

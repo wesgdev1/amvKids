@@ -131,12 +131,22 @@ export const ProductList = () => {
         <StatCard>
           <StatLabel>Activos</StatLabel>
           <StatValue>
-            {data?.reduce((acc, p) => acc + (p.models?.length || 0), 0) || 0}
+            {data?.reduce(
+              (acc, p) =>
+                acc + (p.models?.filter((m) => m.isActive).length || 0),
+              0
+            ) || 0}
           </StatValue>
         </StatCard>
         <StatCard>
           <StatLabel>Archivados</StatLabel>
-          <StatValue>{0}</StatValue>
+          <StatValue>
+            {data?.reduce(
+              (acc, p) =>
+                acc + (p.models?.filter((m) => !m.isActive).length || 0),
+              0
+            ) || 0}
+          </StatValue>
         </StatCard>
       </StatsGrid>
 

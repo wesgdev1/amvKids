@@ -22,8 +22,10 @@ import {
   QuantityBadge,
 } from "./StyledComponents";
 import PropTypes from "prop-types";
+import Swal from "sweetalert2";
+import { updateModelText } from "../../api/model/model";
 
-export const ModelsTable = ({ modelos }) => {
+export const ModelsTable = ({ modelos, refresh, productId }) => {
   const [show, setShow] = useState(false);
   const [lowStockSizes, setLowStockSizes] = useState([]);
 
@@ -53,6 +55,43 @@ export const ModelsTable = ({ modelos }) => {
 
   const calculateStock = (stocks) => {
     return stocks.reduce((acc, stock) => acc + stock.quantity, 0);
+  };
+
+  const archivedModel = (modelo) => {
+    console.log("Archivar modelo:", modelo);
+
+    try {
+      Swal.fire({
+        title: "Archivar Modelo - " + modelo.name,
+        text: `Estás a punto de archivar el modelo ${modelo.name}. ¿Deseas continuar?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si",
+        cancelButtonText: "No",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const result = updateModelText(modelo.id, {
+            isActive: false,
+          });
+          if (result) {
+            Swal.fire({
+              icon: "success",
+              title: "Modelo Archivado",
+              text: `El modelo ${modelo.name} se archivó correctamente`,
+            });
+            refresh(productId);
+          }
+        }
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: `No se pudo archivar el modelo ${modelo.name}`,
+      });
+    }
   };
 
   return (
@@ -202,6 +241,9 @@ export const ModelsTable = ({ modelos }) => {
                         </ControlButton>
                         <ControlButton onClick={() => editProduct(modelo)}>
                           <i className="bi bi-pencil-fill"></i>
+                        </ControlButton>
+                        <ControlButton onClick={() => archivedModel(modelo)}>
+                          <i className="bi bi-archive-fill"></i>
                         </ControlButton>
                       </div>
                     </td>

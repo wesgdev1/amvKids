@@ -10,7 +10,12 @@ export const ModelList = () => {
   const { idProduct } = params;
   console.log(idProduct);
   const navigate = useNavigate();
-  const { data, loading, error } = useProduct(idProduct);
+  const {
+    data,
+    loading,
+    error,
+    cargaProducto: refresh,
+  } = useProduct(idProduct);
   const handleClick = () => {
     navigate(`/profile/products/${idProduct}/models/new`);
   };
@@ -86,10 +91,17 @@ export const ModelList = () => {
           <ButtonProfile onClick={() => setFilteredData([])}>
             Mostrar todo
           </ButtonProfile>
-          <ModelsTable modelos={filteredData} />
+          <ModelsTable modelos={filteredData} refresh={refresh} />
         </>
       ) : (
-        data && data.models.length > 0 && <ModelsTable modelos={data.models} />
+        data &&
+        data.models.length > 0 && (
+          <ModelsTable
+            modelos={data.models}
+            refresh={refresh}
+            productId={data?.id}
+          />
+        )
       )}
     </div>
   );
