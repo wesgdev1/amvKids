@@ -15,13 +15,42 @@ export const UserList = () => {
     navigate("/profile/users/new");
   };
   const [searchValue, setSearchValue] = useState("");
+  const [emailSearchValue, setEmailSearchValue] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const [notificacion, setNotificacion] = useState(false);
-  const [filterType, setFilterType] = useState("Todos"); // Estado para el filtro de tipo
-  const [sortBy, setSortBy] = useState("default"); // Estado para el ordenamiento
+  const [filterType, setFilterType] = useState("Todos");
+  const [sortBy, setSortBy] = useState("default");
 
   const handleInputChange = (e) => {
     setSearchValue(e.target.value);
+  };
+
+  const handleEmailInputChange = (e) => {
+    setEmailSearchValue(e.target.value);
+  };
+
+  const onEmailSearch = (e) => {
+    if (e.key === "Enter" && e.target.value !== "") {
+      e.preventDefault();
+
+      let baseData =
+        filterType === "Todos"
+          ? data
+          : data.filter((user) => user.tipoUsuario === filterType);
+
+      if (sortBy === "multasDesc") {
+        baseData = [...baseData].sort(
+          (a, b) => (b.numeroMultas || 0) - (a.numeroMultas || 0)
+        );
+      }
+
+      const filter = baseData.filter((user) =>
+        user.email?.toLowerCase().includes(emailSearchValue.toLowerCase())
+      );
+      setFilteredData(filter);
+      setNotificacion(filter.length === 0);
+      setEmailSearchValue("");
+    }
   };
 
   const handleFilterChange = (e) => {
@@ -96,12 +125,21 @@ export const UserList = () => {
           type="search"
           size="sm"
           placeholder="Buscar por Nombre (Presiona Enter)"
-          className="me-2"
-          style={{ flex: "2 1 300px" }}
-          aria-label="Search"
+          style={{ flex: "2 1 200px" }}
+          aria-label="Buscar por nombre"
           onChange={handleInputChange}
           onKeyDown={onSearch}
           value={searchValue}
+        />
+        <Form.Control
+          type="search"
+          size="sm"
+          placeholder="Buscar por Correo (Presiona Enter)"
+          style={{ flex: "2 1 200px" }}
+          aria-label="Buscar por correo"
+          onChange={handleEmailInputChange}
+          onKeyDown={onEmailSearch}
+          value={emailSearchValue}
         />
 
         <Form.Select
