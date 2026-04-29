@@ -154,3 +154,30 @@ export const validarCupon = async (payload) => {
     return Promise.reject(error);
   }
 };
+
+export const createCoupon = async (payload) => {
+  try {
+    const { data: response } = await http.post(`/coupons`, payload);
+    return { data: response.data };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+export const getAllCoupons = async () => {
+  try {
+    const { data: response } = await http.get(`/coupons`);
+    return { data: response.data };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+export const updateCouponState = async (id, payload) => {
+  try {
+    const { data: response } = await http.patch(`/coupons/${id}`, payload);
+    return { data: response.data };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
