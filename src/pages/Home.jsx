@@ -8,6 +8,7 @@ import { Homevideo } from "../components/videos/Homevideo";
 import Hero from "../componentsCarousell/Hero";
 import { N8nChat } from "../components/chat/N8nChat";
 import Brands from "../components/Brands";
+import { TikTolFeed } from "../components/TikTolFeed";
 
 export const Home = () => {
   return (
@@ -17,6 +18,7 @@ export const Home = () => {
       <Brands />
       <Hero />
       {/* <PublicationsInstagram /> */}
+      <TikTolFeed />
 
       <Asesors />
       <Homevideo />
