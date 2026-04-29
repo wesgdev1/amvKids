@@ -1,4 +1,5 @@
 import { Form, Spinner } from "react-bootstrap";
+import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import {
   StatsContainerStyled,
@@ -51,6 +52,56 @@ ChartJS.register(
   Tooltip,
   Legend
 );
+
+const SectionHeader = ({ icon, title, accentFrom, accentTo }) => (
+  <div
+    style={{
+      display: "flex",
+      alignItems: "center",
+      gap: "0.75rem",
+      marginBottom: "1.5rem",
+    }}
+  >
+    <div
+      style={{
+        width: "4px",
+        height: "28px",
+        borderRadius: "3px",
+        background: `linear-gradient(180deg, ${accentFrom}, ${accentTo})`,
+        flexShrink: 0,
+      }}
+    />
+    <i
+      className={`bi ${icon}`}
+      style={{ color: accentFrom, fontSize: "1.15rem" }}
+    ></i>
+    <h5
+      style={{
+        margin: 0,
+        fontWeight: 700,
+        fontSize: "1.1rem",
+        color: "#0f172a",
+        letterSpacing: "-0.3px",
+      }}
+    >
+      {title}
+    </h5>
+    <div
+      style={{
+        flex: 1,
+        height: "1px",
+        background: "linear-gradient(90deg, #e2e8f0 0%, transparent 100%)",
+      }}
+    />
+  </div>
+);
+
+SectionHeader.propTypes = {
+  icon: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  accentFrom: PropTypes.string.isRequired,
+  accentTo: PropTypes.string.isRequired,
+};
 
 export const ReportList = () => {
   const [selectedPeriod, setSelectedPeriod] = useState("day");
@@ -263,11 +314,15 @@ export const ReportList = () => {
           utilidadesInfoGraficos?.utilidadesPorDia?.map(
             (item) => item.utilidadNeta
           ) || [],
-        borderColor: "rgb(75, 192, 192)",
-        backgroundColor: "rgba(75, 192, 192, 0.5)",
+        borderColor: "#10b981",
+        backgroundColor: "rgba(16, 185, 129, 0.1)",
         tension: 0.4,
         pointRadius: 4,
-        pointHoverRadius: 6,
+        pointHoverRadius: 7,
+        borderWidth: 2.5,
+        pointBackgroundColor: "#10b981",
+        pointBorderColor: "rgba(255,255,255,0.8)",
+        pointBorderWidth: 2,
       },
       {
         label: "Utilidad Bruta",
@@ -275,11 +330,15 @@ export const ReportList = () => {
           utilidadesInfoGraficos?.utilidadesPorDia?.map(
             (item) => item.utilidadBruta
           ) || [],
-        borderColor: "rgb(255, 99, 132)",
-        backgroundColor: "rgba(255, 99, 132, 0.5)",
+        borderColor: "#f59e0b",
+        backgroundColor: "rgba(245, 158, 11, 0.1)",
         tension: 0.4,
         pointRadius: 4,
-        pointHoverRadius: 6,
+        pointHoverRadius: 7,
+        borderWidth: 2.5,
+        pointBackgroundColor: "#f59e0b",
+        pointBorderColor: "rgba(255,255,255,0.8)",
+        pointBorderWidth: 2,
       },
     ],
   };
@@ -295,15 +354,21 @@ export const ReportList = () => {
       legend: {
         position: "top",
         labels: {
-          color: "white",
-          font: {
-            size: 12,
-          },
+          color: "rgba(255,255,255,0.8)",
+          font: { size: 12, weight: "500" },
           usePointStyle: true,
           pointStyle: "circle",
+          padding: 24,
         },
       },
       tooltip: {
+        backgroundColor: "rgba(15, 23, 42, 0.96)",
+        borderColor: "rgba(255,255,255,0.08)",
+        borderWidth: 1,
+        titleColor: "rgba(255,255,255,0.9)",
+        bodyColor: "rgba(255,255,255,0.65)",
+        padding: 12,
+        cornerRadius: 10,
         callbacks: {
           title: function (context) {
             const fecha =
@@ -333,7 +398,8 @@ export const ReportList = () => {
     scales: {
       y: {
         ticks: {
-          color: "white",
+          color: "rgba(255,255,255,0.45)",
+          font: { size: 11 },
           callback: function (value) {
             return new Intl.NumberFormat("es-CO", {
               style: "currency",
@@ -344,29 +410,77 @@ export const ReportList = () => {
           },
         },
         grid: {
-          color: "rgba(255, 255, 255, 0.1)",
+          color: "rgba(255,255,255,0.05)",
         },
       },
       x: {
         ticks: {
-          color: "white",
+          color: "rgba(255,255,255,0.45)",
+          font: { size: 11 },
           maxRotation: 45,
           minRotation: 45,
           autoSkip: true,
           maxTicksLimit: 10,
         },
         grid: {
-          color: "rgba(255, 255, 255, 0.1)",
+          color: "rgba(255,255,255,0.05)",
         },
       },
     },
   };
 
   return (
-    <div className="container mt-5">
-      <h2 className="text-center mb-4 fw-bold text-primary">
-        <i className="bi bi-bar-chart-line-fill me-2"></i> Resumen General
-      </h2>
+    <div className="container mt-5 pb-5">
+      <style>{`
+        .report-select {
+          border: 1px solid #e2e8f0;
+          border-radius: 10px;
+          font-size: 0.875rem;
+          color: #374151;
+          padding: 0.5rem 0.875rem;
+          background: #fff;
+          box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+          transition: border-color 0.2s, box-shadow 0.2s;
+          width: auto;
+          min-width: 150px;
+          cursor: pointer;
+        }
+        .report-select:focus {
+          outline: none;
+          border-color: #3b82f6;
+          box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
+        }
+        .report-datepicker-wrapper {
+          width: auto;
+          min-width: 220px;
+        }
+        .report-datepicker-wrapper .form-control {
+          width: 100%;
+          border: 1px solid #e2e8f0;
+          border-radius: 10px;
+          font-size: 0.875rem;
+          color: #374151;
+          padding: 0.5rem 0.875rem;
+          box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+          transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .report-datepicker-wrapper .form-control:focus {
+          border-color: #3b82f6;
+          box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
+        }
+        .report-datepicker-wrapper .form-control::placeholder {
+          color: #9ca3af;
+        }
+      `}</style>
+
+      {/* ── Resumen General ─────────────────────────────────────── */}
+      <SectionHeader
+        icon="bi-bar-chart-line-fill"
+        title="Resumen General"
+        accentFrom="#3b82f6"
+        accentTo="#8b5cf6"
+      />
+
       <StatsContainerStyled>
         <StatCardStyled>
           {loadingUsers ? (
@@ -389,7 +503,7 @@ export const ReportList = () => {
 
         <StatCardStyled
           style={{
-            background: "linear-gradient(135deg, #11998e 0%, #38ef7d 100%)",
+            background: "linear-gradient(145deg, #059669 0%, #34d399 100%)",
           }}
         >
           {loadingPairs ? (
@@ -401,7 +515,7 @@ export const ReportList = () => {
             ></i>
           ) : (
             <>
-              <i className="bi bi-collection-fill stat-icon"></i>{" "}
+              <i className="bi bi-collection-fill stat-icon"></i>
               <div className="stat-value">
                 {countpairs?._sum.quantity?.toLocaleString()}
               </div>
@@ -412,7 +526,7 @@ export const ReportList = () => {
 
         <StatCardStyled
           style={{
-            background: "linear-gradient(135deg, #ff4e50 0%, #f9d423 100%)",
+            background: "linear-gradient(145deg, #d97706 0%, #fbbf24 100%)",
           }}
         >
           {loadingModels ? (
@@ -435,7 +549,7 @@ export const ReportList = () => {
 
         <StatCardStyled
           style={{
-            background: "linear-gradient(135deg, #ec008c 0%, #fc6767 100%)",
+            background: "linear-gradient(145deg, #e11d48 0%, #fb7185 100%)",
           }}
         >
           {loadingCategories ? (
@@ -456,17 +570,40 @@ export const ReportList = () => {
           )}
         </StatCardStyled>
       </StatsContainerStyled>
-      <hr />
-      <h2 className="text-center mb-4 fw-bold text-success">
-        <i className="bi bi-calendar-event-fill me-2"></i> Reporte por Periodo
-      </h2>
 
-      <div className="d-flex justify-content-center align-items-center mb-4 gap-3 flex-wrap">
+      {/* Divider */}
+      <div
+        style={{ height: "1px", background: "#f1f5f9", margin: "2.25rem 0" }}
+      />
+
+      {/* ── Reporte por Periodo ──────────────────────────────────── */}
+      <SectionHeader
+        icon="bi-calendar-event-fill"
+        title="Reporte por Periodo"
+        accentFrom="#10b981"
+        accentTo="#3b82f6"
+      />
+
+      {/* Filter bar */}
+      <div
+        style={{
+          background: "#f8fafc",
+          border: "1px solid #e2e8f0",
+          borderRadius: "14px",
+          padding: "1rem 1.5rem",
+          marginBottom: "1.5rem",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: "0.875rem",
+          flexWrap: "wrap",
+        }}
+      >
         <Form.Select
           aria-label="Seleccionar periodo"
           value={selectedPeriod}
           onChange={handlePeriodChange}
-          style={{ width: "auto", minWidth: "150px" }}
+          className="report-select"
           disabled={isLoading}
         >
           <option value="day">Hoy</option>
@@ -484,27 +621,17 @@ export const ReportList = () => {
           locale={es}
           dateFormat="dd/MM/yyyy"
           className="form-control"
-          wrapperClassName="date-picker-wrapper"
-          style={{ width: "auto" }}
+          wrapperClassName="report-datepicker-wrapper"
           placeholderText="Selecciona rango de fechas"
           disabled={isLoading}
           isClearable
         />
-        <style>{`
-          .date-picker-wrapper {
-            width: auto;
-            min-width: 220px;
-          }
-          .date-picker-wrapper .form-control {
-             width: 100%;
-          }
-        `}</style>
       </div>
 
       <StatsContainerStyled>
         <StatCardStyled
           style={{
-            background: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
+            background: "linear-gradient(145deg, #0284c7 0%, #38bdf8 100%)",
           }}
         >
           {isLoadingPeriodReport ? (
@@ -521,7 +648,7 @@ export const ReportList = () => {
                 {periodOrderStats?.toLocaleString() ?? "-"}
               </div>
               <div className="stat-label">
-                Órdenes Creadas - Pedidos entregados y pagos confirmados
+                Órdenes · Entregadas y pagos confirmados
               </div>
             </>
           )}
@@ -529,7 +656,7 @@ export const ReportList = () => {
 
         <StatCardStyled
           style={{
-            background: "linear-gradient(135deg, #ff8c42 0%, #ffcc6b 100%)",
+            background: "linear-gradient(145deg, #ea580c 0%, #fb923c 100%)",
           }}
         >
           {isLoadingParesVendidos ? (
@@ -546,7 +673,7 @@ export const ReportList = () => {
                 {paresVendidos?.toLocaleString() ?? "-"}
               </div>
               <div className="stat-label">
-                Pares Vendidos - Pedidos entregados y pagos Confirmados
+                Pares Vendidos · Pagos confirmados
               </div>
             </>
           )}
@@ -554,7 +681,7 @@ export const ReportList = () => {
 
         <StatCardStyled
           style={{
-            background: "linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)",
+            background: "linear-gradient(145deg, #7c3aed 0%, #a78bfa 100%)",
           }}
         >
           {isLoadingSumaTotalesOrdenes ? (
@@ -567,7 +694,7 @@ export const ReportList = () => {
           ) : (
             <>
               <i className="bi bi-cash-coin stat-icon"></i>
-              <div className="stat-value">
+              <div className="stat-value" style={{ fontSize: "1.55rem" }}>
                 {sumaTotalesOrdenes?.toLocaleString("es-CO", {
                   style: "currency",
                   currency: "COP",
@@ -575,7 +702,7 @@ export const ReportList = () => {
                 }) ?? "-"}
               </div>
               <div className="stat-label">
-                Total Recaudado - pedidos Entregados y pagos confirmados
+                Total Recaudado · Pagos confirmados
               </div>
             </>
           )}
@@ -583,7 +710,7 @@ export const ReportList = () => {
 
         <StatCardStyled
           style={{
-            background: "linear-gradient(135deg, #28a745 0%, #218838 100%)",
+            background: "linear-gradient(145deg, #16a34a 0%, #4ade80 100%)",
           }}
         >
           {loadingModelosMasVendidos ? (
@@ -598,62 +725,53 @@ export const ReportList = () => {
             ></i>
           ) : modelosMasVendidos && modelosMasVendidos.name ? (
             <>
-              <div
-                className="stat-label fw-bold"
-                style={{ fontSize: "1.0rem", marginBottom: "2px" }}
-              >
-                Modelo Más Vendido
-              </div>
-              <i className="bi bi-star-fill stat-icon"></i>{" "}
+              <i className="bi bi-star-fill stat-icon"></i>
               <div
                 className="stat-value"
-                style={{ fontSize: "1.1rem", lineHeight: "1.3" }}
+                style={{ fontSize: "1.15rem", lineHeight: "1.35" }}
               >
                 {modelosMasVendidos.name}
                 {modelosMasVendidos.color && (
                   <span
                     style={{
                       display: "block",
-                      fontSize: "0.85rem",
-                      opacity: 0.8,
+                      fontSize: "0.8rem",
+                      opacity: 0.75,
+                      marginTop: "2px",
                     }}
                   >
                     Color: {modelosMasVendidos.color}
                   </span>
                 )}
               </div>
-              <div className="stat-label" style={{ fontSize: "0.9rem" }}>
+              <div className="stat-label">
+                Modelo más vendido ·{" "}
                 {modelosMasVendidos.totalQuantitySold?.toLocaleString()} uds
-                vendidas
               </div>
             </>
           ) : (
             <>
-              <div
-                className="stat-label fw-bold"
-                style={{ fontSize: "1.0rem", marginBottom: "2px" }}
-              >
-                Modelo Más Vendido
-              </div>
               <i className="bi bi-question-circle stat-icon"></i>
               <div className="stat-value" style={{ fontSize: "1rem" }}>
-                No hay datos
+                Sin datos
               </div>
+              <div className="stat-label">Modelo más vendido</div>
             </>
           )}
         </StatCardStyled>
 
+        {/* Utilidades — span 2 */}
         <StatCardStyled
           style={{
-            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            background: "linear-gradient(145deg, #4338ca 0%, #818cf8 100%)",
             gridColumn: "span 2",
             textAlign: "left",
-            padding: "15px",
+            padding: "1.75rem 2rem",
           }}
         >
           {isLoadingUtilidadesInfo ? (
             <div className="d-flex justify-content-center align-items-center h-100">
-              <Spinner animation="border" size="lg" variant="light" />
+              <Spinner animation="border" variant="light" />
             </div>
           ) : utilidadesInfoError ? (
             <div className="d-flex flex-column justify-content-center align-items-center h-100">
@@ -672,56 +790,177 @@ export const ReportList = () => {
             </div>
           ) : utilidadesInfo ? (
             <>
-              <div className="d-flex align-items-center mb-3">
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.75rem",
+                  marginBottom: "1.25rem",
+                  paddingBottom: "1rem",
+                  borderBottom: "1px solid rgba(255,255,255,0.1)",
+                }}
+              >
                 <i
-                  className="bi bi-graph-up-arrow stat-icon me-3"
-                  style={{ fontSize: "2.5rem" }}
+                  className="bi bi-graph-up-arrow"
+                  style={{ fontSize: "1.4rem", opacity: 0.85 }}
                 ></i>
-                <h5 className="mb-0 text-white fw-bold">
+                <span
+                  style={{ fontWeight: 700, fontSize: "1rem", color: "white" }}
+                >
                   Resumen de Utilidades
-                </h5>
+                </span>
               </div>
-              <div className="row gx-3 gy-2">
-                <div className="col-sm-6">
-                  <small className="text-white-50 d-block">
-                    Utilidad Neta Total
-                  </small>
-                  <strong className="fs-5 text-white">
-                    {formatCurrency(utilidadesInfo.utilidadNetaTotal)}
-                  </strong>
+              <div className="row gx-4 gy-3">
+                <div className="col-sm-6 col-md-4">
+                  <div
+                    style={{
+                      background: "rgba(255,255,255,0.06)",
+                      borderRadius: "10px",
+                      padding: "0.875rem 1rem",
+                    }}
+                  >
+                    <small
+                      style={{
+                        color: "rgba(255,255,255,0.55)",
+                        fontSize: "0.7rem",
+                        letterSpacing: "0.5px",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      Utilidad Neta
+                    </small>
+                    <div
+                      style={{
+                        fontWeight: 800,
+                        fontSize: "1.2rem",
+                        color: "#10b981",
+                        marginTop: "2px",
+                      }}
+                    >
+                      {formatCurrency(utilidadesInfo.utilidadNetaTotal)}
+                    </div>
+                  </div>
                 </div>
-                <div className="col-sm-6">
-                  <small className="text-white-50 d-block">
-                    Utilidad Bruta Total
-                  </small>
-                  <strong className="fs-5 text-white">
-                    {formatCurrency(utilidadesInfo.utilidadBrutaTotal)}
-                  </strong>
+                <div className="col-sm-6 col-md-4">
+                  <div
+                    style={{
+                      background: "rgba(255,255,255,0.06)",
+                      borderRadius: "10px",
+                      padding: "0.875rem 1rem",
+                    }}
+                  >
+                    <small
+                      style={{
+                        color: "rgba(255,255,255,0.55)",
+                        fontSize: "0.7rem",
+                        letterSpacing: "0.5px",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      Utilidad Bruta
+                    </small>
+                    <div
+                      style={{
+                        fontWeight: 800,
+                        fontSize: "1.2rem",
+                        color: "#f59e0b",
+                        marginTop: "2px",
+                      }}
+                    >
+                      {formatCurrency(utilidadesInfo.utilidadBrutaTotal)}
+                    </div>
+                  </div>
                 </div>
-                <div className="col-sm-6">
-                  <small className="text-white-50 d-block">
-                    Descuentos Aplicados
-                  </small>
-                  <strong className="fs-5 text-white">
-                    {formatCurrency(utilidadesInfo.totalDescuentosAplicados)}
-                  </strong>
+                <div className="col-sm-6 col-md-4">
+                  <div
+                    style={{
+                      background: "rgba(255,255,255,0.06)",
+                      borderRadius: "10px",
+                      padding: "0.875rem 1rem",
+                    }}
+                  >
+                    <small
+                      style={{
+                        color: "rgba(255,255,255,0.55)",
+                        fontSize: "0.7rem",
+                        letterSpacing: "0.5px",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      Descuentos
+                    </small>
+                    <div
+                      style={{
+                        fontWeight: 800,
+                        fontSize: "1.2rem",
+                        color: "#f87171",
+                        marginTop: "2px",
+                      }}
+                    >
+                      {formatCurrency(utilidadesInfo.totalDescuentosAplicados)}
+                    </div>
+                  </div>
                 </div>
-                <div className="col-sm-6">
-                  <small className="text-white-50 d-block">
-                    Órdenes Consideradas
-                  </small>
-                  <strong className="fs-5 text-white">
-                    {utilidadesInfo.ordenesConsideradas?.toLocaleString() ??
-                      "-"}
-                  </strong>
+                <div className="col-sm-6 col-md-4">
+                  <div
+                    style={{
+                      background: "rgba(255,255,255,0.06)",
+                      borderRadius: "10px",
+                      padding: "0.875rem 1rem",
+                    }}
+                  >
+                    <small
+                      style={{
+                        color: "rgba(255,255,255,0.55)",
+                        fontSize: "0.7rem",
+                        letterSpacing: "0.5px",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      Órdenes
+                    </small>
+                    <div
+                      style={{
+                        fontWeight: 800,
+                        fontSize: "1.2rem",
+                        color: "white",
+                        marginTop: "2px",
+                      }}
+                    >
+                      {utilidadesInfo.ordenesConsideradas?.toLocaleString() ??
+                        "-"}
+                    </div>
+                  </div>
                 </div>
-                <div className="col-sm-6">
-                  <small className="text-white-50 d-block">
-                    Ítems Procesados
-                  </small>
-                  <strong className="fs-5 text-white">
-                    {utilidadesInfo.itemsProcesados?.toLocaleString() ?? "-"}
-                  </strong>
+                <div className="col-sm-6 col-md-4">
+                  <div
+                    style={{
+                      background: "rgba(255,255,255,0.06)",
+                      borderRadius: "10px",
+                      padding: "0.875rem 1rem",
+                    }}
+                  >
+                    <small
+                      style={{
+                        color: "rgba(255,255,255,0.55)",
+                        fontSize: "0.7rem",
+                        letterSpacing: "0.5px",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      Ítems
+                    </small>
+                    <div
+                      style={{
+                        fontWeight: 800,
+                        fontSize: "1.2rem",
+                        color: "white",
+                        marginTop: "2px",
+                      }}
+                    >
+                      {utilidadesInfo.itemsProcesados?.toLocaleString() ?? "-"}
+                    </div>
+                  </div>
                 </div>
               </div>
             </>
@@ -738,10 +977,9 @@ export const ReportList = () => {
           )}
         </StatCardStyled>
 
-        {/* aqui debo mostrar la informacion del numero de cupones */}
         <StatCardStyled
           style={{
-            background: "linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%)",
+            background: "linear-gradient(145deg, #dc2626 0%, #f87171 100%)",
           }}
         >
           {isLoadingCountOrdersWithCoupons ? (
@@ -758,17 +996,18 @@ export const ReportList = () => {
                 {countOrdersWithCoupons?.toLocaleString() ?? "-"}
               </div>
               <div className="stat-label">
-                Órdenes con Cupones - Pedidos entregados y pagos confirmados
+                Órdenes con Cupones · Pagos confirmados
               </div>
             </>
           )}
         </StatCardStyled>
       </StatsContainerStyled>
 
+      {/* Chart */}
       <StatCardGraficos>
         {isLoadingUtilidadesInfoGraficos ? (
           <div className="loading-container">
-            <Spinner animation="border" size="lg" variant="light" />
+            <Spinner animation="border" variant="light" />
           </div>
         ) : utilidadesInfoErrorGraficos ? (
           <div className="error-container">
