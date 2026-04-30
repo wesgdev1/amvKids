@@ -63,3 +63,24 @@ export const deleteDirection = async (directionId) => {
     return Promise.reject(error);
   }
 };
+
+export const getUserById = async (userId) => {
+  try {
+    const { data: response } = await http.get(`/users/${userId}`);
+    return { data: response.data };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+export const editPasswordAdmin = async (id, payload) => {
+  try {
+    const { data: response, status } = await http.put(
+      `/users/auth/change-password2`,
+      { id, ...payload }
+    );
+    return { data: response.data, status };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};

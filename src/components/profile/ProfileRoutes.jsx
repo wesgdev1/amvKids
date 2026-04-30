@@ -11,6 +11,7 @@ import { OrdersAdmin } from "../orders/OrdersAdmin";
 import { OrdeDetailAdmin } from "../orders/OrderDetailAdmin";
 import { UserList } from "../users/UserList";
 import { UserForm } from "../users/UserForm";
+import { UserDetail } from "../users/UserDetail";
 import { ScanShoe } from "../scan/ScanShoe";
 import { ReportList } from "../reports/ReportList";
 import { OrderListByUser } from "../users/OrderListbyUser";
@@ -117,6 +118,14 @@ export const ProfileRoutes = () => {
         <Route path="/users" element={<UserList />} />
         <Route path="/users/new" element={<UserForm />} />
         <Route path="/users/:idUser/orders" element={<OrderListByUser />} />
+        <Route
+          path="/users/:idUser/detail"
+          element={
+            <AdminRoute>
+              <UserDetail />
+            </AdminRoute>
+          }
+        />
       </Routes>
     </>
   );

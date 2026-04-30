@@ -204,6 +204,12 @@ export const UsersTable = ({ users, cargarUsuarios }) => {
                     <ControlButton onClick={() => viewOrdersByUser(user)}>
                       <i className="bi bi-eye-fill"></i>
                     </ControlButton>
+                    <ControlButton
+                      onClick={() => navigate(`/profile/users/${user.id}/detail`)}
+                      title="Ver perfil"
+                    >
+                      <i className="bi bi-person-lines-fill"></i>
+                    </ControlButton>
                     {user.state ? (
                       <ControlButton onClick={() => updateUser(user)}>
                         <i className="bi bi-toggle2-on"></i>
