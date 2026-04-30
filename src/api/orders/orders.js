@@ -181,3 +181,12 @@ export const updateCouponState = async (id, payload) => {
     return Promise.reject(error);
   }
 };
+
+export const getCouponById = async (id) => {
+  try {
+    const { data: response } = await http.get(`/coupons/${id}`);
+    return { data: response.data };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};

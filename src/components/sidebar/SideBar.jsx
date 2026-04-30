@@ -33,6 +33,12 @@ export const SideBar = () => {
             </NavLinkStyled>
           </li>
           <li>
+            <NavLinkStyled to={"/profile/creators"}>
+              <i className="bi bi-camera-video"></i>
+              <span> Creadores UGC</span>
+            </NavLinkStyled>
+          </li>
+          <li>
             <NavLinkStyled to={"/profile/scan"}>
               <i className="bi bi-upc-scan"></i>
               <span> Escanear Codigo</span>

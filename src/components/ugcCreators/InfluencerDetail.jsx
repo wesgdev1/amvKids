@@ -1,15 +1,21 @@
 import { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { Alert, Button, Form, Spinner } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
-import { useCoupons } from "../../domain/coupons/useCoupons";
+import { useInfluencer } from "../../domain/influencers/useInfluencer";
 import {
-  CouponsPageWrapper,
-  PageHeaderStyled,
+  DetailWrapper,
+  BackBtn,
+  CreatorInfoBanner,
+  BannerAvatar,
   StatsRow,
-  CouponStatCard,
+  StatCard,
   CreateFormCard,
   SectionHeader,
+  EmptyState,
+  CreateBtn,
+} from "./StyledComponents";
+import {
   CouponsGrid,
   CouponOuter,
   CouponLeft,
@@ -18,9 +24,7 @@ import {
   DiscountCircle,
   StatusBadgeStyled,
   OrdersCount,
-  CreateCouponBtn,
-  EmptyState,
-} from "./StyledComponents";
+} from "../coupons/StyledComponents";
 
 const formatDate = (dateStr) => {
   if (!dateStr) return "—";
@@ -31,14 +35,9 @@ const formatDate = (dateStr) => {
   });
 };
 
-const CouponCard = ({ coupon, onToggle, toggling, onDetail }) => {
+const CouponCard = ({ coupon, onToggle, toggling }) => {
   const isActive = coupon.state !== false;
   const usesCount = coupon.orders?.length ?? 0;
-  const isInfluencer = coupon.influencerId != null;
-
-  const handleVerInfluencer = () => {
-    console.log("Ver influencer:", coupon.influencer ?? { id: coupon.influencerId });
-  };
 
   return (
     <CouponOuter $active={isActive}>
@@ -49,55 +48,6 @@ const CouponCard = ({ coupon, onToggle, toggling, onDetail }) => {
           <i className="bi bi-calendar3" />
           {formatDate(coupon.createdAt)}
         </span>
-
-        {isInfluencer ? (
-          <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginTop: "0.2rem" }}>
-            <span style={{
-              fontSize: "0.65rem",
-              background: "rgba(255,255,255,0.15)",
-              border: "1px solid rgba(255,255,255,0.3)",
-              borderRadius: "99px",
-              padding: "0.15rem 0.5rem",
-              fontWeight: 600,
-              letterSpacing: "0.5px",
-              display: "flex",
-              alignItems: "center",
-              gap: "0.3rem",
-            }}>
-              <i className="bi bi-person-fill" />
-              {coupon.influencer?.name ?? "Influencer"}
-            </span>
-            <Button
-              size="sm"
-              variant="link"
-              onClick={handleVerInfluencer}
-              style={{
-                fontSize: "0.62rem",
-                color: "#90ff69",
-                padding: 0,
-                fontWeight: 600,
-                textDecoration: "none",
-              }}
-            >
-              ver →
-            </Button>
-          </div>
-        ) : (
-          <span style={{
-            fontSize: "0.65rem",
-            background: "rgba(144,255,105,0.18)",
-            border: "1px solid rgba(144,255,105,0.4)",
-            borderRadius: "99px",
-            padding: "0.15rem 0.5rem",
-            fontWeight: 700,
-            letterSpacing: "0.5px",
-            color: "#90ff69",
-            marginTop: "0.2rem",
-            display: "inline-block",
-          }}>
-            ★ AMV
-          </span>
-        )}
       </CouponLeft>
 
       <CouponSeparator $active={isActive}>
@@ -142,20 +92,6 @@ const CouponCard = ({ coupon, onToggle, toggling, onDetail }) => {
             "Activar"
           )}
         </Button>
-        <Button
-          size="sm"
-          variant="link"
-          onClick={onDetail}
-          style={{
-            fontSize: "0.68rem",
-            fontWeight: 600,
-            color: "#390688",
-            padding: "0",
-            textDecoration: "none",
-          }}
-        >
-          Ver detalle →
-        </Button>
       </CouponRight>
     </CouponOuter>
   );
@@ -169,18 +105,24 @@ CouponCard.propTypes = {
     code: PropTypes.string.isRequired,
     createdAt: PropTypes.string,
     discount: PropTypes.number.isRequired,
-    influencerId: PropTypes.string,
-    influencer: PropTypes.shape({ name: PropTypes.string }),
   }).isRequired,
   onToggle: PropTypes.func.isRequired,
   toggling: PropTypes.bool.isRequired,
-  onDetail: PropTypes.func.isRequired,
 };
 
-export const Coupons = () => {
-  const { coupons, loading, error, addCoupon, toggleCouponState } =
-    useCoupons();
+const getInitials = (name = "") =>
+  name
+    .split(" ")
+    .slice(0, 2)
+    .map((w) => w[0])
+    .join("")
+    .toUpperCase();
+
+export const InfluencerDetail = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
+  const { influencer, loading, error, addCoupon, toggleCouponState } =
+    useInfluencer(id);
 
   const [formCode, setFormCode] = useState("");
   const [formDiscount, setFormDiscount] = useState("");
@@ -189,24 +131,26 @@ export const Coupons = () => {
   const [formSuccess, setFormSuccess] = useState("");
   const [togglingId, setTogglingId] = useState(null);
 
+  const coupons = influencer?.coupons ?? [];
   const activeCoupons = coupons.filter((c) => c.state !== false);
-  const inactiveCoupons = coupons.filter((c) => c.state === false);
+  const totalUses = coupons.reduce(
+    (acc, c) => acc + (c.orders?.length ?? 0),
+    0
+  );
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formCode.trim() || !formDiscount) return;
-
     setFormLoading(true);
     setFormError("");
     setFormSuccess("");
-
     try {
       await addCoupon({
         code: formCode.trim().toUpperCase(),
         discount: Number(formDiscount),
       });
       setFormSuccess(
-        `Cupón "${formCode.trim().toUpperCase()}" creado exitosamente.`
+        `Cupón "${formCode.trim().toUpperCase()}" asignado a ${influencer.name}.`
       );
       setFormCode("");
       setFormDiscount("");
@@ -221,45 +165,82 @@ export const Coupons = () => {
     }
   };
 
-  const handleToggle = async (id, currentState) => {
-    setTogglingId(id);
+  const handleToggle = async (couponId, currentState) => {
+    setTogglingId(couponId);
     try {
-      await toggleCouponState(id, currentState);
+      await toggleCouponState(couponId, currentState);
     } catch {
-      // silently ignore — the list will remain unchanged
+      // silently ignore — list stays unchanged
     } finally {
       setTogglingId(null);
     }
   };
 
-  return (
-    <CouponsPageWrapper>
-      <PageHeaderStyled>
-        <h2>🎫 Gestión de Cupones</h2>
-        <p>Crea y administra cupones de descuento para tus clientes</p>
-      </PageHeaderStyled>
+  if (loading) {
+    return (
+      <DetailWrapper>
+        <div style={{ textAlign: "center", padding: "4rem" }}>
+          <Spinner style={{ color: "#390688" }} />
+        </div>
+      </DetailWrapper>
+    );
+  }
 
-      {/* Stats */}
+  if (error || !influencer) {
+    return (
+      <DetailWrapper>
+        <BackBtn onClick={() => navigate("/profile/creators")}>
+          <i className="bi bi-arrow-left" /> Volver
+        </BackBtn>
+        <Alert variant="danger">{error || "Creador no encontrado."}</Alert>
+      </DetailWrapper>
+    );
+  }
+
+  return (
+    <DetailWrapper>
+      <BackBtn onClick={() => navigate("/profile/creators")}>
+        <i className="bi bi-arrow-left" /> Volver a creadores
+      </BackBtn>
+
+      <CreatorInfoBanner>
+        <BannerAvatar>{getInitials(influencer.name)}</BannerAvatar>
+        <div>
+          <div className="creator-name">{influencer.name}</div>
+          <div className="creator-contact">
+            {influencer.email && (
+              <span>
+                <i className="bi bi-envelope" /> {influencer.email}
+              </span>
+            )}
+            {influencer.celular && (
+              <span>
+                <i className="bi bi-telephone" /> {influencer.celular}
+              </span>
+            )}
+          </div>
+        </div>
+      </CreatorInfoBanner>
+
       <StatsRow>
-        <CouponStatCard>
+        <StatCard>
           <div className="stat-value">{coupons.length}</div>
-          <div className="stat-label">Total</div>
-        </CouponStatCard>
-        <CouponStatCard $variant="active">
+          <div className="stat-label">Total cupones</div>
+        </StatCard>
+        <StatCard $variant="active">
           <div className="stat-value">{activeCoupons.length}</div>
           <div className="stat-label">Activos</div>
-        </CouponStatCard>
-        <CouponStatCard $variant="inactive">
-          <div className="stat-value">{inactiveCoupons.length}</div>
-          <div className="stat-label">Inactivos</div>
-        </CouponStatCard>
+        </StatCard>
+        <StatCard $variant="coupon">
+          <div className="stat-value">{totalUses}</div>
+          <div className="stat-label">Usos totales</div>
+        </StatCard>
       </StatsRow>
 
-      {/* Create form */}
       <CreateFormCard>
         <div className="form-title">
-          <i className="bi bi-plus-circle-fill" />
-          Crear nuevo cupón
+          <i className="bi bi-ticket-perforated-fill" />
+          Asignar cupón a {influencer.name}
         </div>
 
         {formSuccess && (
@@ -303,14 +284,11 @@ export const Coupons = () => {
               </Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Ej: VERANO20"
+                placeholder="Ej: LAURA20"
                 value={formCode}
                 onChange={(e) => setFormCode(e.target.value.toUpperCase())}
                 required
-                style={{
-                  fontFamily: "Courier New, monospace",
-                  letterSpacing: "1px",
-                }}
+                style={{ fontFamily: "Courier New, monospace", letterSpacing: "1px" }}
               />
             </Form.Group>
 
@@ -327,7 +305,7 @@ export const Coupons = () => {
               </Form.Label>
               <Form.Control
                 type="number"
-                placeholder="Ej: 20"
+                placeholder="Ej: 15"
                 value={formDiscount}
                 onChange={(e) => setFormDiscount(e.target.value)}
                 min={1}
@@ -336,25 +314,24 @@ export const Coupons = () => {
               />
             </Form.Group>
 
-            <CreateCouponBtn type="submit" disabled={formLoading}>
+            <CreateBtn type="submit" disabled={formLoading}>
               {formLoading ? (
                 <>
                   <Spinner size="sm" className="me-2" />
-                  Creando...
+                  Asignando...
                 </>
               ) : (
-                "Crear cupón"
+                "Asignar cupón"
               )}
-            </CreateCouponBtn>
+            </CreateBtn>
           </div>
         </Form>
       </CreateFormCard>
 
-      {/* Coupons list */}
       <SectionHeader>
         <h4>
           <i className="bi bi-ticket-perforated-fill" />
-          Cupones actuales
+          Cupones de {influencer.name}
         </h4>
         {coupons.length > 0 && (
           <span className="count-badge">
@@ -363,22 +340,14 @@ export const Coupons = () => {
         )}
       </SectionHeader>
 
-      {loading && (
-        <div style={{ textAlign: "center", padding: "3rem" }}>
-          <Spinner style={{ color: "#390688" }} />
-        </div>
-      )}
-
-      {error && !loading && <Alert variant="danger">{error}</Alert>}
-
-      {!loading && !error && coupons.length === 0 && (
+      {coupons.length === 0 && (
         <EmptyState>
           <div className="empty-icon">🎫</div>
-          <p>No hay cupones registrados todavía.</p>
+          <p>Este creador aún no tiene cupones asignados.</p>
         </EmptyState>
       )}
 
-      {!loading && coupons.length > 0 && (
+      {coupons.length > 0 && (
         <CouponsGrid>
           {coupons.map((coupon) => (
             <CouponCard
@@ -386,11 +355,10 @@ export const Coupons = () => {
               coupon={coupon}
               onToggle={handleToggle}
               toggling={togglingId === coupon.id}
-              onDetail={() => navigate(`/profile/coupons/${coupon.id}`)}
             />
           ))}
         </CouponsGrid>
       )}
-    </CouponsPageWrapper>
+    </DetailWrapper>
   );
 };

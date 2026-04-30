@@ -19,7 +19,9 @@ import { OrdeDetailPreparer } from "../orders/OrderDetailPreparer";
 import { AdminRoute } from "../../auth/AdminRoute";
 import { AlertsList } from "../reports/AlertsList";
 import { UgcCreators } from "../ugcCreators/UgcCreators";
+import { InfluencerDetail } from "../ugcCreators/InfluencerDetail";
 import { Coupons } from "../coupons/Coupons";
+import { CouponDetail } from "../coupons/CouponDetail";
 import { ModelListArchived } from "../model/ModelListArchived";
 
 export const ProfileRoutes = () => {
@@ -76,10 +78,26 @@ export const ProfileRoutes = () => {
           }
         />
         <Route
+          path="/creators/:id"
+          element={
+            <AdminRoute>
+              <InfluencerDetail />
+            </AdminRoute>
+          }
+        />
+        <Route
           path="/coupons"
           element={
             <AdminRoute>
               <Coupons />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/coupons/:id"
+          element={
+            <AdminRoute>
+              <CouponDetail />
             </AdminRoute>
           }
         />
